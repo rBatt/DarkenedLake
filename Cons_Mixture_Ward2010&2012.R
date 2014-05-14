@@ -72,9 +72,9 @@ WINE="/opt/local/bin/wine"
 
 
 library(R2WinBUGS)
-setwd("/Users/Battrd/Documents/School&Work/WiscResearch/Isotopes_2010Analysis")
+setwd("/Users/Battrd/Documents/School&Work/WiscResearch/Isotopes_2012Analysis")
 source("ConsMix_v6.R")
-setwd("/Users/Battrd/Documents/School&Work/WiscResearch/Data/IsotopeData2012")
+setwd("/Users/Battrd/Documents/School&Work/WiscResearch/Isotopes_2012Analysis/Data/IsotopeData2012")
 DataRaw <- read.csv("WardIsotopes_2010&2012_17Jan2013.csv", header=TRUE)
 Data <- subset(DataRaw, Taxon!="Nija" & !is.element(SampleID, c("O-0362", "V-0270", "P-1202", "P-1166", "O-0382", "P-1165", "P-1206", "P-1238", "P-1239", "P-1243", "Z-1110", "Z-1115", "Z-1195", "Z-1170", "O-0405", "P-1244")) & is.na(FishID))
 Months <- c("May", "Jun", "Jul", "Aug")
@@ -168,7 +168,7 @@ for(YearMix in c(2010, 2012)){
 	SupplyBUGS_pt1 <- list(T_dX, T_dX_Var, dD_Phyto_Epi_Mu, dD_Phyto_Epi_Shape, POM_dX_Epi_Obs, nPOM_Epi, dD_Phyto_Meta_Mu, dD_Phyto_Meta_Shape, POM_dX_Meta_Obs, nPOM_Meta)
 	names(SupplyBUGS_pt1) <- strsplit(c("T_dX, T_dX_Var, dD_Phyto_Epi_Mu, dD_Phyto_Epi_Shape, POM_dX_Epi_Obs, nPOM_Epi, dD_Phyto_Meta_Mu, dD_Phyto_Meta_Shape, POM_dX_Meta_Obs, nPOM_Meta"), split=", ")[[1]]
 	ParamBUGS_pt1 <- c("f", "P_dC_Epi", "P_dN_Epi", "P_dD_Epi", "P_dC_Epi_Var", "P_dN_Epi_Var", "P_dD_Epi_Var",  "P_dC_Meta", "P_dN_Meta", "P_dD_Meta", "P_dC_Meta_Var", "P_dN_Meta_Var", "P_dD_Meta_Var", "residSd")
-	BUGSfile_pt1 <- "/Users/Battrd/Documents/School&Work/WiscResearch/Isotopes_2010Analysis/mix_Cons_Mixture_Ward2010_v2_pt1.bug"
+	BUGSfile_pt1 <- "/Users/Battrd/Documents/School&Work/WiscResearch/Isotopes_2012Analysis/mix_Cons_Mixture_Ward2010_v2_pt1.bug"
 	if(.Platform$OS.type=="windows"){
 		bugsOut_pt1 <- bugs(SupplyBUGS_pt1, inits=NULL, ParamBUGS_pt1, BUGSfile_pt1, n.chains=8, n.iter=Iterations, program="winbugs", working.directory=NULL, debug=FALSE, clearWD=FALSE)
 	}else{

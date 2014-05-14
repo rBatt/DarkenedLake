@@ -1,0 +1,107 @@
+#mixing model to calculate the phytoplankton end member from POM signautres and the signature of the other suspected source--- terrestrial organics.
+#Ryan Batt, 20-April-2011
+#Version 2, 28-May-2011; Same as _v1
+#Based on "mixBayesCLR_29Oct.bug" by Chris Solomon
+
+model{
+
+#Priors on the C and N signatures of Phytoplankton
+P_dC_Epi ~ dnorm(0, 1.E-3)
+P_dN_Epi ~ dnorm(0, 1.E-1)
+P_dC_Epi_Var ~ dgamma(1, 0.1)
+P_dN_Epi_Var ~ dgamma(1, 0.1)
+
+P_dC_Meta ~ dnorm(0, 1.E-3)
+P_dN_Meta ~ dnorm(0, 1.E-1)
+P_dC_Meta_Var ~ dgamma(1, 0.1)
+P_dN_Meta_Var ~ dgamma(1, 0.1)
+
+#Informative prior on phytoplankton dD
+#qnorm(p=.025, mean=-231.945, sd=5) (R code)
+#dgamma(r, mu); mu=1/scale=rate; r=shape; mean=r/mu; variance=r/mu^2 (WB code)
+#alpha phyto-water = mean ± sd = 0.84 ± 0.008 (Solomon 2011, App. A)
+P_dD_Epi ~ dnorm(dD_Phyto_Epi_Mu, 0.04) 
+P_dD_Epi_Var ~ dgamma(dD_Phyto_Epi_Shape, 0.1)
+P_dD_Meta ~ dnorm(dD_Phyto_Meta_Mu, 0.04) 
+P_dD_Meta_Var ~ dgamma(dD_Phyto_Meta_Shape, 0.1)
+
+
+
+#Priors on source proportions, in CLR-transformed space
+#This describes the prior distribution for each source in a normalized fashion--- because of the differences in expected values among sources, you can't use the same prior for them all unless you normalize.  "centered log ratio" is a way to normalize.  If a prior for each was chosen independently, then some sources may be bias toward higher or lower proportions over others (source proportions aren't independent).  Somehow this all matters, I think.
+
+for (i in 1:4){
+  f.transform[i] ~ dunif(-3,5)
+  }
+
+
+#Priors on residual var of consumers
+#The variance of the error terms in the equations-- one for each isotope (we are certain that all proportions add to 1, so there is no error term for that equation).
+for (i in 1:6){
+  residSd[i] ~ dunif(0,100)
+  residVar[i] <- residSd[i] * residSd[i]
+  }
+
+#CLR math (untransform source proportions)
+for (i in 1:4){
+  expFTrans[i] <- exp(f.transform[i])
+  }
+#f.tot <- sum(expFTrans[])
+#Because of the random aspect of choosing priors, they don't necessarily have to add up to 1, so we need to figure out what they add up to.  For example, if they added up to 1, a proportion that was 0.5 in would mean that source is 50%.  If they add up to 2, that same source would be 25%. 
+
+#untransforming the proportion, then normalizing it so they add up to 1.
+#Epi
+f[1] <- exp(f.transform[1]) / sum(expFTrans[1:2])
+f[2] <- 1 - f[1]
+
+#Meta
+f[3] <- exp(f.transform[3]) / sum(expFTrans[3:4])
+f[4] <- 1 - f[3]
+
+
+#Calculate the predicted isotopic signature of the POM mixture
+POM_dX_Epi[1] <- f[1] * T_dX[1] + f[2] * P_dC_Epi
+POM_dX_Epi[2] <- f[1] * T_dX[2] + f[2] * P_dN_Epi
+POM_dX_Epi[3] <- f[1] * T_dX[3] + f[2] * P_dD_Epi
+
+#Calculate the predicted isotopic signature of the POM mixture
+POM_dX_Meta[1] <- f[3] * T_dX[1] + f[4] * P_dC_Meta
+POM_dX_Meta[2] <- f[3] * T_dX[2] + f[4] * P_dN_Meta
+POM_dX_Meta[3] <- f[3] * T_dX[3] + f[4] * P_dD_Meta
+
+
+#Calculate the variance of the signature of the POM mixture; this is needed because the posterior distribution needs to know what the predicted POM mu and variance are to compare them to the distribution (normal, which requires mu and signma^2 to calculate the likelihood) of the observed POM mixtures-- if the predictions are close to the observations, then the parameter estimates that generated these predictions have a high probability of being correct.
+
+POM_dC_Epi_Var <- f[1] * f[1] * T_dX_Var[1] + f[2] * f[2] * P_dC_Epi_Var + residVar[1]
+POM_dN_Epi_Var <- f[1] * f[1] * T_dX_Var[2] + f[2] * f[2] * P_dN_Epi_Var + residVar[2]
+POM_dD_Epi_Var <- f[1] * f[1] * T_dX_Var[3] + f[2] * f[2] * P_dD_Epi_Var + residVar[3]
+
+POM_dC_Meta_Var <- f[3] * f[3] * T_dX_Var[1] + f[4] * f[4] * P_dC_Meta_Var + residVar[4]
+POM_dN_Meta_Var <- f[3] * f[3] * T_dX_Var[2] + f[4] * f[4] * P_dN_Meta_Var + residVar[5]
+POM_dD_Meta_Var <- f[3] * f[3] * T_dX_Var[3] + f[4] * f[4] * P_dD_Meta_Var + residVar[6]
+
+POM_dX_Epi_Prec[1] <- (1 / POM_dC_Epi_Var)
+POM_dX_Epi_Prec[2] <- (1 / POM_dN_Epi_Var)
+POM_dX_Epi_Prec[3] <- (1 / POM_dD_Epi_Var)
+
+POM_dX_Meta_Prec[1] <- (1 / POM_dC_Meta_Var)
+POM_dX_Meta_Prec[2] <- (1 / POM_dN_Meta_Var)
+POM_dX_Meta_Prec[3] <- (1 / POM_dD_Meta_Var)
+
+
+
+
+for (i in 1:nPOM_Epi){
+	for (iso in 1:3){
+		POM_dX_Epi_Obs[i,iso] ~ dnorm(POM_dX_Epi[iso], POM_dX_Epi_Prec[iso])
+		}
+	}
+
+for (i in 1:nPOM_Meta){
+	for (iso in 1:3){
+		POM_dX_Meta_Obs[i,iso] ~ dnorm(POM_dX_Meta[iso], POM_dX_Meta_Prec[iso])
+		}
+	}
+
+
+}#End Model

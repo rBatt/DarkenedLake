@@ -3,7 +3,7 @@
 <plist version="1.0">
 <dict>
 	<key>currentDocument</key>
-	<string>LimnoZoops_CrunchedUp.R</string>
+	<string>PhoticDepthAquaConc_Graph_v3.R</string>
 	<key>documents</key>
 	<array>
 		<dict>
@@ -16,7 +16,9 @@
 			<key>filename</key>
 			<string>PhoticDepthAquaConc_Graph_v3.R</string>
 			<key>lastUsed</key>
-			<date>2014-03-17T14:50:33Z</date>
+			<date>2014-05-14T19:24:22Z</date>
+			<key>selected</key>
+			<true/>
 		</dict>
 		<dict>
 			<key>filename</key>
@@ -28,39 +30,37 @@
 			<key>filename</key>
 			<string>L&amp;W_Routine_2010&amp;2012_v3.r</string>
 			<key>lastUsed</key>
-			<date>2014-02-11T00:04:28Z</date>
+			<date>2014-05-14T19:24:20Z</date>
 		</dict>
 		<dict>
 			<key>filename</key>
 			<string>changeUse_terrMac_vs_algal.R</string>
 			<key>lastUsed</key>
-			<date>2014-05-05T17:47:31Z</date>
+			<date>2014-05-14T19:24:14Z</date>
 		</dict>
 		<dict>
 			<key>filename</key>
 			<string>Cons_Mixture_Ward2010&amp;2012_Figures_v0.4.9.R</string>
 			<key>lastUsed</key>
-			<date>2014-02-11T01:59:00Z</date>
+			<date>2014-05-14T19:21:43Z</date>
 		</dict>
 		<dict>
 			<key>filename</key>
 			<string>LimnoZoops_CrunchedUp.R</string>
 			<key>lastUsed</key>
-			<date>2014-05-05T17:47:31Z</date>
-			<key>selected</key>
-			<true/>
+			<date>2014-05-14T19:24:15Z</date>
 		</dict>
 		<dict>
 			<key>filename</key>
 			<string>WardIso_Sensitivity_v0.5.0.R</string>
 			<key>lastUsed</key>
-			<date>2014-05-05T17:47:28Z</date>
+			<date>2014-05-14T19:24:22Z</date>
 		</dict>
 		<dict>
 			<key>filename</key>
 			<string>Cons_Mixture_Ward2010&amp;2012_Figures_v0.5.2.R</string>
 			<key>lastUsed</key>
-			<date>2014-05-05T17:47:26Z</date>
+			<date>2014-05-14T19:23:45Z</date>
 		</dict>
 		<dict>
 			<key>filename</key>
@@ -73,33 +73,19 @@
 	<integer>241</integer>
 	<key>metaData</key>
 	<dict>
-		<key>Cons_Mixture_Ward2010&amp;2012_Figures_v0.4.9.R</key>
-		<dict>
-			<key>caret</key>
-			<dict>
-				<key>column</key>
-				<integer>0</integer>
-				<key>line</key>
-				<integer>0</integer>
-			</dict>
-			<key>firstVisibleColumn</key>
-			<integer>0</integer>
-			<key>firstVisibleLine</key>
-			<integer>12</integer>
-		</dict>
 		<key>Cons_Mixture_Ward2010&amp;2012_Figures_v0.5.2.R</key>
 		<dict>
 			<key>caret</key>
 			<dict>
 				<key>column</key>
-				<integer>0</integer>
+				<integer>38</integer>
 				<key>line</key>
-				<integer>942</integer>
+				<integer>66</integer>
 			</dict>
 			<key>firstVisibleColumn</key>
 			<integer>0</integer>
 			<key>firstVisibleLine</key>
-			<integer>919</integer>
+			<integer>0</integer>
 		</dict>
 		<key>L&amp;W_Routine_2010&amp;2012_v3.r</key>
 		<dict>
@@ -113,7 +99,7 @@
 			<key>firstVisibleColumn</key>
 			<integer>0</integer>
 			<key>firstVisibleLine</key>
-			<integer>87</integer>
+			<integer>0</integer>
 		</dict>
 		<key>L&amp;W_Routine_2010&amp;2012_v4.r</key>
 		<dict>
@@ -141,7 +127,7 @@
 			<key>firstVisibleColumn</key>
 			<integer>0</integer>
 			<key>firstVisibleLine</key>
-			<integer>94</integer>
+			<integer>0</integer>
 		</dict>
 		<key>PhoticDepthAquaConc_Graph_v3.R</key>
 		<dict>
@@ -155,16 +141,16 @@
 			<key>firstVisibleColumn</key>
 			<integer>0</integer>
 			<key>firstVisibleLine</key>
-			<integer>29</integer>
+			<integer>73</integer>
 		</dict>
 		<key>WardIso_Sensitivity_v0.5.0.R</key>
 		<dict>
 			<key>caret</key>
 			<dict>
 				<key>column</key>
-				<integer>13</integer>
-				<key>line</key>
 				<integer>0</integer>
+				<key>line</key>
+				<integer>1</integer>
 			</dict>
 			<key>firstVisibleColumn</key>
 			<integer>0</integer>
@@ -178,33 +164,16 @@
 				<key>column</key>
 				<integer>0</integer>
 				<key>line</key>
-				<integer>37</integer>
+				<integer>25</integer>
 			</dict>
-			<key>columnSelection</key>
-			<false/>
 			<key>firstVisibleColumn</key>
 			<integer>0</integer>
 			<key>firstVisibleLine</key>
-			<integer>13</integer>
-			<key>selectFrom</key>
-			<dict>
-				<key>column</key>
-				<integer>0</integer>
-				<key>line</key>
-				<integer>0</integer>
-			</dict>
-			<key>selectTo</key>
-			<dict>
-				<key>column</key>
-				<integer>0</integer>
-				<key>line</key>
-				<integer>37</integer>
-			</dict>
+			<integer>0</integer>
 		</dict>
 	</dict>
 	<key>openDocuments</key>
 	<array>
-		<string>Cons_Mixture_Ward2010&amp;2012_Figures_v0.4.9.R</string>
 		<string>Cons_Mixture_Ward2010&amp;2012_Figures_v0.5.2.R</string>
 		<string>WardIso_Sensitivity_v0.5.0.R</string>
 		<string>changeUse_terrMac_vs_algal.R</string>
