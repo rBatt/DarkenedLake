@@ -5,18 +5,18 @@ rm(list=ls())
 graphics.off()
 library("zoo")
 library("plyr")
-setwd("/Users/Battrd/Documents/School&Work/WiscResearch/SquealMetabolism")
-source("MyBookkeepingMetabolism_v1.R")
-setwd("/Users/Battrd/Documents/School&Work/WiscResearch/PAR_DO_PhaseShift/")
+# source("/Users/Battrd/Documents/School&Work/WiscResearch/Isotopes_2012Analysis/MyBookkeepingMetabolism_v2.R")
+source("/Users/Battrd/Documents/School&Work/WiscResearch/Isotopes_2012Analysis/Metabolism_BK_v0.R")
+setwd("/Users/Battrd/Documents/School&Work/WiscResearch/Isotopes_2012Analysis/")
 source("Alme.R")
 source("ByeShort.R")
 source("Chunks.R")
 source("Light.R")
-# source("Metabolism_LM_v3.1.R")
+# source("Metabolism_LM_v3.1.R") # this method is wrong – removed flux before diff()
 
 windowsFonts(Times=windowsFont("TT Times New Roman"))
 
-setwd("/Users/Battrd/Documents/School&Work/WiscResearch/WardSensorData2012")
+setwd("/Users/Battrd/Documents/School&Work/WiscResearch/Isotopes_2012Analysis/Data/WardSensorData2012/")
 UNDERC_Weather <- read.csv("UNDERC_Weather_2012.csv")
 names(UNDERC_Weather) <- c("Year", "DoY", "Time", "Wind", "PAR")
 UNDERC_Weather[,"Time"] <- UNDERC_Weather[,"Time"]-100
@@ -29,7 +29,7 @@ UNDERC_Weather[,"DoY"] <- UNDERC_Weather[,"DoY"] + UNDERC_Weather[,"Frac"]
 UNDERC_Interp_xout <- seq(min(UNDERC_Weather[,"DoY"]), max(UNDERC_Weather[,"DoY"]), by=(1/288))
 UNDERC_PAR_WIND <- data.frame("Year"=2012, "DoY"=UNDERC_Interp_xout, "PAR0"=approx(UNDERC_Weather[,"DoY"], UNDERC_Weather[,"PAR"], xout=UNDERC_Interp_xout)$y, "Wind"=approx(UNDERC_Weather[,"DoY"], UNDERC_Weather[,"Wind"], xout=UNDERC_Interp_xout)$y)
 
-Peter_PAR_Wind <- read.csv("/Users/Battrd/Documents/School&Work/WiscResearch/Data/Peter_PAR_Wind_2012.csv")
+Peter_PAR_Wind <- read.csv("/Users/Battrd/Documents/School&Work/WiscResearch/Isotopes_2012Analysis/Data/Peter_PAR_Wind_2012.csv")
 Peter_PAR_Wind[,"DoY"] <- as.numeric(format.Date(as.POSIXct(Peter_PAR_Wind[,1], format="%Y-%m-%d"), format="%j")) + as.numeric(difftime(time1=as.POSIXct(paste(Peter_PAR_Wind[,1], Peter_PAR_Wind[,2]), format="%Y-%m-%d %H:%M"), time2=as.POSIXct(paste(Peter_PAR_Wind[,1], "00:00:00"), format="%Y-%m-%d %H:%M:%S"), units="days"))
 Peter_PAR_Wind[,"Year"] <- 2012
 Peter_PAR_Wind <- Peter_PAR_Wind[,c("Year", "DoY", "PAR", "WindSpeed")]
@@ -46,7 +46,7 @@ PAR_Wind <- rbind(UNDERC_PAR_WIND[UNDERC_2add,], Peter_PAR_Wind)
 
 
 ##****WORKING ON READING IN ZMIX*******
-Therms <- data.frame("Year"=2012, read.table("/Users/Battrd/Documents/School&Work/WiscResearch/Data/CompiledWardTherms2012_v2.txt", header=TRUE))
+Therms <- data.frame("Year"=2012, read.table("/Users/Battrd/Documents/School&Work/WiscResearch/Isotopes_2012Analysis/Data/CompiledWardTherms2012_v2.txt", header=TRUE))
 ThermDepths <- c(0, 0.25, 0.5, 0.75, 1, 1.25, 1.5, 1.75, 2, 2.5, 3)
 
 zmix <- function(temp, depth){
@@ -61,33 +61,19 @@ zmix <- function(temp, depth){
 }
 Zmixs <- apply(Therms[,-c(1,2)], MARGIN=1, FUN=zmix, depth=ThermDepths)
 Therms <- data.frame(Therms, "Zmix"=Zmixs)
-# dim(Therms[which(is.element(Therms[,"DoY"], PAR_Wind[,"DoY"])),])
-# length(which(PAR_Wind[,"DoY"] > 105 & PAR_Wind[,"DoY"] < 226))
+
 PAR_Wind_Therms <- Alme(X=PAR_Wind, Y=Therms, Freq_High_Low="Low", AllX=TRUE)
-# plot(1:length(PAR_Wind_Therms[,"Zmix"]), PAR_Wind_Therms[,"Zmix"])
-plot(1:length(PAR_Wind_Therms[,"z0.00"]), PAR_Wind_Therms[,"z0.00"])
-# abline(v=which(abs(diff(PAR_Wind_Therms[,5]))>1.5), col="blue", lwd=2)
-# min(which(!is.na(PAR_Wind_Therms[,"z0.00"])))
-# abline(v=c(17051, 19384), col="red")
-# abline(v=c(12495, 12519), col="green")
-# PAR_Wind_Therms[c(17051:19384, 12495:12519), 5:16] <- NA
-abline(v=c(17004, 19330), col="red")
-abline(v=c(12464, 12488), col="green")
+# plot(1:length(PAR_Wind_Therms[,"z0.00"]), PAR_Wind_Therms[,"z0.00"])
+# abline(v=c(17004, 19330), col="red")
+# abline(v=c(12464, 12488), col="green")
 PAR_Wind_Therms[c(17004:19330, 12454:12538), 5:16] <- NA
-plot(1:length(PAR_Wind_Therms[,"z0.00"]), PAR_Wind_Therms[,"z0.00"])
-abline(v=c(17004, 19330), col="red")
-abline(v=c(12454, 12538), col="green")
-# abline(h=c(27, 33), col="red")
+# plot(1:length(PAR_Wind_Therms[,"z0.00"]), PAR_Wind_Therms[,"z0.00"])
+# abline(v=c(17004, 19330), col="red")
+# abline(v=c(12454, 12538), col="green")
 
 badtherms <- which(PAR_Wind_Therms[,5:15] < 5 | PAR_Wind_Therms[,5:15] > 36, arr.ind=TRUE)
-PAR_Wind_Therms[,5:15][PAR_Wind_Therms[,5:15] < 5 | PAR_Wind_Therms[,5:15] > 36]
+# PAR_Wind_Therms[,5:15][PAR_Wind_Therms[,5:15] < 5 | PAR_Wind_Therms[,5:15] > 36]
 
-# Therms2 <- PAR_Wind_Therms[,5:15]
-# which(PAR_Wind_Therms[,"DoY"]
-# image.plot(x=PAR_Wind_Therms[,"DoY"], y=ThermDepths, z=as.matrix(Therms2), zlim=c(0,40), ylim=c(3,0))
-
-# badtherms <- which(Therms2 < 5 | Therms2 > 36, arr.ind=TRUE)
-# Therms2[badtherms] <- 500
 
 ZmixDays <- c(105, 110, 117, 124, 131, 138, 145, 152, 159, 166, 173, 180, 187, 194, 201, 208, 215, 222, 229, 236, 241) + c(0, rep(0.4,19), 0)
 ZmixDepths <- c(1.0,2.0,2.0,0.5,0.5, 1.0, 1.0, 1.5, 0.25, 1.0, 1.0, 0.5, 0.5, 1, 1, 1, 1, 1.5, 1.5, 1, 0.25)
@@ -95,7 +81,7 @@ ZmixDepths <- c(1.0,2.0,2.0,0.5,0.5, 1.0, 1.0, 1.5, 0.25, 1.0, 1.0, 0.5, 0.5, 1,
 PAR_Wind_Therms[, "Zmix"] <- approx(c(PAR_Wind_Therms[, "DoY"], ZmixDays), c(PAR_Wind_Therms[, "Zmix"], ZmixDepths), PAR_Wind_Therms[, "DoY"])$y
 # plot(PAR_Wind_Therms[, "DoY"], PAR_Wind_Therms[, "Zmix"], type="l")
 
-setwd("/Users/Battrd/Documents/School&Work/WiscResearch/Isotopes_2012Analysis/")
+setwd("/Users/Battrd/Documents/School&Work/WiscResearch/Isotopes_2012Analysis/Data/")
 Key2012 <- read.csv("WardSondes2012_FileKey.csv")
 ShalKey2012 <- subset(Key2012, Depth=="B")
 
@@ -107,13 +93,13 @@ for(i in 1:nrow(ShalKey2012)){
 	if(tFormat=="CDF"){
 		if(tName=="B14APR12.CDF"){
 			ReadClassCDF <- c("character", "character", rep("numeric", 8))
-			tDat <- read.table(paste("/Users/Battrd/Documents/School&Work/WiscResearch/Data/WardSondes2012/", tName, sep=""), sep=",", header=TRUE, skip=2, colClasses=ReadClassCDF)
+			tDat <- read.table(paste("/Users/Battrd/Documents/School&Work/WiscResearch/Isotopes_2012Analysis/Data/WardSondes2012/", tName, sep=""), sep=",", header=TRUE, skip=2, colClasses=ReadClassCDF)
 			names(tDat) <- c("Date", "Time", "Temp", "SpCond", "pH", "BGA_conc", "BGA_RFU", "DOsat", "Chl_conc", "Chl_RFU")
 			tDoY <- as.numeric(format.Date(as.POSIXct(as.character(tDat[,1]), format="%m/%d/%y"), format="%j")) + as.numeric(difftime(time1=as.POSIXct(paste(tDat[,1], tDat[,2]), format="%m/%d/%y %H:%M:%S"), time2=as.POSIXct(paste(tDat[,1], "00:00:00"), format="%m/%d/%y %H:%M:%S"), units="days"))
 		}
 		if(all(tName!="B14APR12.CDF" & ShalKey2012[,"Depth"]=="B")){
 			ReadClassCDF <- c("character", "character", rep("numeric", 9))
-			tDat <- read.table(paste("/Users/Battrd/Documents/School&Work/WiscResearch/Data/WardSondes2012/", tName, sep=""), sep=",", header=TRUE, skip=2, colClasses=ReadClassCDF)
+			tDat <- read.table(paste("/Users/Battrd/Documents/School&Work/WiscResearch/Isotopes_2012Analysis/Data/WardSondes2012/", tName, sep=""), sep=",", header=TRUE, skip=2, colClasses=ReadClassCDF)
 			names(tDat) <- c("Date", "Time", "Temp", "SpCond", "pH", "BGA_conc", "BGA_RFU", "DOsat", "Chl_conc", "Chl_RFU", "Battery")
 			tDoY <- as.numeric(format.Date(as.POSIXct(as.character(tDat[,1]), format="%m/%d/%y"), format="%j")) + as.numeric(difftime(time1=as.POSIXct(paste(tDat[,1], tDat[,2]), format="%m/%d/%y %H:%M:%S"), time2=as.POSIXct(paste(tDat[,1], "00:00:00"), format="%m/%d/%y %H:%M:%S"), units="days"))
 		}
@@ -124,7 +110,7 @@ for(i in 1:nrow(ShalKey2012)){
 	}
 	if(tFormat=="txt"){
 		ReadClassTxt <- c(NA, NA, rep("numeric", 10))
-		tDat <- read.table(paste("/Users/Battrd/Documents/School&Work/WiscResearch/Data/WardSondes2012/", tName, sep=""), sep=",", header=FALSE, skip=4, colClasses=ReadClassTxt)#[-c(1,2,3,4),]
+		tDat <- read.table(paste("/Users/Battrd/Documents/School&Work/WiscResearch/Isotopes_2012Analysis/Data/WardSondes2012/", tName, sep=""), sep=",", header=FALSE, skip=4, colClasses=ReadClassTxt)#[-c(1,2,3,4),]
 		names(tDat) <- c("Date", "Time", "Temp", "SpCond", "pH", "BGA_conc", "BGA_RFU", "DOsat", "DOconc", "Chl_conc", "Chl_RFU", "Battery")
 		# tDay <- as.numeric(format.Date(as.POSIXct(tDat[,1], format="%Y/%m/%d"), format="%j"))
 		# tFrac <- as.numeric(difftime(time1=as.POSIXct(paste(tDat[,1], tDat[,2]), format="%Y/%m/%d %H:%M:%S"), time2=as.POSIXct(paste(tDat[,1], "00:00:00"), format="%Y/%m/%d %H:%M:%S"), units="days"))
@@ -193,17 +179,18 @@ for(i in 1:length(unique(Deps))){
 }
 
 
-Bad_LM <- union(which(Est_LM[,"GPP_raw"]<0), which(Est_LM[,"R_raw"]>0))
-Est_Good_LM <- Est_LM[-Bad_LM,]
-names(Est_Good_LM) <- c("Year", "DoY", "GPP_LM", "R_LM", "NEP_LM", "sumPAR", "meanTemp", "TotalF", "R2_LM")
+# Bad_LM <- union(which(Est_LM[,"GPP_raw"]<0), which(Est_LM[,"R_raw"]>0))
+# Est_Good_LM <- Est_LM[-Bad_LM,]
+# names(Est_Good_LM) <- c("Year", "DoY", "GPP_LM", "R_LM", "NEP_LM", "sumPAR", "meanTemp", "TotalF", "R2_LM")
 
 Bad_BK <- union(which(Est_BK[,"GPP"]<0), which(Est_BK[,"R"]>0))
 Est_Good_BK <- Est_BK[-Bad_BK,]
 dimnames(Est_Good_BK) <- list(NULL, c("DoY", "R_BK", "GPP_BK", "NEP_BK"))
 
 
-Estimates_Good <- merge(Est_Good_BK, Est_Good_LM, by="DoY", all=TRUE)[,c("Year", "DoY", "GPP_BK","R_BK","NEP_BK", "GPP_LM", "R_LM", "NEP_LM")]
-Estimates_Good[,"Year"] <- 2012
+# Estimates_Good <- merge(Est_Good_BK, Est_Good_LM, by="DoY", all=TRUE)[,c("Year", "DoY", "GPP_BK","R_BK","NEP_BK", "GPP_LM", "R_LM", "NEP_LM")]
+Estimates_Good <- cbind(Year=2012, Est_Good_BK[,c("DoY", "GPP_BK","R_BK","NEP_BK")])
+# Estimates_Good[,"Year"] <- 2012
 
 
 Estimates_Good_NoNA <- Estimates_Good[complete.cases(Estimates_Good),]
@@ -227,16 +214,16 @@ mtext(side=1, line=2.6, text=paste(as.Date(min(Est_Good_BK[,"DoY"]), origin=past
 # ==========================================
 # = Plot the "good" LM estimates from 2012 =
 # ==========================================
-dev.new(height=4, width=4)
-par(mar=c(4,3,0,0), oma=c(0,0,0,0), family="Times", las=1)
-Metab_Ylim <- c(min(Est_Good_LM[,"R_LM"]), max(Est_Good_LM[,"GPP_LM"]))
-plot(Est_Good_LM[,"DoY"], Est_Good_LM[,"NEP_LM"], type="o", lty="dashed", col="black", pch=23, bg=gray(0.5), ylim=Metab_Ylim, bty="l", xlab="", ylab="", cex=0.75, cex.axis=0.75)
-lines(Est_Good_LM[,"DoY"], Est_Good_LM[,"GPP_LM"], type="o", lty="solid", col="black", pch=24, bg=gray(0), cex=0.75)
-lines(Est_Good_LM[,"DoY"], Est_Good_LM[,"R_LM"], type="o", lty="dotted", col="black", pch=25, bg=gray(1), cex=0.75)
-legend(x=120, y=150, legend=c(paste("GPP", round(mean(Est_Good_LM[,"GPP_LM"]),0), sep=" = "), paste("NEP", round(mean(Est_Good_LM[,"NEP_LM"]),0), sep=" = "), paste("R", round(mean(Est_Good_LM[,"R_LM"]),0), sep=" = ")), lty=c("solid", "dashed", "dotted"), pch=c(24,23,25), pt.bg=c(gray(0), gray(0.5), gray(1)), bty="n", cex=0.75) #, title=expression(underline(Summer~Means))
-mtext(side=2, line=2, text=expression(mu*mol~O[2]~L^-1~day^-1), las=0, cex=0.75)
-mtext(side=1, line=1.9, text="Day of Year", cex=0.75)
-mtext(side=1, line=2.6, text=paste(as.Date(min(Est_Good_LM[,"DoY"]), origin=paste(2012,"-01-01",sep="")), as.Date(max(Est_Good_LM[,"DoY"]), origin=paste(2012,"-01-01",sep="")), sep=" to "), font=3, cex=0.75)
+# dev.new(height=4, width=4)
+# par(mar=c(4,3,0,0), oma=c(0,0,0,0), family="Times", las=1)
+# Metab_Ylim <- c(min(Est_Good_LM[,"R_LM"]), max(Est_Good_LM[,"GPP_LM"]))
+# plot(Est_Good_LM[,"DoY"], Est_Good_LM[,"NEP_LM"], type="o", lty="dashed", col="black", pch=23, bg=gray(0.5), ylim=Metab_Ylim, bty="l", xlab="", ylab="", cex=0.75, cex.axis=0.75)
+# lines(Est_Good_LM[,"DoY"], Est_Good_LM[,"GPP_LM"], type="o", lty="solid", col="black", pch=24, bg=gray(0), cex=0.75)
+# lines(Est_Good_LM[,"DoY"], Est_Good_LM[,"R_LM"], type="o", lty="dotted", col="black", pch=25, bg=gray(1), cex=0.75)
+# legend(x=120, y=150, legend=c(paste("GPP", round(mean(Est_Good_LM[,"GPP_LM"]),0), sep=" = "), paste("NEP", round(mean(Est_Good_LM[,"NEP_LM"]),0), sep=" = "), paste("R", round(mean(Est_Good_LM[,"R_LM"]),0), sep=" = ")), lty=c("solid", "dashed", "dotted"), pch=c(24,23,25), pt.bg=c(gray(0), gray(0.5), gray(1)), bty="n", cex=0.75) #, title=expression(underline(Summer~Means))
+# mtext(side=2, line=2, text=expression(mu*mol~O[2]~L^-1~day^-1), las=0, cex=0.75)
+# mtext(side=1, line=1.9, text="Day of Year", cex=0.75)
+# mtext(side=1, line=2.6, text=paste(as.Date(min(Est_Good_LM[,"DoY"]), origin=paste(2012,"-01-01",sep="")), as.Date(max(Est_Good_LM[,"DoY"]), origin=paste(2012,"-01-01",sep="")), sep=" to "), font=3, cex=0.75)
 
 
 
@@ -245,20 +232,14 @@ mtext(side=1, line=2.6, text=paste(as.Date(min(Est_Good_LM[,"DoY"]), origin=past
 # ==============================================
 #See setwd("/Users/Battrd/Documents/School&Work/WiscResearch/KalmanFilter") for original (KFMetabolismSingle_v3.R)
 #See setwd("/Users/Battrd/Documents/School&Work/GradSchool/DissertationProposal/") for what I used in my dissertation proposal (pretty much the same as the original)
-load("/Users/Battrd/Documents/School&Work/GradSchool/DissertationProposal/Ward2010_Epi_Metabolism_Data.RData")
+load("/Users/Battrd/Documents/School&Work/WiscResearch/Isotopes_2012Analysis/Data/Ward2010_Epi_Metabolism_Data.RData")
 Est_BK_2010 <- EpiMetab
 Bad_BK_2010 <- union(which(Est_BK_2010[,"GPP"]<0), which(Est_BK_2010[,"R"]>0))
 Est_Good_BK_2010 <- Est_BK_2010[-Bad_BK_2010,]
 dimnames(Est_Good_BK_2010) <- list(NULL, c("DoY", "R_BK", "GPP_BK", "NEP_BK"))
 Est_Good_BK_2010 <- cbind("Year"=2010, Est_Good_BK_2010)
-colMeans(Est_Good_BK_2010)
+# colMeans(Est_Good_BK_2010)
 
-#Working on implementing the LM method for the 2010 data (5-Dec-2012... on my bday!)
-Data_2010 <- data.frame("Year"=2010, "DoY"=Sonde1[,"DoY"]+Sonde1[,"Fract"], "DOsat"=Sonde1[,"DOsat"], "Temp"=Sonde1[,"Temp"], "PAR"=PAR1, "Zmix"=Zmix1, "Wind"=Wind1)
-Est_LM_2010 <- Metabolism_LM(Data_2010, ExpectedFreq=360)
-Bad_LM_2010 <- union(which(Est_LM_2010[,"GPP_raw"]<0), which(Est_LM_2010[,"R_raw"]>0))
-Est_Good_LM_2010 <- Est_LM_2010[-Bad_LM_2010,]
-names(Est_Good_LM_2010) <- c("Year", "DoY", "GPP_LM", "R_LM", "NEP_LM", "sumPAR", "meanTemp", "TotalF", "R2_LM")
 
 # ==========================================
 # = Plot the "good" BK estimates from 2010 =
@@ -274,23 +255,23 @@ mtext(side=2, line=2, text=expression(mu*mol~O[2]~L^-1~day^-1), las=0, cex=0.75)
 mtext(side=1, line=1.9, text="Day of Year", cex=0.75)
 mtext(side=1, line=2.6, text=paste(as.Date(min(Est_Good_BK_2010[,"DoY"]), origin=paste(2010,"-01-01",sep="")), as.Date(max(Est_Good_BK_2010[,"DoY"]), origin=paste(2010,"-01-01",sep="")), sep=" to "), font=3, cex=0.75)
 
+# 
+# #Plot the "good" LM estimates from 2010
+# dev.new(height=4, width=4)
+# par(mar=c(4,3,0,0), oma=c(0,0,0,0), family="Times", las=1)
+# Metab_Ylim <- c(min(Est_Good_LM_2010[,"R_LM"]), max(Est_Good_LM_2010[,"GPP_LM"]))
+# plot(Est_Good_LM_2010[,"DoY"], Est_Good_LM_2010[,"NEP_LM"], type="o", lty="dashed", col="black", pch=23, bg=gray(0.5), ylim=Metab_Ylim, bty="l", xlab="", ylab="", cex=0.75, cex.axis=0.75)
+# lines(Est_Good_LM_2010[,"DoY"], Est_Good_LM_2010[,"GPP_LM"], type="o", lty="solid", col="black", pch=24, bg=gray(0), cex=0.75)
+# lines(Est_Good_LM_2010[,"DoY"], Est_Good_LM_2010[,"R_LM"], type="o", lty="dotted", col="black", pch=25, bg=gray(1), cex=0.75)
+# legend(x=140, y=90, legend=c(paste("GPP", round(mean(Est_Good_LM_2010[,"GPP_LM"]),0), sep=" = "), paste("NEP", round(mean(Est_Good_LM_2010[,"NEP_LM"]),0), sep=" = "), paste("R", round(mean(Est_Good_LM_2010[,"R_LM"]),0), sep=" = ")), lty=c("solid", "dashed", "dotted"), pch=c(24,23,25), pt.bg=c(gray(0), gray(0.5), gray(1)), bty="n", cex=0.75) #, title=expression(underline(Summer~Means))
+# mtext(side=2, line=2, text=expression(mu*mol~O[2]~L^-1~day^-1), las=0, cex=0.75)
+# mtext(side=1, line=1.9, text="Day of Year", cex=0.75)
+# mtext(side=1, line=2.6, text=paste(as.Date(min(Est_Good_LM_2010[,"DoY"]), origin=paste(2010,"-01-01",sep="")), as.Date(max(Est_Good_LM_2010[,"DoY"]), origin=paste(2010,"-01-01",sep="")), sep=" to "), font=3, cex=0.75)
 
-#Plot the "good" LM estimates from 2010
-dev.new(height=4, width=4)
-par(mar=c(4,3,0,0), oma=c(0,0,0,0), family="Times", las=1)
-Metab_Ylim <- c(min(Est_Good_LM_2010[,"R_LM"]), max(Est_Good_LM_2010[,"GPP_LM"]))
-plot(Est_Good_LM_2010[,"DoY"], Est_Good_LM_2010[,"NEP_LM"], type="o", lty="dashed", col="black", pch=23, bg=gray(0.5), ylim=Metab_Ylim, bty="l", xlab="", ylab="", cex=0.75, cex.axis=0.75)
-lines(Est_Good_LM_2010[,"DoY"], Est_Good_LM_2010[,"GPP_LM"], type="o", lty="solid", col="black", pch=24, bg=gray(0), cex=0.75)
-lines(Est_Good_LM_2010[,"DoY"], Est_Good_LM_2010[,"R_LM"], type="o", lty="dotted", col="black", pch=25, bg=gray(1), cex=0.75)
-legend(x=140, y=90, legend=c(paste("GPP", round(mean(Est_Good_LM_2010[,"GPP_LM"]),0), sep=" = "), paste("NEP", round(mean(Est_Good_LM_2010[,"NEP_LM"]),0), sep=" = "), paste("R", round(mean(Est_Good_LM_2010[,"R_LM"]),0), sep=" = ")), lty=c("solid", "dashed", "dotted"), pch=c(24,23,25), pt.bg=c(gray(0), gray(0.5), gray(1)), bty="n", cex=0.75) #, title=expression(underline(Summer~Means))
-mtext(side=2, line=2, text=expression(mu*mol~O[2]~L^-1~day^-1), las=0, cex=0.75)
-mtext(side=1, line=1.9, text="Day of Year", cex=0.75)
-mtext(side=1, line=2.6, text=paste(as.Date(min(Est_Good_LM_2010[,"DoY"]), origin=paste(2010,"-01-01",sep="")), as.Date(max(Est_Good_LM_2010[,"DoY"]), origin=paste(2010,"-01-01",sep="")), sep=" to "), font=3, cex=0.75)
-
-
-colMeans(Est_Good_BK_2010)
-colMeans(subset(Est_Good_BK, "DoY">=138))
-colMeans(subset(Est_Good_LM, "DoY">=138))[c("Year", "DoY", "GPP_LM", "R_LM", "NEP_LM")]
+# 
+# colMeans(Est_Good_BK_2010)
+# colMeans(subset(Est_Good_BK, "DoY">=138))
+# colMeans(subset(Est_Good_LM, "DoY">=138))[c("Year", "DoY", "GPP_LM", "R_LM", "NEP_LM")]
 
 Ward_Year <- c(rep(2010, (nrow(Est_Good_BK_2010)+nrow(Est_Good_LM_2010))), rep(2012, (nrow(Est_Good_BK)+nrow(Est_Good_LM))))
 Ward_DoY <- c(Est_Good_BK_2010[,"DoY"], Est_Good_LM_2010[,"DoY"], Est_Good_BK[,"DoY"], Est_Good_LM[,"DoY"])
@@ -300,23 +281,23 @@ Ward_GPP <- c(Est_Good_BK_2010[,"GPP_BK"], Est_Good_LM_2010[,"GPP_LM"], Est_Good
 Ward_R <- c(Est_Good_BK_2010[,"R_BK"], Est_Good_LM_2010[,"R_LM"], Est_Good_BK[,"R_BK"], Est_Good_LM[,"R_LM"])
 Ward_NEP <- c(Est_Good_BK_2010[,"NEP_BK"], Est_Good_LM_2010[,"NEP_LM"], Est_Good_BK[,"NEP_BK"], Est_Good_LM[,"NEP_LM"])
 WardMetabolism <- data.frame("Year"=Ward_Year, "DoY"=Ward_DoY, "Week"=Ward_Week, "Method"=Ward_Method, "GPP"=Ward_GPP, "R"=Ward_R, "NEP"=Ward_NEP)
-setwd("/Users/Battrd/Documents/School&Work/WiscResearch/Isotopes_2012Analysis")
+# setwd("/Users/Battrd/Documents/School&Work/WiscResearch/Isotopes_2012Analysis")
 # save(WardMetabolism, file="WardMetabolism_WardMetab2012_v1.RData")
 
-Chla0 <- read.csv("/Users/Battrd/Documents/School&Work/WiscResearch/Data/Ward_Chla_2010&2012.csv")
+Chla0 <- read.csv("/Users/Battrd/Documents/School&Work/WiscResearch/Isotopes_2012Analysis/Data/Ward_Chla_2010&2012.csv")
 Chla_DoY <- as.numeric(format.Date(Chla0[,"Date"], "%j"))
 Chla_Week <- as.numeric(format.Date(as.POSIXct(paste(Chla0[,"Year"], Chla_DoY, sep="-"), format="%Y-%j"), format="%m"))-4
 Chla <- data.frame("Year"=Chla0[,"Year"], "Week"=Chla_Week, Chla0[,c(2,3,4,5)])
 # save(Chla, file="Chla_WardMetab2012_v1.RData")
 
-Photic0 <- read.csv("/Users/Battrd/Documents/School&Work/WiscResearch/Data/Ward_Photic_2010&2012.csv")
+Photic0 <- read.csv("/Users/Battrd/Documents/School&Work/WiscResearch/Isotopes_2012Analysis/Data/Ward_Photic_2010&2012.csv")
 Photic_DoY <- as.numeric(format.Date(Photic0[,"Date"], "%j"))
 Photic_Week <- as.numeric(format.Date(as.POSIXct(paste(Photic0[,"Year"], Photic_DoY, sep="-"), format="%Y-%j"), format="%m"))-4
 Photic <- data.frame("Year"=Photic0[,"Year"], "Week"=Photic_Week, Photic0[,c(2,3,4,5)])
 # save(Photic, file="Photic_WardMetab2012_v1.RData")
 
 
-DOM0 <- read.csv("/Users/Battrd/Documents/School&Work/WiscResearch/Data/Ward_DOM_2010&2012.csv")
+DOM0 <- read.csv("/Users/Battrd/Documents/School&Work/WiscResearch/Isotopes_2012Analysis/Data/Ward_DOM_2010&2012.csv")
 DOM_DoY <- as.numeric(format.Date(DOM0[,"Date"], "%j"))
 DOM_Week <- as.numeric(format.Date(as.POSIXct(paste(DOM0[,"Year"], DOM_DoY, sep="-"), format="%Y-%j"), format="%m"))-4
 DOM <- data.frame("Year"=DOM0[,"Year"], "Week"=DOM_Week, DOM0[,c(2,4,5)])
