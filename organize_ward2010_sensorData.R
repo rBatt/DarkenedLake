@@ -1,4 +1,5 @@
 
+library(plyr)
 
 ciClasses <- c("character","numeric", "character", rep("numeric",3), rep("integer",5), rep("numeric",2))
 calInfo <- read.table("/Users/Battrd/Documents/School&Work/WiscResearch/Metabolism/WardSondes/WardCalData.csv", sep=",", header=TRUE, colClasses=ciClasses)
@@ -176,32 +177,13 @@ for(i in 1:length(sites)){
 		
 		t.sonde0.na2[,"date"] <- round.time(t.sonde0.na2[,"date"], "5 minutes")
 		
-		# t.sonde <- ddply(t.sonde0.na2, c("date", "year"), t.sonde.func) # too slow
-		
-		# only bother with duplicated rows
-		# t.sonde.func <- function(x){
-		# 	data.frame(doy=min(x[,"doy"], na.rm=TRUE), doobs=mean(x[,"doobs"]), dosat=mean(x[,"dosat"]), wtr=mean(x[,"wtr"]))
-		# }
-		# d1 <- duplicated(t.sonde0.na2[,"date"])
-		# d2 <- duplicated(t.sonde0.na2[,"date"], fromLast=TRUE)
-		# t.sonde.dups <- t.sonde0.na2[d1|d2,]
-		# t.sonde <- t.sonde0.na2
-		# t.sonde[d2&!d1,] <- ddply(t.sonde.dups, c("date", "year"), t.sonde.func)
-		
 		t.sonde <- t.sonde0.na2[!duplicated(t.sonde0.na2[,"date"]),]
-		
-		
-
 		
 		if(j==1){
 			sondes[[t.site]] <- t.sonde
 		}else{
 			sondes[[t.site]] <- rbind(sondes[[t.site]], t.sonde)
 		}
-		
-		 
-		
-		
 		
 	} # end looping through files pertaining to a given site
 		
@@ -210,8 +192,15 @@ for(i in 1:length(sites)){
 		
 
 
+# ===================================
+# = Read in Peter Weather from 2010 =
+# ===================================
+PeterWeather00 <- read.csv("/Users/Battrd/Documents/School&Work/WiscResearch/Metabolism/Raw Weather Data/PeterWeather.csv", header=TRUE)
+PeterWeather0 <- PeterWeather00[PeterWeather00[,"Year"]==2010L,]
+PeterWeather0 <- PeterWeather0[,c("Date", "Time", "Year", "PAR","WindSpd")]
 
 
 
-
+pred.merge(sondes[[2]], PeterWeather, all=TRUE)
+test <- merge(sondes[[2]], PeterWeather)
 
