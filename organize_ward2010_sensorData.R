@@ -1,5 +1,8 @@
 
 library(plyr)
+install.packages("/Users/Battrd/Documents/School&Work/WiscResearch/Isotopes_2012Analysis/lib/LakeMetabolizer", type="source", repos=NULL)
+# install.packages("/Users/Battrd/Documents/School&Work/WiscResearch/LakeMetabolizer", type="source", repos=NULL)
+library("LakeMetabolizer")
 
 ciClasses <- c("character","numeric", "character", rep("numeric",3), rep("integer",5), rep("numeric",2))
 calInfo <- read.table("/Users/Battrd/Documents/School&Work/WiscResearch/Metabolism/WardSondes/WardCalData.csv", sep=",", header=TRUE, colClasses=ciClasses)
@@ -199,8 +202,14 @@ PeterWeather00 <- read.csv("/Users/Battrd/Documents/School&Work/WiscResearch/Met
 PeterWeather0 <- PeterWeather00[PeterWeather00[,"Year"]==2010L,]
 PeterWeather0 <- PeterWeather0[,c("Date", "Time", "Year", "PAR","WindSpd")]
 
+PeterWeather0[,"date"] <- paste(PeterWeather0[,"Date"], PeterWeather0[,"Time"])
+PeterWeather0[,"date"] <- gsub("^(?=[0-9]/)", "0", PeterWeather0[,"date"], perl=TRUE)
+PeterWeather0[,"date"] <- gsub("(?<=[0-9]{2}/)([0-9])(?=/)", "0\\1", PeterWeather0[,"date"], perl=TRUE)
+PeterWeather0[,"date"] <- as.character(as.POSIXct(PeterWeather0[,"date"], format="%m/%d/%y %I:%M:%S %p"))
+PeterWeather2010 <- PeterWeather0[,c("date", "PAR", "WindSpd")]
 
 
-pred.merge(sondes[[2]], PeterWeather, all=TRUE)
-test <- merge(sondes[[2]], PeterWeather)
+
+LakeMetabolizer:::pred.merge(sondes[[2]], PeterWeather2010, all=TRUE)
+test <- merge(sondes[[2]], PeterWeather2010, all=TRUE)
 
