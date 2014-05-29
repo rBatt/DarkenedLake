@@ -250,4 +250,16 @@ tTherm[15000:15010,]
 
 LakeMetabolizer:::pred.merge(sondes[[2]], PeterWeather2010, all=TRUE)
 test <- merge(sondes[[2]], PeterWeather2010, all.x=TRUE)
+names(test) <- c("datetime","year", "doy", "do.obs", "do.sat", "wtr", "z.mix", "irr", "wnd")
+test[,"k.gas"] <- k.cole(test[,c("datetime","wnd")])[,2] # NEED TO USE k600.2.kGAS
+test[,"datetime"] <- as.POSIXct(test[,"datetime"])
+test[,"doy"] <- LakeMetabolizer:::date2doy(test[,"datetime"])
+test[,"do.sat"] <- LakeMetabolizer:::o2.at.sat(test[,"wtr"]) # NEED TO FINISH THIS USE OF o2.at.sat
+
+LakeMetabolizer:::metab(test, "mle")
+
+
+
+
+
 
