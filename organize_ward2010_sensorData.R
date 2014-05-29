@@ -1,8 +1,11 @@
 
 library(plyr)
 install.packages("/Users/Battrd/Documents/School&Work/WiscResearch/Isotopes_2012Analysis/lib/LakeMetabolizer", type="source", repos=NULL)
+# update.packages("/Users/Battrd/Documents/School&Work/WiscResearch/Isotopes_2012Analysis/lib/LakeMetabolizer", type="source", repos=NULL)
 # install.packages("/Users/Battrd/Documents/School&Work/WiscResearch/LakeMetabolizer", type="source", repos=NULL)
 library("LakeMetabolizer")
+library("rLakeAnalyzer")
+library("zoo")
 
 ciClasses <- c("character","numeric", "character", rep("numeric",3), rep("integer",5), rep("numeric",2))
 calInfo <- read.table("/Users/Battrd/Documents/School&Work/WiscResearch/Metabolism/WardSondes/WardCalData.csv", sep=",", header=TRUE, colClasses=ciClasses)
@@ -181,6 +184,9 @@ for(i in 1:length(sites)){
 		t.sonde0.na2[,"date"] <- round.time(t.sonde0.na2[,"date"], "5 minutes")
 		
 		t.sonde <- t.sonde0.na2[!duplicated(t.sonde0.na2[,"date"]),]
+		if(t.site=="Epi" | t.site=="Litt"){
+			t.sonde[,"zmix"] <- t.calInfo[j,"LayerBot"]
+		}
 		
 		if(j==1){
 			sondes[[t.site]] <- t.sonde
@@ -210,6 +216,38 @@ PeterWeather2010 <- PeterWeather0[,c("date", "PAR", "WindSpd")]
 
 
 
+# ===========================
+# = Read in Thermistor data =
+# ===========================
+# Can't actually use therm (or won't) b/c 1) don't have it for first few months of 2010, 2) need to remove out-of-lake obs
+thermFiles <- list.files("/Users/Battrd/Documents/School&Work/WiscResearch/WardTherm/WardThermComplete_2010/")
+thermDepths <- gsub("WardTherm2010_([0-9]\\.[0-9])m.csv", "\\1", thermFiles)
+
+for(i in 1:length(thermFiles)){
+	tFile <- paste("/Users/Battrd/Documents/School&Work/WiscResearch/WardTherm/WardThermComplete_2010/", thermFiles[i], sep="")
+	tDepth <- as.character(as.numeric(thermDepths[i]))
+	tTherm0 <- read.table(tFile, sep=",", header=FALSE)[,-1]
+	names(tTherm0) <- c("DateTime", paste("wtr",tDepth, sep="_"))
+	tTherm0[,"DateTime"] <- as.character(tTherm0[,"DateTime"])
+	tTherm0[,"DateTime"] <- gsub("^(?=[0-9]/)", "0", tTherm0[,"DateTime"], perl=TRUE)
+	tTherm0[,"DateTime"] <- gsub("(?<=[0-9]{2}/)([0-9])(?=/)", "0\\1", tTherm0[,"DateTime"], perl=TRUE)
+	tTherm0[,"DateTime"] <- as.character(as.POSIXct(tTherm0[,"DateTime"], format="%m/%d/%Y %H:%M"))
+	tTherm0[,"DateTime"] <- round.time(tTherm0[,"DateTime"], units="5 minutes")
+	rmDups <- !duplicated(tTherm0[,"DateTime"])
+	tTherm <- tTherm0[rmDups,]
+	
+	# rollapply(tTherm[,2], width=288, by=288, scale)
+
+	if(i!=1){
+		tThermCum <- merge(tThermCum, tTherm, all=TRUE)
+	}else{
+		tThermCum <- tTherm
+	}
+}
+
+tTherm[15000:15010,]
+
+
 LakeMetabolizer:::pred.merge(sondes[[2]], PeterWeather2010, all=TRUE)
-test <- merge(sondes[[2]], PeterWeather2010, all=TRUE)
+test <- merge(sondes[[2]], PeterWeather2010, all.x=TRUE)
 
