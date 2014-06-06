@@ -204,7 +204,7 @@ for(i in 1:length(sites)){
 # ===================================
 # = Read in Peter Weather from 2010 =
 # ===================================
-PeterWeather00 <- read.csv("/Users/Battrd/Documents/School&Work/WiscResearch/Metabolism/Raw Weather Data/PeterWeather.csv", header=TRUE)
+PeterWeather00 <- read.csv("/Users/Battrd/Documents/School&Work/WiscResearch/Metabolism/Raw Weather Data/PeterWeather.csv", header=TRUE)[-(96344:96345),]
 PeterWeather0 <- PeterWeather00[PeterWeather00[,"Year"]==2010L,]
 PeterWeather0 <- PeterWeather0[,c("Date", "Time", "Year", "PAR","WindSpd")]
 
@@ -220,46 +220,85 @@ PeterWeather2010 <- PeterWeather0[,c("date", "PAR", "WindSpd")]
 # = Read in Thermistor data =
 # ===========================
 # Can't actually use therm (or won't) b/c 1) don't have it for first few months of 2010, 2) need to remove out-of-lake obs
-thermFiles <- list.files("/Users/Battrd/Documents/School&Work/WiscResearch/WardTherm/WardThermComplete_2010/")
-thermDepths <- gsub("WardTherm2010_([0-9]\\.[0-9])m.csv", "\\1", thermFiles)
+# thermFiles <- list.files("/Users/Battrd/Documents/School&Work/WiscResearch/WardTherm/WardThermComplete_2010/")
+# thermDepths <- gsub("WardTherm2010_([0-9]\\.[0-9])m.csv", "\\1", thermFiles)
+# 
+# for(i in 1:length(thermFiles)){
+# 	tFile <- paste("/Users/Battrd/Documents/School&Work/WiscResearch/WardTherm/WardThermComplete_2010/", thermFiles[i], sep="")
+# 	tDepth <- as.character(as.numeric(thermDepths[i]))
+# 	tTherm0 <- read.table(tFile, sep=",", header=FALSE)[,-1]
+# 	names(tTherm0) <- c("DateTime", paste("wtr",tDepth, sep="_"))
+# 	tTherm0[,"DateTime"] <- as.character(tTherm0[,"DateTime"])
+# 	tTherm0[,"DateTime"] <- gsub("^(?=[0-9]/)", "0", tTherm0[,"DateTime"], perl=TRUE)
+# 	tTherm0[,"DateTime"] <- gsub("(?<=[0-9]{2}/)([0-9])(?=/)", "0\\1", tTherm0[,"DateTime"], perl=TRUE)
+# 	tTherm0[,"DateTime"] <- as.character(as.POSIXct(tTherm0[,"DateTime"], format="%m/%d/%Y %H:%M"))
+# 	tTherm0[,"DateTime"] <- round.time(tTherm0[,"DateTime"], units="5 minutes")
+# 	rmDups <- !duplicated(tTherm0[,"DateTime"])
+# 	tTherm <- tTherm0[rmDups,]
+# 	
+# 	# rollapply(tTherm[,2], width=288, by=288, scale)
+# 
+# 	if(i!=1){
+# 		tThermCum <- merge(tThermCum, tTherm, all=TRUE)
+# 	}else{
+# 		tThermCum <- tTherm
+# 	}
+# }
 
-for(i in 1:length(thermFiles)){
-	tFile <- paste("/Users/Battrd/Documents/School&Work/WiscResearch/WardTherm/WardThermComplete_2010/", thermFiles[i], sep="")
-	tDepth <- as.character(as.numeric(thermDepths[i]))
-	tTherm0 <- read.table(tFile, sep=",", header=FALSE)[,-1]
-	names(tTherm0) <- c("DateTime", paste("wtr",tDepth, sep="_"))
-	tTherm0[,"DateTime"] <- as.character(tTherm0[,"DateTime"])
-	tTherm0[,"DateTime"] <- gsub("^(?=[0-9]/)", "0", tTherm0[,"DateTime"], perl=TRUE)
-	tTherm0[,"DateTime"] <- gsub("(?<=[0-9]{2}/)([0-9])(?=/)", "0\\1", tTherm0[,"DateTime"], perl=TRUE)
-	tTherm0[,"DateTime"] <- as.character(as.POSIXct(tTherm0[,"DateTime"], format="%m/%d/%Y %H:%M"))
-	tTherm0[,"DateTime"] <- round.time(tTherm0[,"DateTime"], units="5 minutes")
-	rmDups <- !duplicated(tTherm0[,"DateTime"])
-	tTherm <- tTherm0[rmDups,]
-	
-	# rollapply(tTherm[,2], width=288, by=288, scale)
+# tTherm[15000:15010,]
 
-	if(i!=1){
-		tThermCum <- merge(tThermCum, tTherm, all=TRUE)
-	}else{
-		tThermCum <- tTherm
-	}
+Mode <- function(x){
+		ux <- unique(x)
+		ux[which.max(tabulate(match(x, ux)))]
 }
 
-tTherm[15000:15010,]
 
 
 LakeMetabolizer:::pred.merge(sondes[[2]], PeterWeather2010, all=TRUE)
 test <- merge(sondes[[2]], PeterWeather2010, all.x=TRUE)
 names(test) <- c("datetime","year", "doy", "do.obs", "do.sat", "wtr", "z.mix", "irr", "wnd")
-test[,"k.gas"] <- k.cole(test[,c("datetime","wnd")])[,2] # NEED TO USE k600.2.kGAS
+
 test[,"datetime"] <- as.POSIXct(test[,"datetime"])
 test[,"doy"] <- LakeMetabolizer:::date2doy(test[,"datetime"])
-test[,"do.sat"] <- LakeMetabolizer:::o2.at.sat(test[,"wtr"]) # NEED TO FINISH THIS USE OF o2.at.sat
+Freq <- round(Mode(1/diff(test[,"doy"])))
 
-LakeMetabolizer:::metab(test, "mle")
+# 1) scale wind to U10
+# 2) calculate k600
+# 3) calculate KO2
+# 4) compute sampling frequency
+# 5) scale KO2 to sampling frequency
+test[,"k.gas"] <- k600.2.kGAS.base(k.cole.base(scale.exp.wind.base(test[,"wnd"], 2)), test[,"wtr"], gas="O2")/Freq
+
+test[,"do.sat"] <- LakeMetabolizer:::o2.at.sat.base(test[,"wtr"], baro=955)
+
+test2 <- test[, c("year","doy","datetime","do.obs", "do.sat", "k.gas", "z.mix", "irr", "wtr")]
+
+test.mle <- LakeMetabolizer:::metab(test, "mle")
+test.mle.res <- test.mle[[2]][,c("doy","GPP","R")]
+
+test.kal <- LakeMetabolizer:::metab(test, "kalman")
+test.kal.res <- test.kal[[3]][,c("doy","GPP","R")]
+
+test.bay <- LakeMetabolizer:::metab(test2, "bayesian")
+test.bay.res <- test.bay[[3]][,c("doy","GPP","R")]
+
+all.r1 <- merge(cbind("method"="mle",test.mle.res), cbind("method"="kalman",test.kal.res), all=TRUE)
+all.r2 <- merge(all.r1, cbind("method"="bayes", test.bay.res), all=TRUE)
 
 
 
+dev.new()
+par(mfrow=c(2,2), mar=c(2, 2, 0.5, 0.5), ps=10, mgp=c(1, 0.5, 0), tcl=-0.35, family="Times")
+
+plot(all.r2[all.r2[,"method"]=="mle","R"], all.r2[all.r2[,"method"]=="kalman","R"]); abline(a=0, b=1)
+plot(all.r2[all.r2[,"method"]=="mle","R"], all.r2[all.r2[,"method"]=="bayes","R"]); abline(a=0, b=1)
+plot(all.r2[all.r2[,"method"]=="kalman","R"], all.r2[all.r2[,"method"]=="bayes","R"]); abline(a=0, b=1)
+
+
+dev.new(); plot(test.kal.res[,"GPP"], test.mle.res[,"GPP"]); abline(a=0, b=1)
+
+
+dev.new(); plot(test.kal.res[,"GPP"]+test.kal.res[,"R"], test.mle.res[,"GPP"]+test.mle.res[,"R"]); abline(a=0, b=1)
 
 
 
