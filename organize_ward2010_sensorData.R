@@ -282,6 +282,9 @@ test.kal.res <- test.kal[[3]][,c("doy","GPP","R")]
 test.bay <- LakeMetabolizer:::metab(test2, "bayesian")
 test.bay.res <- test.bay[[3]][,c("doy","GPP","R")]
 
+
+merge(data.frame("doy"=138:239), test.bay.res, all=TRUE)
+
 all.r1 <- merge(cbind("method"="mle",test.mle.res), cbind("method"="kalman",test.kal.res), all=TRUE)
 all.r2 <- merge(all.r1, cbind("method"="bayes", test.bay.res), all=TRUE)
 
