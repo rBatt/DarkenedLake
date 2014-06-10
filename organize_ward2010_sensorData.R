@@ -289,26 +289,80 @@ test.bay.res <- merge(data.frame("doy"=138:239), test.bay.res, all=TRUE)
 test3 <- test2
 bk.irr <- as.integer(LakeMetabolizer:::is.day(46.28, test3[,"datetime"]))
 test3[,"irr"] <- bk.irr
-test.bk <- LakeMetabolizer:::metab(test2, "bookkeeping")
+test.bk <- LakeMetabolizer:::metab(test3, "bookkeep")
+test.bk.res <- test.bk[,c("doy","GPP","R", "NEP")]
+test.bk.res <- merge(data.frame("doy"=138:239), test.bk.res, all=TRUE)
 
+
+test.ols <- LakeMetabolizer:::metab(test2, "ols")
+test.ols.res <- test.ols[,c("doy","GPP","R", "NEP")]
+test.ols.res <- merge(data.frame("doy"=138:239), test.ols.res, all=TRUE)
 
 
 all.r1 <- merge(cbind("method"="mle",test.mle.res), cbind("method"="kalman",test.kal.res), all=TRUE)
 all.r2 <- merge(all.r1, cbind("method"="bayes", test.bay.res), all=TRUE)
+all.r3 <- merge(all.r2, cbind("method"="bookkeep", test.bk.res), all=TRUE)
+all.r4 <- merge(all.r3, cbind("method"="ols", test.ols.res), all=TRUE)
 
 
-dev.new()
-par(mfrow=c(2,2), mar=c(2, 2, 0.5, 0.5), ps=10, mgp=c(1, 0.5, 0), tcl=-0.35, family="Times")
+dev.new(width=3.5, height=7)
+par(mfcol=c(5,2), mar=c(2, 2, 0.5, 0.5), oma=c(0.1, 0.1, 1, 0.1), ps=9, mgp=c(1, 0.25, 0), tcl=-0.35, family="Times", cex=1)
 
-plot(all.r2[all.r2[,"method"]=="mle","R"], all.r2[all.r2[,"method"]=="kalman","R"]); abline(a=0, b=1)
-plot(all.r2[all.r2[,"method"]=="mle","R"], all.r2[all.r2[,"method"]=="bayes","R"]); abline(a=0, b=1)
-plot(all.r2[all.r2[,"method"]=="kalman","R"], all.r2[all.r2[,"method"]=="bayes","R"]); abline(a=0, b=1)
+plot(all.r4[all.r4[,"method"]=="bookkeep","R"], all.r4[all.r4[,"method"]=="ols","R"], xlab="BK", ylab="OLS"); abline(a=0, b=1)
+plot(all.r4[all.r4[,"method"]=="bookkeep","R"], all.r4[all.r4[,"method"]=="mle","R"], xlab="BK", ylab="MLE"); abline(a=0, b=1)
+plot(all.r4[all.r4[,"method"]=="bookkeep","R"], all.r4[all.r4[,"method"]=="kalman","R"], xlab="BK", ylab="Kalman"); abline(a=0, b=1)
+plot(all.r4[all.r4[,"method"]=="bookkeep","R"], all.r4[all.r4[,"method"]=="bayes","R"], xlab="BK", ylab="Bayes"); abline(a=0, b=1)
+
+plot(all.r4[all.r4[,"method"]=="ols","R"], all.r4[all.r4[,"method"]=="mle","R"], xlab="OLS", ylab="MLE"); abline(a=0, b=1)
+plot(all.r4[all.r4[,"method"]=="ols","R"], all.r4[all.r4[,"method"]=="kalman","R"], xlab="OLS", ylab="Kalman"); abline(a=0, b=1)
+plot(all.r4[all.r4[,"method"]=="ols","R"], all.r4[all.r4[,"method"]=="bayes","R"], xlab="OLS", ylab="Bayes"); abline(a=0, b=1)
+
+plot(all.r4[all.r4[,"method"]=="mle","R"], all.r4[all.r4[,"method"]=="kalman","R"], xlab="MLE", ylab="Kalman"); abline(a=0, b=1)
+plot(all.r4[all.r4[,"method"]=="mle","R"], all.r4[all.r4[,"method"]=="bayes","R"], xlab="MLE", ylab="Bayes"); abline(a=0, b=1)
+
+plot(all.r4[all.r4[,"method"]=="kalman","R"], all.r4[all.r4[,"method"]=="bayes","R"], xlab="Kalman", ylab="Bayes"); abline(a=0, b=1)
+
+mtext("Respiration", outer=TRUE, line=0, side=3, font=2, cex=1.2)
 
 
-dev.new(); plot(test.kal.res[,"GPP"], test.mle.res[,"GPP"]); abline(a=0, b=1)
+dev.new(width=3.5, height=7)
+par(mfcol=c(5,2), mar=c(2, 2, 0.5, 0.5), oma=c(0.1, 0.1, 1, 0.1), ps=9, mgp=c(1, 0.25, 0), tcl=-0.35, family="Times", cex=1)
+
+plot(all.r4[all.r4[,"method"]=="bookkeep","GPP"], all.r4[all.r4[,"method"]=="ols","GPP"], xlab="BK", ylab="OLS"); abline(a=0, b=1)
+plot(all.r4[all.r4[,"method"]=="bookkeep","GPP"], all.r4[all.r4[,"method"]=="mle","GPP"], xlab="BK", ylab="MLE"); abline(a=0, b=1)
+plot(all.r4[all.r4[,"method"]=="bookkeep","GPP"], all.r4[all.r4[,"method"]=="kalman","GPP"], xlab="BK", ylab="Kalman"); abline(a=0, b=1)
+plot(all.r4[all.r4[,"method"]=="bookkeep","GPP"], all.r4[all.r4[,"method"]=="bayes","GPP"], xlab="BK", ylab="Bayes"); abline(a=0, b=1)
+
+plot(all.r4[all.r4[,"method"]=="ols","GPP"], all.r4[all.r4[,"method"]=="mle","GPP"], xlab="OLS", ylab="MLE"); abline(a=0, b=1)
+plot(all.r4[all.r4[,"method"]=="ols","GPP"], all.r4[all.r4[,"method"]=="kalman","GPP"], xlab="OLS", ylab="Kalman"); abline(a=0, b=1)
+plot(all.r4[all.r4[,"method"]=="ols","GPP"], all.r4[all.r4[,"method"]=="bayes","GPP"], xlab="OLS", ylab="Bayes"); abline(a=0, b=1)
+
+plot(all.r4[all.r4[,"method"]=="mle","GPP"], all.r4[all.r4[,"method"]=="kalman","GPP"], xlab="MLE", ylab="Kalman"); abline(a=0, b=1)
+plot(all.r4[all.r4[,"method"]=="mle","GPP"], all.r4[all.r4[,"method"]=="bayes","GPP"], xlab="MLE", ylab="Bayes"); abline(a=0, b=1)
+
+plot(all.r4[all.r4[,"method"]=="kalman","GPP"], all.r4[all.r4[,"method"]=="bayes","GPP"], xlab="Kalman", ylab="Bayes"); abline(a=0, b=1)
+
+mtext("Gross Primary Production", outer=TRUE, line=0, side=3, font=2, cex=1.2)
 
 
-dev.new(); plot(test.kal.res[,"GPP"]+test.kal.res[,"R"], test.mle.res[,"GPP"]+test.mle.res[,"R"]); abline(a=0, b=1)
+dev.new(width=3.5, height=7)
+par(mfcol=c(5,2), mar=c(2, 2, 0.5, 0.5), oma=c(0.1, 0.1, 1, 0.1), ps=9, mgp=c(1, 0.25, 0), tcl=-0.35, family="Times", cex=1)
+
+plot(all.r4[all.r4[,"method"]=="bookkeep","NEP"], all.r4[all.r4[,"method"]=="ols","NEP"], xlab="BK", ylab="OLS"); abline(a=0, b=1)
+plot(all.r4[all.r4[,"method"]=="bookkeep","NEP"], all.r4[all.r4[,"method"]=="mle","NEP"], xlab="BK", ylab="MLE"); abline(a=0, b=1)
+plot(all.r4[all.r4[,"method"]=="bookkeep","NEP"], all.r4[all.r4[,"method"]=="kalman","NEP"], xlab="BK", ylab="Kalman"); abline(a=0, b=1)
+plot(all.r4[all.r4[,"method"]=="bookkeep","NEP"], all.r4[all.r4[,"method"]=="bayes","NEP"], xlab="BK", ylab="Bayes"); abline(a=0, b=1)
+
+plot(all.r4[all.r4[,"method"]=="ols","NEP"], all.r4[all.r4[,"method"]=="mle","NEP"], xlab="OLS", ylab="MLE"); abline(a=0, b=1)
+plot(all.r4[all.r4[,"method"]=="ols","NEP"], all.r4[all.r4[,"method"]=="kalman","NEP"], xlab="OLS", ylab="Kalman"); abline(a=0, b=1)
+plot(all.r4[all.r4[,"method"]=="ols","NEP"], all.r4[all.r4[,"method"]=="bayes","NEP"], xlab="OLS", ylab="Bayes"); abline(a=0, b=1)
+
+plot(all.r4[all.r4[,"method"]=="mle","NEP"], all.r4[all.r4[,"method"]=="kalman","NEP"], xlab="MLE", ylab="Kalman"); abline(a=0, b=1)
+plot(all.r4[all.r4[,"method"]=="mle","NEP"], all.r4[all.r4[,"method"]=="bayes","NEP"], xlab="MLE", ylab="Bayes"); abline(a=0, b=1)
+
+plot(all.r4[all.r4[,"method"]=="kalman","NEP"], all.r4[all.r4[,"method"]=="bayes","NEP"], xlab="Kalman", ylab="Bayes"); abline(a=0, b=1)
+
+mtext("Net Ecosystem Production", outer=TRUE, line=0, side=3, font=2, cex=1.2)
 
 
 
