@@ -1,5 +1,6 @@
 
 library(plyr)
+detach(package:LakeMetabolizer, unload=TRUE)
 install.packages("/Users/Battrd/Documents/School&Work/WiscResearch/Isotopes_2012Analysis/lib/LakeMetabolizer", type="source", repos=NULL)
 # update.packages("/Users/Battrd/Documents/School&Work/WiscResearch/Isotopes_2012Analysis/lib/LakeMetabolizer", type="source", repos=NULL)
 # install.packages("/Users/Battrd/Documents/School&Work/WiscResearch/LakeMetabolizer", type="source", repos=NULL)
@@ -274,20 +275,26 @@ test[,"do.sat"] <- LakeMetabolizer:::o2.at.sat.base(test[,"wtr"], baro=955)
 test2 <- test[, c("year","doy","datetime","do.obs", "do.sat", "k.gas", "z.mix", "irr", "wtr")]
 
 test.mle <- LakeMetabolizer:::metab(test, "mle")
-test.mle.res <- test.mle[[2]][,c("doy","GPP","R")]
+test.mle.res <- test.mle[[2]][,c("doy","GPP","R", "NEP")]
+test.mle.res <- merge(data.frame("doy"=138:239), test.mle.res, all=TRUE)
 
 test.kal <- LakeMetabolizer:::metab(test, "kalman")
-test.kal.res <- test.kal[[3]][,c("doy","GPP","R")]
+test.kal.res <- test.kal[[3]][,c("doy","GPP","R", "NEP")]
+test.kal.res <- merge(data.frame("doy"=138:239), test.kal.res, all=TRUE)
 
 test.bay <- LakeMetabolizer:::metab(test2, "bayesian")
-test.bay.res <- test.bay[[3]][,c("doy","GPP","R")]
+test.bay.res <- test.bay[[4]][,c("doy","GPP","R", "NEP")]
+test.bay.res <- merge(data.frame("doy"=138:239), test.bay.res, all=TRUE)
+
+test3 <- test2
+bk.irr <- as.integer(LakeMetabolizer:::is.day(46.28, test3[,"datetime"]))
+test3[,"irr"] <- bk.irr
+test.bk <- LakeMetabolizer:::metab(test2, "bookkeeping")
 
 
-merge(data.frame("doy"=138:239), test.bay.res, all=TRUE)
 
 all.r1 <- merge(cbind("method"="mle",test.mle.res), cbind("method"="kalman",test.kal.res), all=TRUE)
 all.r2 <- merge(all.r1, cbind("method"="bayes", test.bay.res), all=TRUE)
-
 
 
 dev.new()
