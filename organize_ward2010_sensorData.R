@@ -1,7 +1,8 @@
 
 library(plyr)
 detach(package:LakeMetabolizer, unload=TRUE)
-install.packages("/Users/Battrd/Documents/School&Work/WiscResearch/Isotopes_2012Analysis/lib/LakeMetabolizer", type="source", repos=NULL)
+# install.packages("/Users/Battrd/Documents/School&Work/WiscResearch/Isotopes_2012Analysis/lib/LakeMetabolizer", type="source", repos=NULL)
+install.packages("/Users/Battrd/Documents/School&Work/WiscResearch/LakeMetabolizer", type="source", repos=NULL)
 # update.packages("/Users/Battrd/Documents/School&Work/WiscResearch/Isotopes_2012Analysis/lib/LakeMetabolizer", type="source", repos=NULL)
 # install.packages("/Users/Battrd/Documents/School&Work/WiscResearch/LakeMetabolizer", type="source", repos=NULL)
 library("LakeMetabolizer")
@@ -138,7 +139,7 @@ for(i in 1:length(sites)){
 		t.f <- t.files[j]
 		t.fn <- paste("/Users/Battrd/Documents/School&Work/WiscResearch/Metabolism/WardSondes/",t.f,sep="")
 		t.dat <- read.table(t.fn, header=TRUE, sep=",")[-1,]
-		print(t.dat[1,])
+		# print(t.dat[1,])
 		# Format dates in file
 		if(t.f%in%c("Ward09Test.csv")){
 			t.date <- as.POSIXct(paste(t.dat[,"Date"], t.dat[,"Time"]), format="%m/%d/%y %H:%M")
@@ -171,8 +172,8 @@ for(i in 1:length(sites)){
 		t.sat.per.time <- diff(t.calSat)/diff(t.calTime) # average change in %sat (due to drift) per time (days)
 		
 		# Add NA's, drop days with too few observations, clip to in-lake observations, calculate drift
-		# t.sonde0.na1 <- LakeMetabolizer:::addNAs(t.sonde0[t.lake.start:t.lake.stop, ]) # KEEP! BELOW IS JUST TEST
-		t.sonde0.na1 <- LakeMetabolizer:::addNAs(t.sonde0[t.lake.start:t.lake.stop, ][-c(2240:2250),]) # TEST ONLY!
+		t.sonde0.na1 <- LakeMetabolizer:::addNAs(t.sonde0[t.lake.start:t.lake.stop, ]) # KEEP! BELOW IS JUST TEST
+		# t.sonde0.na1 <- LakeMetabolizer:::addNAs(t.sonde0[t.lake.start:t.lake.stop, ][-c(2240:2250),]) # TEST ONLY!
 		t.elapsed.doy <- c(0, cumsum(diff(t.sonde0.na1[,"doy"])))
 		t.cumul.drift.sat <- t.sat.per.time*t.elapsed.doy
 		t.cumul.drift.conc <- Sat2Conc(SDO2sat=t.cumul.drift.sat, SDtemp=t.sonde0.na1[,"wtr"])
@@ -185,9 +186,13 @@ for(i in 1:length(sites)){
 		t.sonde0.na2[,"date"] <- round.time(t.sonde0.na2[,"date"], "5 minutes")
 		
 		t.sonde <- t.sonde0.na2[!duplicated(t.sonde0.na2[,"date"]),]
-		if(t.site=="Epi" | t.site=="Litt"){
-			t.sonde[,"zmix"] <- t.calInfo[j,"LayerBot"]
-		}
+		t.sonde[,"zmix"] <- t.calInfo[j,"LayerBot"]
+		
+		t.sonde[,"top"] <- t.calInfo[j,"LayerTop"]
+		t.sonde[,"bot"] <- t.calInfo[j,"LayerBot"]
+		t.sonde[,"sensor_depth"] <- t.calInfo[j,"Depth"]
+		t.sonde[,"baro"] <- t.calInfo[j,"CalPress"]*1.33322368
+		t.sonde[,"z1perc"] <- t.calInfo[j, "X1Perc"]
 		
 		if(j==1){
 			sondes[[t.site]] <- t.sonde
@@ -254,115 +259,200 @@ Mode <- function(x){
 }
 
 
-
+# =====================
+# = Organize 2010 Epi =
+# =====================
+# merge weather and sonde
 LakeMetabolizer:::pred.merge(sondes[[2]], PeterWeather2010, all=TRUE)
-test <- merge(sondes[[2]], PeterWeather2010, all.x=TRUE)
-names(test) <- c("datetime","year", "doy", "do.obs", "do.sat", "wtr", "z.mix", "irr", "wnd")
+ward10.epi <- merge(sondes[[2]], PeterWeather2010, all.x=TRUE)
 
-test[,"datetime"] <- as.POSIXct(test[,"datetime"])
-test[,"doy"] <- LakeMetabolizer:::date2doy(test[,"datetime"])
-Freq <- round(Mode(1/diff(test[,"doy"])))
+# fix names
+names(ward10.epi) <- c("datetime","year", "doy", "do.obs", "do.sat", "wtr", "z.mix", "top", "bot", "sensor_depth", "baro", "z1perc", "irr", "wnd")
 
-# 1) scale wind to U10
-# 2) calculate k600
-# 3) calculate KO2
-# 4) compute sampling frequency
-# 5) scale KO2 to sampling frequency
-test[,"k.gas"] <- k600.2.kGAS.base(k.cole.base(scale.exp.wind.base(test[,"wnd"], 2)), test[,"wtr"], gas="O2")/Freq
+# format time
+ward10.epi[,"datetime"] <- as.POSIXct(ward10.epi[,"datetime"])
+ward10.epi[,"doy"] <- LakeMetabolizer:::date2doy(ward10.epi[,"datetime"])
 
-test[,"do.sat"] <- LakeMetabolizer:::o2.at.sat.base(test[,"wtr"], baro=955)
+# calculate sampling frequency
+freq.ward10.epi <- round(Mode(1/diff(ward10.epi[,"doy"])))
 
-test2 <- test[, c("year","doy","datetime","do.obs", "do.sat", "k.gas", "z.mix", "irr", "wtr")]
+# scale wind, calculate K, convert to K O2, scale K to sampling frequency
+ward10.epi.scale10 <- scale.exp.wind.base(ward10.epi[,"wnd"], 2) # scale wind speed to 10 m
+ward10.epi.k.cole <- k.cole.base(ward10.epi.scale10) # calculate k600 using Cole & Caraco method
+ward10.epi[,"k.gas"] <- k600.2.kGAS.base(ward10.epi.k.cole, ward10.epi[,"wtr"], gas="O2")/freq.ward10.epi
+ward10.epi[,"do.sat"] <- LakeMetabolizer:::o2.at.sat.base(ward10.epi[,"wtr"], baro=ward10.epi[,"baro"])
 
-test.mle <- LakeMetabolizer:::metab(test, "mle")
-test.mle.res <- test.mle[[2]][,c("doy","GPP","R", "NEP")]
-test.mle.res <- merge(data.frame("doy"=138:239), test.mle.res, all=TRUE)
+ward10.epi <- ward10.epi[,c("datetime","year", "doy", "do.obs", "do.sat", "k.gas", "z.mix",  "irr", "wtr", "wnd")]
 
-test.kal <- LakeMetabolizer:::metab(test, "kalman")
-test.kal.res <- test.kal[[3]][,c("doy","GPP","R", "NEP")]
-test.kal.res <- merge(data.frame("doy"=138:239), test.kal.res, all=TRUE)
-
-test.bay <- LakeMetabolizer:::metab(test2, "bayesian")
-test.bay.res <- test.bay[[4]][,c("doy","GPP","R", "NEP")]
-test.bay.res <- merge(data.frame("doy"=138:239), test.bay.res, all=TRUE)
-
-test3 <- test2
-bk.irr <- as.integer(LakeMetabolizer:::is.day(46.28, test3[,"datetime"]))
-test3[,"irr"] <- bk.irr
-test.bk <- LakeMetabolizer:::metab(test3, "bookkeep")
-test.bk.res <- test.bk[,c("doy","GPP","R", "NEP")]
-test.bk.res <- merge(data.frame("doy"=138:239), test.bk.res, all=TRUE)
+ward10.epi2 <- ward10.epi[, c("year","doy","datetime","do.obs", "do.sat", "k.gas", "z.mix", "irr", "wtr")]
 
 
-test.ols <- LakeMetabolizer:::metab(test2, "ols")
-test.ols.res <- test.ols[,c("doy","GPP","R", "NEP")]
-test.ols.res <- merge(data.frame("doy"=138:239), test.ols.res, all=TRUE)
+
+# ======================
+# = Organize 2010 Meta =
+# ======================
+ward10.meta00 <- rbind(sondes[[3]], sondes[[8]], sondes[[10]])
+LakeMetabolizer:::pred.merge(ward10.meta00, PeterWeather2010, all=TRUE)
+ward10.meta0 <- merge(ward10.meta00, PeterWeather2010, all.x=TRUE)
+
+# fix names
+names(ward10.meta0) <- c("datetime","year", "doy", "do.obs", "do.sat", "wtr", "z.mix", "top", "bot", "sensor_depth", "baro", "z1perc", "irr", "wnd")
+
+# format time
+ward10.meta0[,"datetime"] <- as.POSIXct(ward10.meta0[,"datetime"])
+ward10.meta0[,"doy"] <- LakeMetabolizer:::date2doy(ward10.meta0[,"datetime"])
+
+# scale wind, calculate K, convert to K O2, scale K to sampling frequency
+ward10.meta0[,"k.gas"] <- 0
+ward10.meta0[,"do.sat"] <- LakeMetabolizer:::o2.at.sat.base(ward10.meta0[,"wtr"], baro=ward10.meta0[,"baro"])
+
+# pull in values needed to do a daily smoother of temperature
+ward10.meta0[,"watts"] <- watts.in(ward10.meta0[,"top"], ward10.meta0[,"bot"], ward10.meta0[,"irr"], ward10.meta0[,"z1perc"])
+ward10.meta0[,"roundDoy"] <- trunc(ward10.meta0[,"doy"])
+
+ward10.meta.wtrSmooth <- ddply(ward10.meta0, .variables="roundDoy", function(x)cbind(x, "smooth.wtr"=temp.kalman(x[,"wtr"], x[,"watts"], ampH=50)))
+
+ward10.meta0[,"wtr"] <- ward10.meta.wtrSmooth[,"smooth.wtr"]
+ward10.meta <- ward10.meta0[,c("datetime", "year", "doy", "do.obs", "do.sat", "k.gas", "z.mix", "irr", "wtr")]
 
 
-all.r1 <- merge(cbind("method"="mle",test.mle.res), cbind("method"="kalman",test.kal.res), all=TRUE)
-all.r2 <- merge(all.r1, cbind("method"="bayes", test.bay.res), all=TRUE)
-all.r3 <- merge(all.r2, cbind("method"="bookkeep", test.bk.res), all=TRUE)
-all.r4 <- merge(all.r3, cbind("method"="ols", test.ols.res), all=TRUE)
 
-# 
-# dev.new(width=3.5, height=7)
-# par(mfcol=c(5,2), mar=c(2, 2, 0.5, 0.5), oma=c(0.1, 0.1, 1, 0.1), ps=9, mgp=c(1, 0.25, 0), tcl=-0.35, family="Times", cex=1)
-# 
-# plot(all.r4[all.r4[,"method"]=="bookkeep","R"], all.r4[all.r4[,"method"]=="ols","R"], xlab="BK", ylab="OLS"); abline(a=0, b=1)
-# plot(all.r4[all.r4[,"method"]=="bookkeep","R"], all.r4[all.r4[,"method"]=="mle","R"], xlab="BK", ylab="MLE"); abline(a=0, b=1)
-# plot(all.r4[all.r4[,"method"]=="bookkeep","R"], all.r4[all.r4[,"method"]=="kalman","R"], xlab="BK", ylab="Kalman"); abline(a=0, b=1)
-# plot(all.r4[all.r4[,"method"]=="bookkeep","R"], all.r4[all.r4[,"method"]=="bayes","R"], xlab="BK", ylab="Bayes"); abline(a=0, b=1)
-# 
-# plot(all.r4[all.r4[,"method"]=="ols","R"], all.r4[all.r4[,"method"]=="mle","R"], xlab="OLS", ylab="MLE"); abline(a=0, b=1)
-# plot(all.r4[all.r4[,"method"]=="ols","R"], all.r4[all.r4[,"method"]=="kalman","R"], xlab="OLS", ylab="Kalman"); abline(a=0, b=1)
-# plot(all.r4[all.r4[,"method"]=="ols","R"], all.r4[all.r4[,"method"]=="bayes","R"], xlab="OLS", ylab="Bayes"); abline(a=0, b=1)
-# 
-# plot(all.r4[all.r4[,"method"]=="mle","R"], all.r4[all.r4[,"method"]=="kalman","R"], xlab="MLE", ylab="Kalman"); abline(a=0, b=1)
-# plot(all.r4[all.r4[,"method"]=="mle","R"], all.r4[all.r4[,"method"]=="bayes","R"], xlab="MLE", ylab="Bayes"); abline(a=0, b=1)
-# 
-# plot(all.r4[all.r4[,"method"]=="kalman","R"], all.r4[all.r4[,"method"]=="bayes","R"], xlab="Kalman", ylab="Bayes"); abline(a=0, b=1)
-# 
-# mtext("Respiration", outer=TRUE, line=0, side=3, font=2, cex=1.2)
-# 
-# 
-# dev.new(width=3.5, height=7)
-# par(mfcol=c(5,2), mar=c(2, 2, 0.5, 0.5), oma=c(0.1, 0.1, 1, 0.1), ps=9, mgp=c(1, 0.25, 0), tcl=-0.35, family="Times", cex=1)
-# 
-# plot(all.r4[all.r4[,"method"]=="bookkeep","GPP"], all.r4[all.r4[,"method"]=="ols","GPP"], xlab="BK", ylab="OLS"); abline(a=0, b=1)
-# plot(all.r4[all.r4[,"method"]=="bookkeep","GPP"], all.r4[all.r4[,"method"]=="mle","GPP"], xlab="BK", ylab="MLE"); abline(a=0, b=1)
-# plot(all.r4[all.r4[,"method"]=="bookkeep","GPP"], all.r4[all.r4[,"method"]=="kalman","GPP"], xlab="BK", ylab="Kalman"); abline(a=0, b=1)
-# plot(all.r4[all.r4[,"method"]=="bookkeep","GPP"], all.r4[all.r4[,"method"]=="bayes","GPP"], xlab="BK", ylab="Bayes"); abline(a=0, b=1)
-# 
-# plot(all.r4[all.r4[,"method"]=="ols","GPP"], all.r4[all.r4[,"method"]=="mle","GPP"], xlab="OLS", ylab="MLE"); abline(a=0, b=1)
-# plot(all.r4[all.r4[,"method"]=="ols","GPP"], all.r4[all.r4[,"method"]=="kalman","GPP"], xlab="OLS", ylab="Kalman"); abline(a=0, b=1)
-# plot(all.r4[all.r4[,"method"]=="ols","GPP"], all.r4[all.r4[,"method"]=="bayes","GPP"], xlab="OLS", ylab="Bayes"); abline(a=0, b=1)
-# 
-# plot(all.r4[all.r4[,"method"]=="mle","GPP"], all.r4[all.r4[,"method"]=="kalman","GPP"], xlab="MLE", ylab="Kalman"); abline(a=0, b=1)
-# plot(all.r4[all.r4[,"method"]=="mle","GPP"], all.r4[all.r4[,"method"]=="bayes","GPP"], xlab="MLE", ylab="Bayes"); abline(a=0, b=1)
-# 
-# plot(all.r4[all.r4[,"method"]=="kalman","GPP"], all.r4[all.r4[,"method"]=="bayes","GPP"], xlab="Kalman", ylab="Bayes"); abline(a=0, b=1)
-# 
-# mtext("Gross Primary Production", outer=TRUE, line=0, side=3, font=2, cex=1.2)
-# 
-# 
-# dev.new(width=3.5, height=7)
-# par(mfcol=c(5,2), mar=c(2, 2, 0.5, 0.5), oma=c(0.1, 0.1, 1, 0.1), ps=9, mgp=c(1, 0.25, 0), tcl=-0.35, family="Times", cex=1)
-# 
-# plot(all.r4[all.r4[,"method"]=="bookkeep","NEP"], all.r4[all.r4[,"method"]=="ols","NEP"], xlab="BK", ylab="OLS"); abline(a=0, b=1)
-# plot(all.r4[all.r4[,"method"]=="bookkeep","NEP"], all.r4[all.r4[,"method"]=="mle","NEP"], xlab="BK", ylab="MLE"); abline(a=0, b=1)
-# plot(all.r4[all.r4[,"method"]=="bookkeep","NEP"], all.r4[all.r4[,"method"]=="kalman","NEP"], xlab="BK", ylab="Kalman"); abline(a=0, b=1)
-# plot(all.r4[all.r4[,"method"]=="bookkeep","NEP"], all.r4[all.r4[,"method"]=="bayes","NEP"], xlab="BK", ylab="Bayes"); abline(a=0, b=1)
-# 
-# plot(all.r4[all.r4[,"method"]=="ols","NEP"], all.r4[all.r4[,"method"]=="mle","NEP"], xlab="OLS", ylab="MLE"); abline(a=0, b=1)
-# plot(all.r4[all.r4[,"method"]=="ols","NEP"], all.r4[all.r4[,"method"]=="kalman","NEP"], xlab="OLS", ylab="Kalman"); abline(a=0, b=1)
-# plot(all.r4[all.r4[,"method"]=="ols","NEP"], all.r4[all.r4[,"method"]=="bayes","NEP"], xlab="OLS", ylab="Bayes"); abline(a=0, b=1)
-# 
-# plot(all.r4[all.r4[,"method"]=="mle","NEP"], all.r4[all.r4[,"method"]=="kalman","NEP"], xlab="MLE", ylab="Kalman"); abline(a=0, b=1)
-# plot(all.r4[all.r4[,"method"]=="mle","NEP"], all.r4[all.r4[,"method"]=="bayes","NEP"], xlab="MLE", ylab="Bayes"); abline(a=0, b=1)
-# 
-# plot(all.r4[all.r4[,"method"]=="kalman","NEP"], all.r4[all.r4[,"method"]=="bayes","NEP"], xlab="Kalman", ylab="Bayes"); abline(a=0, b=1)
-# 
-# mtext("Net Ecosystem Production", outer=TRUE, line=0, side=3, font=2, cex=1.2)
-# 
-# 
 
+# ==================
+# = Epi Metabolism =
+# ==================
+ward10.epi2 <- ward10.epi[, c("year","doy","datetime","do.obs", "do.sat", "k.gas", "z.mix", "irr", "wtr")]
+# MLE
+ward10.epi.mle <- LakeMetabolizer:::metab(ward10.epi, "mle")
+ward10.epi.mle.res <- ward10.epi.mle[[2]][,c("doy","GPP","R", "NEP")]
+ward10.epi.mle.res <- merge(data.frame("doy"=138:239), ward10.epi.mle.res, all=TRUE)
+
+# Kalman
+ward10.epi.kal <- LakeMetabolizer:::metab(ward10.epi, "kalman")
+ward10.epi.kal.res <- ward10.epi.kal[[3]][,c("doy","GPP","R", "NEP")]
+ward10.epi.kal.res <- merge(data.frame("doy"=138:239), ward10.epi.kal.res, all=TRUE)
+
+# Bayesian
+ward10.epi.bay <- LakeMetabolizer:::metab(ward10.epi2, "bayesian")
+ward10.epi.bay.res <- ward10.epi.bay[[4]][,c("doy","GPP","R", "NEP")]
+ward10.epi.bay.res <- merge(data.frame("doy"=138:239), ward10.epi.bay.res, all=TRUE)
+
+# Reformat data for bookkeeping, do BK
+
+ward10.epi3 <- ward10.epi2
+bk.irr <- as.integer(LakeMetabolizer:::is.day(46.28, ward10.epi3[,"datetime"]))
+ward10.epi3[,"irr"] <- bk.irr
+ward10.epi.bk <- LakeMetabolizer:::metab(ward10.epi3, "bookkeep")
+ward10.epi.bk.res <- ward10.epi.bk[,c("doy","GPP","R", "NEP")]
+ward10.epi.bk.res <- merge(data.frame("doy"=138:239), ward10.epi.bk.res, all=TRUE)
+
+# OLS
+ward10.epi.ols <- LakeMetabolizer:::metab(ward10.epi2, "ols")
+ward10.epi.ols.res <- ward10.epi.ols[,c("doy","GPP","R", "NEP")]
+ward10.epi.ols.res <- merge(data.frame("doy"=138:239), ward10.epi.ols.res, all=TRUE)
+
+# merge all results
+w10e.r1 <- merge(cbind("method"="mle",ward10.epi.mle.res), cbind("method"="kalman",ward10.epi.kal.res), all=TRUE)
+w10e.r2 <- merge(w10e.r1, cbind("method"="bayes", ward10.epi.bay.res), all=TRUE)
+w10e.r3 <- merge(w10e.r2, cbind("method"="bookkeep", ward10.epi.bk.res), all=TRUE)
+w10e.r4 <- merge(w10e.r3, cbind("method"="ols", ward10.epi.ols.res), all=TRUE)
+
+
+# ================================================
+# = Plot Ward 2010 Epi Metabolism across Methods =
+# ================================================
+dev.new(width=3.5, height=7)
+par(mfcol=c(5,2), mar=c(2, 2, 0.5, 0.5), oma=c(0.1, 0.1, 1, 0.1), ps=9, mgp=c(1, 0.25, 0), tcl=-0.35, family="Times", cex=1)
+
+plot(w10e.r4[w10e.r4[,"method"]=="bookkeep","R"], w10e.r4[w10e.r4[,"method"]=="ols","R"], xlab="BK", ylab="OLS"); abline(a=0, b=1)
+plot(w10e.r4[w10e.r4[,"method"]=="bookkeep","R"], w10e.r4[w10e.r4[,"method"]=="mle","R"], xlab="BK", ylab="MLE"); abline(a=0, b=1)
+plot(w10e.r4[w10e.r4[,"method"]=="bookkeep","R"], w10e.r4[w10e.r4[,"method"]=="kalman","R"], xlab="BK", ylab="Kalman"); abline(a=0, b=1)
+plot(w10e.r4[w10e.r4[,"method"]=="bookkeep","R"], w10e.r4[w10e.r4[,"method"]=="bayes","R"], xlab="BK", ylab="Bayes"); abline(a=0, b=1)
+
+plot(w10e.r4[w10e.r4[,"method"]=="ols","R"], w10e.r4[w10e.r4[,"method"]=="mle","R"], xlab="OLS", ylab="MLE"); abline(a=0, b=1)
+plot(w10e.r4[w10e.r4[,"method"]=="ols","R"], w10e.r4[w10e.r4[,"method"]=="kalman","R"], xlab="OLS", ylab="Kalman"); abline(a=0, b=1)
+plot(w10e.r4[w10e.r4[,"method"]=="ols","R"], w10e.r4[w10e.r4[,"method"]=="bayes","R"], xlab="OLS", ylab="Bayes"); abline(a=0, b=1)
+
+plot(w10e.r4[w10e.r4[,"method"]=="mle","R"], w10e.r4[w10e.r4[,"method"]=="kalman","R"], xlab="MLE", ylab="Kalman"); abline(a=0, b=1)
+plot(w10e.r4[w10e.r4[,"method"]=="mle","R"], w10e.r4[w10e.r4[,"method"]=="bayes","R"], xlab="MLE", ylab="Bayes"); abline(a=0, b=1)
+
+plot(w10e.r4[w10e.r4[,"method"]=="kalman","R"], w10e.r4[w10e.r4[,"method"]=="bayes","R"], xlab="Kalman", ylab="Bayes"); abline(a=0, b=1)
+
+mtext("Respiration", outer=TRUE, line=0, side=3, font=2, cex=1.2)
+
+
+dev.new(width=3.5, height=7)
+par(mfcol=c(5,2), mar=c(2, 2, 0.5, 0.5), oma=c(0.1, 0.1, 1, 0.1), ps=9, mgp=c(1, 0.25, 0), tcl=-0.35, family="Times", cex=1)
+
+plot(w10e.r4[w10e.r4[,"method"]=="bookkeep","GPP"], w10e.r4[w10e.r4[,"method"]=="ols","GPP"], xlab="BK", ylab="OLS"); abline(a=0, b=1)
+plot(w10e.r4[w10e.r4[,"method"]=="bookkeep","GPP"], w10e.r4[w10e.r4[,"method"]=="mle","GPP"], xlab="BK", ylab="MLE"); abline(a=0, b=1)
+plot(w10e.r4[w10e.r4[,"method"]=="bookkeep","GPP"], w10e.r4[w10e.r4[,"method"]=="kalman","GPP"], xlab="BK", ylab="Kalman"); abline(a=0, b=1)
+plot(w10e.r4[w10e.r4[,"method"]=="bookkeep","GPP"], w10e.r4[w10e.r4[,"method"]=="bayes","GPP"], xlab="BK", ylab="Bayes"); abline(a=0, b=1)
+
+plot(w10e.r4[w10e.r4[,"method"]=="ols","GPP"], w10e.r4[w10e.r4[,"method"]=="mle","GPP"], xlab="OLS", ylab="MLE"); abline(a=0, b=1)
+plot(w10e.r4[w10e.r4[,"method"]=="ols","GPP"], w10e.r4[w10e.r4[,"method"]=="kalman","GPP"], xlab="OLS", ylab="Kalman"); abline(a=0, b=1)
+plot(w10e.r4[w10e.r4[,"method"]=="ols","GPP"], w10e.r4[w10e.r4[,"method"]=="bayes","GPP"], xlab="OLS", ylab="Bayes"); abline(a=0, b=1)
+
+plot(w10e.r4[w10e.r4[,"method"]=="mle","GPP"], w10e.r4[w10e.r4[,"method"]=="kalman","GPP"], xlab="MLE", ylab="Kalman"); abline(a=0, b=1)
+plot(w10e.r4[w10e.r4[,"method"]=="mle","GPP"], w10e.r4[w10e.r4[,"method"]=="bayes","GPP"], xlab="MLE", ylab="Bayes"); abline(a=0, b=1)
+
+plot(w10e.r4[w10e.r4[,"method"]=="kalman","GPP"], w10e.r4[w10e.r4[,"method"]=="bayes","GPP"], xlab="Kalman", ylab="Bayes"); abline(a=0, b=1)
+
+mtext("Gross Primary Production", outer=TRUE, line=0, side=3, font=2, cex=1.2)
+
+
+dev.new(width=3.5, height=7)
+par(mfcol=c(5,2), mar=c(2, 2, 0.5, 0.5), oma=c(0.1, 0.1, 1, 0.1), ps=9, mgp=c(1, 0.25, 0), tcl=-0.35, family="Times", cex=1)
+
+plot(w10e.r4[w10e.r4[,"method"]=="bookkeep","NEP"], w10e.r4[w10e.r4[,"method"]=="ols","NEP"], xlab="BK", ylab="OLS"); abline(a=0, b=1)
+plot(w10e.r4[w10e.r4[,"method"]=="bookkeep","NEP"], w10e.r4[w10e.r4[,"method"]=="mle","NEP"], xlab="BK", ylab="MLE"); abline(a=0, b=1)
+plot(w10e.r4[w10e.r4[,"method"]=="bookkeep","NEP"], w10e.r4[w10e.r4[,"method"]=="kalman","NEP"], xlab="BK", ylab="Kalman"); abline(a=0, b=1)
+plot(w10e.r4[w10e.r4[,"method"]=="bookkeep","NEP"], w10e.r4[w10e.r4[,"method"]=="bayes","NEP"], xlab="BK", ylab="Bayes"); abline(a=0, b=1)
+
+plot(w10e.r4[w10e.r4[,"method"]=="ols","NEP"], w10e.r4[w10e.r4[,"method"]=="mle","NEP"], xlab="OLS", ylab="MLE"); abline(a=0, b=1)
+plot(w10e.r4[w10e.r4[,"method"]=="ols","NEP"], w10e.r4[w10e.r4[,"method"]=="kalman","NEP"], xlab="OLS", ylab="Kalman"); abline(a=0, b=1)
+plot(w10e.r4[w10e.r4[,"method"]=="ols","NEP"], w10e.r4[w10e.r4[,"method"]=="bayes","NEP"], xlab="OLS", ylab="Bayes"); abline(a=0, b=1)
+
+plot(w10e.r4[w10e.r4[,"method"]=="mle","NEP"], w10e.r4[w10e.r4[,"method"]=="kalman","NEP"], xlab="MLE", ylab="Kalman"); abline(a=0, b=1)
+plot(w10e.r4[w10e.r4[,"method"]=="mle","NEP"], w10e.r4[w10e.r4[,"method"]=="bayes","NEP"], xlab="MLE", ylab="Bayes"); abline(a=0, b=1)
+
+plot(w10e.r4[w10e.r4[,"method"]=="kalman","NEP"], w10e.r4[w10e.r4[,"method"]=="bayes","NEP"], xlab="Kalman", ylab="Bayes"); abline(a=0, b=1)
+
+mtext("Net Ecosystem Production", outer=TRUE, line=0, side=3, font=2, cex=1.2)
+
+
+
+
+
+
+# ==================
+# = Meta Metabolism =
+# ==================
+# MLE
+ward10.meta.mle <- LakeMetabolizer:::metab(ward10.meta, "mle")
+ward10.meta.mle.res <- ward10.meta.mle[[2]][,c("doy","GPP","R", "NEP")]
+ward10.meta.mle.res <- merge(data.frame("doy"=138:239), ward10.meta.mle.res, all=TRUE)
+
+# Kalman
+ward10.meta.kal <- LakeMetabolizer:::metab(ward10.meta, "kalman")
+ward10.meta.kal.res <- ward10.meta.kal[[3]][,c("doy","GPP","R", "NEP")]
+ward10.meta.kal.res <- merge(data.frame("doy"=138:239), ward10.meta.kal.res, all=TRUE)
+
+# Bayesian
+ward10.meta.bay <- LakeMetabolizer:::metab(ward10.meta2, "bayesian")
+ward10.meta.bay.res <- ward10.meta.bay[[4]][,c("doy","GPP","R", "NEP")]
+ward10.meta.bay.res <- merge(data.frame("doy"=138:239), ward10.meta.bay.res, all=TRUE)
+
+# Reformat data for bookkemetang, do BK
+ward10.meta2 <- ward10.meta[, c("year","doy","datetime","do.obs", "do.sat", "k.gas", "z.mix", "irr", "wtr")]
+ward10.meta3 <- ward10.meta2
+bk.irr <- as.integer(LakeMetabolizer:::is.day(46.28, ward10.meta3[,"datetime"]))
+ward10.meta3[,"irr"] <- bk.irr
+ward10.meta.bk <- LakeMetabolizer:::metab(ward10.meta3, "bookkeep")
+ward10.meta.bk.res <- ward10.meta.bk[,c("doy","GPP","R", "NEP")]
+ward10.meta.bk.res <- merge(data.frame("doy"=138:239), ward10.meta.bk.res, all=TRUE)
+
+# OLS
+ward10.meta.ols <- LakeMetabolizer:::metab(ward10.meta2, "ols")
+ward10.meta.ols.res <- ward10.meta.ols[,c("doy","GPP","R", "NEP")]
+ward10.meta.ols.res <- merge(data.frame("doy"=138:239), ward10.meta.ols.res, all=TRUE)
