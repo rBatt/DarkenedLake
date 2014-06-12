@@ -1,8 +1,8 @@
 
 library(plyr)
-detach(package:LakeMetabolizer, unload=TRUE)
-# install.packages("/Users/Battrd/Documents/School&Work/WiscResearch/Isotopes_2012Analysis/lib/LakeMetabolizer", type="source", repos=NULL)
-install.packages("/Users/Battrd/Documents/School&Work/WiscResearch/LakeMetabolizer", type="source", repos=NULL)
+# detach(package:LakeMetabolizer, unload=TRUE)
+install.packages("/Users/Battrd/Documents/School&Work/WiscResearch/Isotopes_2012Analysis/lib/LakeMetabolizer", type="source", repos=NULL)
+# install.packages("/Users/Battrd/Documents/School&Work/WiscResearch/LakeMetabolizer", type="source", repos=NULL)
 # update.packages("/Users/Battrd/Documents/School&Work/WiscResearch/Isotopes_2012Analysis/lib/LakeMetabolizer", type="source", repos=NULL)
 # install.packages("/Users/Battrd/Documents/School&Work/WiscResearch/LakeMetabolizer", type="source", repos=NULL)
 library("LakeMetabolizer")
@@ -361,8 +361,9 @@ w10e.r4 <- merge(w10e.r3, cbind("method"="ols", ward10.epi.ols.res), all=TRUE)
 # ================================================
 # = Plot Ward 2010 Epi Metabolism across Methods =
 # ================================================
-dev.new(width=3.5, height=7)
-par(mfcol=c(5,2), mar=c(2, 2, 0.5, 0.5), oma=c(0.1, 0.1, 1, 0.1), ps=9, mgp=c(1, 0.25, 0), tcl=-0.35, family="Times", cex=1)
+# dev.new(width=3.5, height=7)
+pdf("~/Desktop/ward2010_epilimnion.pdf", width=3.5, height=7)
+par(mfcol=c(5,2), mar=c(2, 2, 0.5, 0.5), oma=c(0.1, 0.1, 2, 0.1), ps=9, mgp=c(1, 0.25, 0), tcl=-0.35, family="Times", cex=1)
 
 plot(w10e.r4[w10e.r4[,"method"]=="bookkeep","R"], w10e.r4[w10e.r4[,"method"]=="ols","R"], xlab="BK", ylab="OLS"); abline(a=0, b=1)
 plot(w10e.r4[w10e.r4[,"method"]=="bookkeep","R"], w10e.r4[w10e.r4[,"method"]=="mle","R"], xlab="BK", ylab="MLE"); abline(a=0, b=1)
@@ -378,11 +379,11 @@ plot(w10e.r4[w10e.r4[,"method"]=="mle","R"], w10e.r4[w10e.r4[,"method"]=="bayes"
 
 plot(w10e.r4[w10e.r4[,"method"]=="kalman","R"], w10e.r4[w10e.r4[,"method"]=="bayes","R"], xlab="Kalman", ylab="Bayes"); abline(a=0, b=1)
 
-mtext("Respiration", outer=TRUE, line=0, side=3, font=2, cex=1.2)
+mtext("Ward 2010 Epi\\nRespiration", outer=TRUE, line=0, side=3, font=2, cex=1.2)
 
 
-dev.new(width=3.5, height=7)
-par(mfcol=c(5,2), mar=c(2, 2, 0.5, 0.5), oma=c(0.1, 0.1, 1, 0.1), ps=9, mgp=c(1, 0.25, 0), tcl=-0.35, family="Times", cex=1)
+# dev.new(width=3.5, height=7)
+par(mfcol=c(5,2), mar=c(2, 2, 0.5, 0.5), oma=c(0.1, 0.1, 2, 0.1), ps=9, mgp=c(1, 0.25, 0), tcl=-0.35, family="Times", cex=1)
 
 plot(w10e.r4[w10e.r4[,"method"]=="bookkeep","GPP"], w10e.r4[w10e.r4[,"method"]=="ols","GPP"], xlab="BK", ylab="OLS"); abline(a=0, b=1)
 plot(w10e.r4[w10e.r4[,"method"]=="bookkeep","GPP"], w10e.r4[w10e.r4[,"method"]=="mle","GPP"], xlab="BK", ylab="MLE"); abline(a=0, b=1)
@@ -398,11 +399,11 @@ plot(w10e.r4[w10e.r4[,"method"]=="mle","GPP"], w10e.r4[w10e.r4[,"method"]=="baye
 
 plot(w10e.r4[w10e.r4[,"method"]=="kalman","GPP"], w10e.r4[w10e.r4[,"method"]=="bayes","GPP"], xlab="Kalman", ylab="Bayes"); abline(a=0, b=1)
 
-mtext("Gross Primary Production", outer=TRUE, line=0, side=3, font=2, cex=1.2)
+mtext("Ward 2010 Epi\\nGross Primary Production", outer=TRUE, line=0, side=3, font=2, cex=1.2)
 
 
-dev.new(width=3.5, height=7)
-par(mfcol=c(5,2), mar=c(2, 2, 0.5, 0.5), oma=c(0.1, 0.1, 1, 0.1), ps=9, mgp=c(1, 0.25, 0), tcl=-0.35, family="Times", cex=1)
+# dev.new(width=3.5, height=7)
+par(mfcol=c(5,2), mar=c(2, 2, 0.5, 0.5), oma=c(0.1, 0.1, 2, 0.1), ps=9, mgp=c(1, 0.25, 0), tcl=-0.35, family="Times", cex=1)
 
 plot(w10e.r4[w10e.r4[,"method"]=="bookkeep","NEP"], w10e.r4[w10e.r4[,"method"]=="ols","NEP"], xlab="BK", ylab="OLS"); abline(a=0, b=1)
 plot(w10e.r4[w10e.r4[,"method"]=="bookkeep","NEP"], w10e.r4[w10e.r4[,"method"]=="mle","NEP"], xlab="BK", ylab="MLE"); abline(a=0, b=1)
@@ -418,9 +419,9 @@ plot(w10e.r4[w10e.r4[,"method"]=="mle","NEP"], w10e.r4[w10e.r4[,"method"]=="baye
 
 plot(w10e.r4[w10e.r4[,"method"]=="kalman","NEP"], w10e.r4[w10e.r4[,"method"]=="bayes","NEP"], xlab="Kalman", ylab="Bayes"); abline(a=0, b=1)
 
-mtext("Net Ecosystem Production", outer=TRUE, line=0, side=3, font=2, cex=1.2)
+mtext("Ward 2010 Epi\\nNet Ecosystem Production", outer=TRUE, line=0, side=3, font=2, cex=1.2)
 
-
+dev.off()
 
 
 
@@ -439,12 +440,12 @@ ward10.meta.kal.res <- ward10.meta.kal[[3]][,c("doy","GPP","R", "NEP")]
 ward10.meta.kal.res <- merge(data.frame("doy"=138:239), ward10.meta.kal.res, all=TRUE)
 
 # Bayesian
+ward10.meta2 <- ward10.meta[, c("year","doy","datetime","do.obs", "do.sat", "k.gas", "z.mix", "irr", "wtr")]
 ward10.meta.bay <- LakeMetabolizer:::metab(ward10.meta2, "bayesian")
 ward10.meta.bay.res <- ward10.meta.bay[[4]][,c("doy","GPP","R", "NEP")]
 ward10.meta.bay.res <- merge(data.frame("doy"=138:239), ward10.meta.bay.res, all=TRUE)
 
 # Reformat data for bookkemetang, do BK
-ward10.meta2 <- ward10.meta[, c("year","doy","datetime","do.obs", "do.sat", "k.gas", "z.mix", "irr", "wtr")]
 ward10.meta3 <- ward10.meta2
 bk.irr <- as.integer(LakeMetabolizer:::is.day(46.28, ward10.meta3[,"datetime"]))
 ward10.meta3[,"irr"] <- bk.irr
@@ -456,3 +457,77 @@ ward10.meta.bk.res <- merge(data.frame("doy"=138:239), ward10.meta.bk.res, all=T
 ward10.meta.ols <- LakeMetabolizer:::metab(ward10.meta2, "ols")
 ward10.meta.ols.res <- ward10.meta.ols[,c("doy","GPP","R", "NEP")]
 ward10.meta.ols.res <- merge(data.frame("doy"=138:239), ward10.meta.ols.res, all=TRUE)
+
+# merge all results
+w10m.r1 <- merge(cbind("method"="mle",ward10.meta.mle.res), cbind("method"="kalman",ward10.meta.kal.res), all=TRUE)
+w10m.r2 <- merge(w10m.r1, cbind("method"="bayes", ward10.meta.bay.res), all=TRUE)
+w10m.r3 <- merge(w10m.r2, cbind("method"="bookkeep", ward10.meta.bk.res), all=TRUE)
+w10m.r4 <- merge(w10m.r3, cbind("method"="ols", ward10.meta.ols.res), all=TRUE)
+
+
+
+# ================================================
+# = Plot Ward 2010 Epi Metabolism across Methods =
+# ================================================
+pdf("~/Desktop/ward2010_metalimnion.pdf", width=3.5, height=7)
+par(mfcol=c(5,2), mar=c(2, 2, 0.5, 0.5), oma=c(0.1, 0.1, 2, 0.1), ps=9, mgp=c(1, 0.25, 0), tcl=-0.35, family="Times", cex=1)
+
+plot(w10m.r4[w10m.r4[,"method"]=="bookkeep","R"], w10m.r4[w10m.r4[,"method"]=="ols","R"], xlab="BK", ylab="OLS"); abline(a=0, b=1)
+plot(w10m.r4[w10m.r4[,"method"]=="bookkeep","R"], w10m.r4[w10m.r4[,"method"]=="mle","R"], xlab="BK", ylab="MLE"); abline(a=0, b=1)
+plot(w10m.r4[w10m.r4[,"method"]=="bookkeep","R"], w10m.r4[w10m.r4[,"method"]=="kalman","R"], xlab="BK", ylab="Kalman"); abline(a=0, b=1)
+plot(w10m.r4[w10m.r4[,"method"]=="bookkeep","R"], w10m.r4[w10m.r4[,"method"]=="bayes","R"], xlab="BK", ylab="Bayes"); abline(a=0, b=1)
+
+plot(w10m.r4[w10m.r4[,"method"]=="ols","R"], w10m.r4[w10m.r4[,"method"]=="mle","R"], xlab="OLS", ylab="MLE"); abline(a=0, b=1)
+plot(w10m.r4[w10m.r4[,"method"]=="ols","R"], w10m.r4[w10m.r4[,"method"]=="kalman","R"], xlab="OLS", ylab="Kalman"); abline(a=0, b=1)
+plot(w10m.r4[w10m.r4[,"method"]=="ols","R"], w10m.r4[w10m.r4[,"method"]=="bayes","R"], xlab="OLS", ylab="Bayes"); abline(a=0, b=1)
+
+plot(w10m.r4[w10m.r4[,"method"]=="mle","R"], w10m.r4[w10m.r4[,"method"]=="kalman","R"], xlab="MLE", ylab="Kalman"); abline(a=0, b=1)
+plot(w10m.r4[w10m.r4[,"method"]=="mle","R"], w10m.r4[w10m.r4[,"method"]=="bayes","R"], xlab="MLE", ylab="Bayes"); abline(a=0, b=1)
+
+plot(w10m.r4[w10m.r4[,"method"]=="kalman","R"], w10m.r4[w10m.r4[,"method"]=="bayes","R"], xlab="Kalman", ylab="Bayes"); abline(a=0, b=1)
+
+mtext("Ward 2010 Epi\\nRespiration", outer=TRUE, line=0, side=3, font=2, cex=1.2)
+
+
+
+par(mfcol=c(5,2), mar=c(2, 2, 0.5, 0.5), oma=c(0.1, 0.1, 2, 0.1), ps=9, mgp=c(1, 0.25, 0), tcl=-0.35, family="Times", cex=1)
+
+plot(w10m.r4[w10m.r4[,"method"]=="bookkeep","GPP"], w10m.r4[w10m.r4[,"method"]=="ols","GPP"], xlab="BK", ylab="OLS"); abline(a=0, b=1)
+plot(w10m.r4[w10m.r4[,"method"]=="bookkeep","GPP"], w10m.r4[w10m.r4[,"method"]=="mle","GPP"], xlab="BK", ylab="MLE"); abline(a=0, b=1)
+plot(w10m.r4[w10m.r4[,"method"]=="bookkeep","GPP"], w10m.r4[w10m.r4[,"method"]=="kalman","GPP"], xlab="BK", ylab="Kalman"); abline(a=0, b=1)
+plot(w10m.r4[w10m.r4[,"method"]=="bookkeep","GPP"], w10m.r4[w10m.r4[,"method"]=="bayes","GPP"], xlab="BK", ylab="Bayes"); abline(a=0, b=1)
+
+plot(w10m.r4[w10m.r4[,"method"]=="ols","GPP"], w10m.r4[w10m.r4[,"method"]=="mle","GPP"], xlab="OLS", ylab="MLE"); abline(a=0, b=1)
+plot(w10m.r4[w10m.r4[,"method"]=="ols","GPP"], w10m.r4[w10m.r4[,"method"]=="kalman","GPP"], xlab="OLS", ylab="Kalman"); abline(a=0, b=1)
+plot(w10m.r4[w10m.r4[,"method"]=="ols","GPP"], w10m.r4[w10m.r4[,"method"]=="bayes","GPP"], xlab="OLS", ylab="Bayes"); abline(a=0, b=1)
+
+plot(w10m.r4[w10m.r4[,"method"]=="mle","GPP"], w10m.r4[w10m.r4[,"method"]=="kalman","GPP"], xlab="MLE", ylab="Kalman"); abline(a=0, b=1)
+plot(w10m.r4[w10m.r4[,"method"]=="mle","GPP"], w10m.r4[w10m.r4[,"method"]=="bayes","GPP"], xlab="MLE", ylab="Bayes"); abline(a=0, b=1)
+
+plot(w10m.r4[w10m.r4[,"method"]=="kalman","GPP"], w10m.r4[w10m.r4[,"method"]=="bayes","GPP"], xlab="Kalman", ylab="Bayes"); abline(a=0, b=1)
+
+mtext("Ward 2010 Epi\\nGross Primary Production", outer=TRUE, line=0, side=3, font=2, cex=1.2)
+
+
+# dev.new(width=3.5, height=7)
+par(mfcol=c(5,2), mar=c(2, 2, 0.5, 0.5), oma=c(0.1, 0.1, 2, 0.1), ps=9, mgp=c(1, 0.25, 0), tcl=-0.35, family="Times", cex=1)
+
+plot(w10m.r4[w10m.r4[,"method"]=="bookkeep","NEP"], w10m.r4[w10m.r4[,"method"]=="ols","NEP"], xlab="BK", ylab="OLS"); abline(a=0, b=1)
+plot(w10m.r4[w10m.r4[,"method"]=="bookkeep","NEP"], w10m.r4[w10m.r4[,"method"]=="mle","NEP"], xlab="BK", ylab="MLE"); abline(a=0, b=1)
+plot(w10m.r4[w10m.r4[,"method"]=="bookkeep","NEP"], w10m.r4[w10m.r4[,"method"]=="kalman","NEP"], xlab="BK", ylab="Kalman"); abline(a=0, b=1)
+plot(w10m.r4[w10m.r4[,"method"]=="bookkeep","NEP"], w10m.r4[w10m.r4[,"method"]=="bayes","NEP"], xlab="BK", ylab="Bayes"); abline(a=0, b=1)
+
+plot(w10m.r4[w10m.r4[,"method"]=="ols","NEP"], w10m.r4[w10m.r4[,"method"]=="mle","NEP"], xlab="OLS", ylab="MLE"); abline(a=0, b=1)
+plot(w10m.r4[w10m.r4[,"method"]=="ols","NEP"], w10m.r4[w10m.r4[,"method"]=="kalman","NEP"], xlab="OLS", ylab="Kalman"); abline(a=0, b=1)
+plot(w10m.r4[w10m.r4[,"method"]=="ols","NEP"], w10m.r4[w10m.r4[,"method"]=="bayes","NEP"], xlab="OLS", ylab="Bayes"); abline(a=0, b=1)
+
+plot(w10m.r4[w10m.r4[,"method"]=="mle","NEP"], w10m.r4[w10m.r4[,"method"]=="kalman","NEP"], xlab="MLE", ylab="Kalman"); abline(a=0, b=1)
+plot(w10m.r4[w10m.r4[,"method"]=="mle","NEP"], w10m.r4[w10m.r4[,"method"]=="bayes","NEP"], xlab="MLE", ylab="Bayes"); abline(a=0, b=1)
+
+plot(w10m.r4[w10m.r4[,"method"]=="kalman","NEP"], w10m.r4[w10m.r4[,"method"]=="bayes","NEP"], xlab="Kalman", ylab="Bayes"); abline(a=0, b=1)
+
+mtext("Ward 2010 Epi\\nNet Ecosystem Production", outer=TRUE, line=0, side=3, font=2, cex=1.2)
+
+dev.off()
+
+
