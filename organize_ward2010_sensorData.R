@@ -379,7 +379,7 @@ plot(w10e.r4[w10e.r4[,"method"]=="mle","R"], w10e.r4[w10e.r4[,"method"]=="bayes"
 
 plot(w10e.r4[w10e.r4[,"method"]=="kalman","R"], w10e.r4[w10e.r4[,"method"]=="bayes","R"], xlab="Kalman", ylab="Bayes"); abline(a=0, b=1)
 
-mtext("Ward 2010 Epi\\nRespiration", outer=TRUE, line=0, side=3, font=2, cex=1.2)
+mtext("Ward 2010 Epi\nRespiration", outer=TRUE, line=0, side=3, font=2, cex=1.2)
 
 
 # dev.new(width=3.5, height=7)
@@ -399,7 +399,7 @@ plot(w10e.r4[w10e.r4[,"method"]=="mle","GPP"], w10e.r4[w10e.r4[,"method"]=="baye
 
 plot(w10e.r4[w10e.r4[,"method"]=="kalman","GPP"], w10e.r4[w10e.r4[,"method"]=="bayes","GPP"], xlab="Kalman", ylab="Bayes"); abline(a=0, b=1)
 
-mtext("Ward 2010 Epi\\nGross Primary Production", outer=TRUE, line=0, side=3, font=2, cex=1.2)
+mtext("Ward 2010 Epi\nGross Primary Production", outer=TRUE, line=0, side=3, font=2, cex=1.2)
 
 
 # dev.new(width=3.5, height=7)
@@ -419,7 +419,7 @@ plot(w10e.r4[w10e.r4[,"method"]=="mle","NEP"], w10e.r4[w10e.r4[,"method"]=="baye
 
 plot(w10e.r4[w10e.r4[,"method"]=="kalman","NEP"], w10e.r4[w10e.r4[,"method"]=="bayes","NEP"], xlab="Kalman", ylab="Bayes"); abline(a=0, b=1)
 
-mtext("Ward 2010 Epi\\nNet Ecosystem Production", outer=TRUE, line=0, side=3, font=2, cex=1.2)
+mtext("Ward 2010 Epi\nNet Ecosystem Production", outer=TRUE, line=0, side=3, font=2, cex=1.2)
 
 dev.off()
 
@@ -486,7 +486,7 @@ plot(w10m.r4[w10m.r4[,"method"]=="mle","R"], w10m.r4[w10m.r4[,"method"]=="bayes"
 
 plot(w10m.r4[w10m.r4[,"method"]=="kalman","R"], w10m.r4[w10m.r4[,"method"]=="bayes","R"], xlab="Kalman", ylab="Bayes"); abline(a=0, b=1)
 
-mtext("Ward 2010 Epi\\nRespiration", outer=TRUE, line=0, side=3, font=2, cex=1.2)
+mtext("Ward 2010 Meta\n Respiration", outer=TRUE, line=0, side=3, font=2, cex=1.2)
 
 
 
@@ -506,7 +506,7 @@ plot(w10m.r4[w10m.r4[,"method"]=="mle","GPP"], w10m.r4[w10m.r4[,"method"]=="baye
 
 plot(w10m.r4[w10m.r4[,"method"]=="kalman","GPP"], w10m.r4[w10m.r4[,"method"]=="bayes","GPP"], xlab="Kalman", ylab="Bayes"); abline(a=0, b=1)
 
-mtext("Ward 2010 Epi\\nGross Primary Production", outer=TRUE, line=0, side=3, font=2, cex=1.2)
+mtext("Ward 2010 Meta\nGross Primary Production", outer=TRUE, line=0, side=3, font=2, cex=1.2)
 
 
 # dev.new(width=3.5, height=7)
@@ -526,7 +526,7 @@ plot(w10m.r4[w10m.r4[,"method"]=="mle","NEP"], w10m.r4[w10m.r4[,"method"]=="baye
 
 plot(w10m.r4[w10m.r4[,"method"]=="kalman","NEP"], w10m.r4[w10m.r4[,"method"]=="bayes","NEP"], xlab="Kalman", ylab="Bayes"); abline(a=0, b=1)
 
-mtext("Ward 2010 Epi\\nNet Ecosystem Production", outer=TRUE, line=0, side=3, font=2, cex=1.2)
+mtext("Ward 2010 Meta\nNet Ecosystem Production", outer=TRUE, line=0, side=3, font=2, cex=1.2)
 
 dev.off()
 
