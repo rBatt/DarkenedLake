@@ -1,8 +1,8 @@
 
 library(plyr)
 # detach(package:LakeMetabolizer, unload=TRUE)
-install.packages("/Users/Battrd/Documents/School&Work/WiscResearch/Isotopes_2012Analysis/lib/LakeMetabolizer", type="source", repos=NULL)
-# install.packages("/Users/Battrd/Documents/School&Work/WiscResearch/LakeMetabolizer", type="source", repos=NULL)
+# install.packages("/Users/Battrd/Documents/School&Work/WiscResearch/Isotopes_2012Analysis/lib/LakeMetabolizer", type="source", repos=NULL)
+install.packages("/Users/Battrd/Documents/School&Work/WiscResearch/LakeMetabolizer", type="source", repos=NULL)
 # update.packages("/Users/Battrd/Documents/School&Work/WiscResearch/Isotopes_2012Analysis/lib/LakeMetabolizer", type="source", repos=NULL)
 # install.packages("/Users/Battrd/Documents/School&Work/WiscResearch/LakeMetabolizer", type="source", repos=NULL)
 library("LakeMetabolizer")
@@ -271,20 +271,16 @@ names(ward10.epi) <- c("datetime","year", "doy", "do.obs", "do.sat", "wtr", "z.m
 
 # format time
 ward10.epi[,"datetime"] <- as.POSIXct(ward10.epi[,"datetime"])
-ward10.epi[,"doy"] <- LakeMetabolizer:::date2doy(ward10.epi[,"datetime"])
-
-# calculate sampling frequency
-freq.ward10.epi <- round(Mode(1/diff(ward10.epi[,"doy"])))
 
 # scale wind, calculate K, convert to K O2, scale K to sampling frequency
 ward10.epi.scale10 <- scale.exp.wind.base(ward10.epi[,"wnd"], 2) # scale wind speed to 10 m
 ward10.epi.k.cole <- k.cole.base(ward10.epi.scale10) # calculate k600 using Cole & Caraco method
-ward10.epi[,"k.gas"] <- k600.2.kGAS.base(ward10.epi.k.cole, ward10.epi[,"wtr"], gas="O2")/freq.ward10.epi
-ward10.epi[,"do.sat"] <- LakeMetabolizer:::o2.at.sat.base(ward10.epi[,"wtr"], baro=ward10.epi[,"baro"])
+ward10.epi[,"k.gas"] <- k600.2.kGAS.base(ward10.epi.k.cole, ward10.epi[,"wtr"], gas="O2")
+ward10.epi[,"do.sat"] <- o2.at.sat.base(ward10.epi[,"wtr"], baro=ward10.epi[,"baro"])
 
-ward10.epi <- ward10.epi[,c("datetime","year", "doy", "do.obs", "do.sat", "k.gas", "z.mix",  "irr", "wtr", "wnd")]
+ward10.epi <- ward10.epi[,c("datetime", "do.obs", "do.sat", "k.gas", "z.mix",  "irr", "wtr", "wnd")]
 
-ward10.epi2 <- ward10.epi[, c("year","doy","datetime","do.obs", "do.sat", "k.gas", "z.mix", "irr", "wtr")]
+ward10.epi2 <- ward10.epi[, c("datetime","do.obs", "do.sat", "k.gas", "z.mix", "irr", "wtr")]
 
 
 
@@ -300,11 +296,10 @@ names(ward10.meta0) <- c("datetime","year", "doy", "do.obs", "do.sat", "wtr", "z
 
 # format time
 ward10.meta0[,"datetime"] <- as.POSIXct(ward10.meta0[,"datetime"])
-ward10.meta0[,"doy"] <- LakeMetabolizer:::date2doy(ward10.meta0[,"datetime"])
 
 # scale wind, calculate K, convert to K O2, scale K to sampling frequency
 ward10.meta0[,"k.gas"] <- 0
-ward10.meta0[,"do.sat"] <- LakeMetabolizer:::o2.at.sat.base(ward10.meta0[,"wtr"], baro=ward10.meta0[,"baro"])
+ward10.meta0[,"do.sat"] <- o2.at.sat.base(ward10.meta0[,"wtr"], baro=ward10.meta0[,"baro"])
 
 # pull in values needed to do a daily smoother of temperature
 ward10.meta0[,"watts"] <- watts.in(ward10.meta0[,"top"], ward10.meta0[,"bot"], ward10.meta0[,"irr"], ward10.meta0[,"z1perc"])
@@ -313,7 +308,7 @@ ward10.meta0[,"roundDoy"] <- trunc(ward10.meta0[,"doy"])
 ward10.meta.wtrSmooth <- ddply(ward10.meta0, .variables="roundDoy", function(x)cbind(x, "smooth.wtr"=temp.kalman(x[,"wtr"], x[,"watts"], ampH=50)))
 
 ward10.meta0[,"wtr"] <- ward10.meta.wtrSmooth[,"smooth.wtr"]
-ward10.meta <- ward10.meta0[,c("datetime", "year", "doy", "do.obs", "do.sat", "k.gas", "z.mix", "irr", "wtr")]
+ward10.meta <- ward10.meta0[,c("datetime", "do.obs", "do.sat", "k.gas", "z.mix", "irr", "wtr")]
 
 
 
@@ -321,33 +316,34 @@ ward10.meta <- ward10.meta0[,c("datetime", "year", "doy", "do.obs", "do.sat", "k
 # ==================
 # = Epi Metabolism =
 # ==================
-ward10.epi2 <- ward10.epi[, c("year","doy","datetime","do.obs", "do.sat", "k.gas", "z.mix", "irr", "wtr")]
+ward10.epi2 <- ward10.epi[, c("datetime","do.obs", "do.sat", "k.gas", "z.mix", "irr", "wtr")]
 # MLE
-ward10.epi.mle <- LakeMetabolizer:::metab(ward10.epi, "mle")
-ward10.epi.mle.res <- ward10.epi.mle[[2]][,c("doy","GPP","R", "NEP")]
+ward10.epi.mle <- metab(ward10.epi, "mle")
+ward10.epi.mle.res <- ward10.epi.mle[,c("doy","GPP","R", "NEP")]
 ward10.epi.mle.res <- merge(data.frame("doy"=138:239), ward10.epi.mle.res, all=TRUE)
 
 # Kalman
-ward10.epi.kal <- LakeMetabolizer:::metab(ward10.epi, "kalman")
-ward10.epi.kal.res <- ward10.epi.kal[[3]][,c("doy","GPP","R", "NEP")]
+ward10.epi.kal <- metab(ward10.epi, "kalman")
+ward10.epi.kal.res <- ward10.epi.kal[,c("doy","GPP","R", "NEP")]
 ward10.epi.kal.res <- merge(data.frame("doy"=138:239), ward10.epi.kal.res, all=TRUE)
 
 # Bayesian
-ward10.epi.bay <- LakeMetabolizer:::metab(ward10.epi2, "bayesian")
-ward10.epi.bay.res <- ward10.epi.bay[[4]][,c("doy","GPP","R", "NEP")]
+ward10.epi.bay <- metab(ward10.epi, "bayesian")
+ward10.epi.bay.res <- ward10.epi.bay[,c("doy","GPP","R", "NEP")]
 ward10.epi.bay.res <- merge(data.frame("doy"=138:239), ward10.epi.bay.res, all=TRUE)
 
 # Reformat data for bookkeeping, do BK
 
-ward10.epi3 <- ward10.epi2
-bk.irr <- as.integer(LakeMetabolizer:::is.day(46.28, ward10.epi3[,"datetime"]))
-ward10.epi3[,"irr"] <- bk.irr
-ward10.epi.bk <- LakeMetabolizer:::metab(ward10.epi3, "bookkeep")
+# ward10.epi3 <- ward10.epi2
+# bk.irr <- as.integer(LakeMetabolizer:::is.day(ward10.epi3[,"datetime"], 46.28))
+# ward10.epi3[,"irr"] <- bk.irr
+# ward10.epi.bk <- metab(ward10.epi3, "bookkeep")
+ward10.epi.bk <- metab(ward10.epi2, "bookkeep", lake.lat=46.28)
 ward10.epi.bk.res <- ward10.epi.bk[,c("doy","GPP","R", "NEP")]
 ward10.epi.bk.res <- merge(data.frame("doy"=138:239), ward10.epi.bk.res, all=TRUE)
 
 # OLS
-ward10.epi.ols <- LakeMetabolizer:::metab(ward10.epi2, "ols")
+ward10.epi.ols <- metab(ward10.epi2, "ols")
 ward10.epi.ols.res <- ward10.epi.ols[,c("doy","GPP","R", "NEP")]
 ward10.epi.ols.res <- merge(data.frame("doy"=138:239), ward10.epi.ols.res, all=TRUE)
 
@@ -430,31 +426,33 @@ dev.off()
 # = Meta Metabolism =
 # ==================
 # MLE
-ward10.meta.mle <- LakeMetabolizer:::metab(ward10.meta, "mle")
-ward10.meta.mle.res <- ward10.meta.mle[[2]][,c("doy","GPP","R", "NEP")]
+ward10.meta.mle <- metab(ward10.meta, "mle")
+ward10.meta.mle.res <- ward10.meta.mle[,c("doy","GPP","R", "NEP")]
 ward10.meta.mle.res <- merge(data.frame("doy"=138:239), ward10.meta.mle.res, all=TRUE)
 
 # Kalman
-ward10.meta.kal <- LakeMetabolizer:::metab(ward10.meta, "kalman")
-ward10.meta.kal.res <- ward10.meta.kal[[3]][,c("doy","GPP","R", "NEP")]
+ward10.meta.kal <- metab(ward10.meta, "kalman")
+ward10.meta.kal.res <- ward10.meta.kal[,c("doy","GPP","R", "NEP")]
 ward10.meta.kal.res <- merge(data.frame("doy"=138:239), ward10.meta.kal.res, all=TRUE)
 
 # Bayesian
-ward10.meta2 <- ward10.meta[, c("year","doy","datetime","do.obs", "do.sat", "k.gas", "z.mix", "irr", "wtr")]
-ward10.meta.bay <- LakeMetabolizer:::metab(ward10.meta2, "bayesian")
-ward10.meta.bay.res <- ward10.meta.bay[[4]][,c("doy","GPP","R", "NEP")]
+# ward10.meta2 <- ward10.meta[, c("year","doy","datetime","do.obs", "do.sat", "k.gas", "z.mix", "irr", "wtr")]
+# ward10.meta.bay <- LakeMetabolizer:::metab(ward10.meta2, "bayesian")
+ward10.meta.bay <- metab(ward10.meta, "bayesian")
+ward10.meta.bay.res <- ward10.meta.bay[,c("doy","GPP","R", "NEP")]
 ward10.meta.bay.res <- merge(data.frame("doy"=138:239), ward10.meta.bay.res, all=TRUE)
 
 # Reformat data for bookkemetang, do BK
-ward10.meta3 <- ward10.meta2
-bk.irr <- as.integer(LakeMetabolizer:::is.day(46.28, ward10.meta3[,"datetime"]))
-ward10.meta3[,"irr"] <- bk.irr
-ward10.meta.bk <- LakeMetabolizer:::metab(ward10.meta3, "bookkeep")
+# ward10.meta3 <- ward10.meta2
+# bk.irr <- as.integer(LakeMetabolizer:::is.day(46.28, ward10.meta3[,"datetime"]))
+# ward10.meta3[,"irr"] <- bk.irr
+# ward10.meta.bk <- LakeMetabolizer:::metab(ward10.meta3, "bookkeep")
+ward10.meta.bk <- metab(ward10.meta, "bookkeep", lake.lat=46.28)
 ward10.meta.bk.res <- ward10.meta.bk[,c("doy","GPP","R", "NEP")]
 ward10.meta.bk.res <- merge(data.frame("doy"=138:239), ward10.meta.bk.res, all=TRUE)
 
 # OLS
-ward10.meta.ols <- LakeMetabolizer:::metab(ward10.meta2, "ols")
+ward10.meta.ols <- metab(ward10.meta, "ols")
 ward10.meta.ols.res <- ward10.meta.ols[,c("doy","GPP","R", "NEP")]
 ward10.meta.ols.res <- merge(data.frame("doy"=138:239), ward10.meta.ols.res, all=TRUE)
 
