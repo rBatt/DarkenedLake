@@ -183,9 +183,9 @@ for(i in 1:length(sites)){
 		t.sonde0.na2[,"dosat"] <- t.sonde0.na1[,"dosat"] - t.cumul.drift.sat
 		t.sonde0.na2[,"doobs"] <- t.sonde0.na1[,"doobs"] - t.cumul.drift.conc
 		
-		t.sonde0.na2[,"date"] <- round.time(t.sonde0.na2[,"date"], "5 minutes")
+		t.sonde0.na2[,"datetime"] <- round.time(t.sonde0.na2[,"datetime"], "5 minutes")
 		
-		t.sonde <- t.sonde0.na2[!duplicated(t.sonde0.na2[,"date"]),]
+		t.sonde <- t.sonde0.na2[!duplicated(t.sonde0.na2[,"datetime"]),]
 		t.sonde[,"zmix"] <- t.calInfo[j,"LayerBot"]
 		
 		t.sonde[,"top"] <- t.calInfo[j,"LayerTop"]
@@ -214,11 +214,11 @@ PeterWeather00 <- read.csv("/Users/Battrd/Documents/School&Work/WiscResearch/Met
 PeterWeather0 <- PeterWeather00[PeterWeather00[,"Year"]==2010L,]
 PeterWeather0 <- PeterWeather0[,c("Date", "Time", "Year", "PAR","WindSpd")]
 
-PeterWeather0[,"date"] <- paste(PeterWeather0[,"Date"], PeterWeather0[,"Time"])
-PeterWeather0[,"date"] <- gsub("^(?=[0-9]/)", "0", PeterWeather0[,"date"], perl=TRUE)
-PeterWeather0[,"date"] <- gsub("(?<=[0-9]{2}/)([0-9])(?=/)", "0\\1", PeterWeather0[,"date"], perl=TRUE)
-PeterWeather0[,"date"] <- as.character(as.POSIXct(PeterWeather0[,"date"], format="%m/%d/%y %I:%M:%S %p"))
-PeterWeather2010 <- PeterWeather0[,c("date", "PAR", "WindSpd")]
+PeterWeather0[,"datetime"] <- paste(PeterWeather0[,"Date"], PeterWeather0[,"Time"])
+PeterWeather0[,"datetime"] <- gsub("^(?=[0-9]/)", "0", PeterWeather0[,"datetime"], perl=TRUE)
+PeterWeather0[,"datetime"] <- gsub("(?<=[0-9]{2}/)([0-9])(?=/)", "0\\1", PeterWeather0[,"date"], perl=TRUE)
+PeterWeather0[,"datetime"] <- as.character(as.POSIXct(PeterWeather0[,"datetime"], format="%m/%d/%y %I:%M:%S %p"))
+PeterWeather2010 <- PeterWeather0[,c("datetime", "PAR", "WindSpd")]
 
 
 
