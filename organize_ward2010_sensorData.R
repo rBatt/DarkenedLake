@@ -1,6 +1,6 @@
 
 library(plyr)
-# detach(package:LakeMetabolizer, unload=TRUE)
+detach(package:LakeMetabolizer, unload=TRUE)
 # install.packages("/Users/Battrd/Documents/School&Work/WiscResearch/Isotopes_2012Analysis/lib/LakeMetabolizer", type="source", repos=NULL)
 install.packages("/Users/Battrd/Documents/School&Work/WiscResearch/LakeMetabolizer", type="source", repos=NULL)
 # update.packages("/Users/Battrd/Documents/School&Work/WiscResearch/Isotopes_2012Analysis/lib/LakeMetabolizer", type="source", repos=NULL)
@@ -226,30 +226,37 @@ PeterWeather2010 <- PeterWeather0[,c("datetime", "PAR", "WindSpd")]
 # = Read in Thermistor data =
 # ===========================
 # Can't actually use therm (or won't) b/c 1) don't have it for first few months of 2010, 2) need to remove out-of-lake obs
-# thermFiles <- list.files("/Users/Battrd/Documents/School&Work/WiscResearch/WardTherm/WardThermComplete_2010/")
-# thermDepths <- gsub("WardTherm2010_([0-9]\\.[0-9])m.csv", "\\1", thermFiles)
-# 
-# for(i in 1:length(thermFiles)){
-# 	tFile <- paste("/Users/Battrd/Documents/School&Work/WiscResearch/WardTherm/WardThermComplete_2010/", thermFiles[i], sep="")
-# 	tDepth <- as.character(as.numeric(thermDepths[i]))
-# 	tTherm0 <- read.table(tFile, sep=",", header=FALSE)[,-1]
-# 	names(tTherm0) <- c("DateTime", paste("wtr",tDepth, sep="_"))
-# 	tTherm0[,"DateTime"] <- as.character(tTherm0[,"DateTime"])
-# 	tTherm0[,"DateTime"] <- gsub("^(?=[0-9]/)", "0", tTherm0[,"DateTime"], perl=TRUE)
-# 	tTherm0[,"DateTime"] <- gsub("(?<=[0-9]{2}/)([0-9])(?=/)", "0\\1", tTherm0[,"DateTime"], perl=TRUE)
-# 	tTherm0[,"DateTime"] <- as.character(as.POSIXct(tTherm0[,"DateTime"], format="%m/%d/%Y %H:%M"))
-# 	tTherm0[,"DateTime"] <- round.time(tTherm0[,"DateTime"], units="5 minutes")
-# 	rmDups <- !duplicated(tTherm0[,"DateTime"])
-# 	tTherm <- tTherm0[rmDups,]
-# 	
-# 	# rollapply(tTherm[,2], width=288, by=288, scale)
-# 
-# 	if(i!=1){
-# 		tThermCum <- merge(tThermCum, tTherm, all=TRUE)
-# 	}else{
-# 		tThermCum <- tTherm
-# 	}
-# }
+thermFiles <- list.files("/Users/Battrd/Documents/School&Work/WiscResearch/WardTherm/WardThermComplete_2010/")
+thermDepths <- gsub("WardTherm2010_([0-9]\\.[0-9])m.csv", "\\1", thermFiles)
+
+for(i in 1:length(thermFiles)){
+	tFile <- paste("/Users/Battrd/Documents/School&Work/WiscResearch/WardTherm/WardThermComplete_2010/", thermFiles[i], sep="")
+	tDepth <- as.character(as.numeric(thermDepths[i]))
+	tTherm0 <- read.table(tFile, sep=",", header=FALSE)[,-1]
+	names(tTherm0) <- c("datetime", paste("wtr",tDepth, sep="_"))
+	tTherm0[,"datetime"] <- as.character(tTherm0[,"datetime"])
+	tTherm0[,"datetime"] <- gsub("^(?=[0-9]/)", "0", tTherm0[,"datetime"], perl=TRUE)
+	tTherm0[,"datetime"] <- gsub("(?<=[0-9]{2}/)([0-9])(?=/)", "0\\1", tTherm0[,"datetime"], perl=TRUE)
+	tTherm0[,"datetime"] <- as.POSIXct(tTherm0[,"datetime"], format="%m/%d/%Y %H:%M", tz="GMT")
+	tTherm0[,"datetime"] <- round.time(tTherm0[,"datetime"], units="5 minutes")
+	rmDups <- !duplicated(tTherm0[,"datetime"])
+	tTherm <- tTherm0[rmDups,]
+	
+	# rollapply(tTherm[,2], width=288, by=288, scale)
+
+	if(i!=1){
+		tThermCum <- merge(tThermCum, tTherm, all=TRUE)
+	}else{
+		tThermCum <- tTherm
+	}
+}
+
+w10.therm0 <- tThermCum[complete.cases(tThermCum),]
+
+
+ward10.zmix <- ts.meta.depths(w10.therm)
+ward10.zmix <- ward10.zmix[,"top"] < 0.25 & !is.na(ward10.zmix[,"top"])
+ward10.zmix[ward10.zmix, "top"] <- 0.25
 
 # tTherm[15000:15010,]
 
@@ -264,10 +271,18 @@ Mode <- function(x){
 # =====================
 # merge weather and sonde
 LakeMetabolizer:::pred.merge(sondes[[2]], PeterWeather2010, all=TRUE)
-ward10.epi <- merge(sondes[[2]], PeterWeather2010, all.x=TRUE)
+ward10.epi0 <- merge(sondes[[2]], PeterWeather2010, all.x=TRUE)
 
 # fix names
-names(ward10.epi) <- c("datetime","year", "doy", "do.obs", "do.sat", "wtr", "z.mix", "top", "bot", "sensor_depth", "baro", "z1perc", "irr", "wnd")
+names(ward10.epi0) <- c("datetime","year", "doy", "do.obs", "do.sat", "wtr", "z.mix", "top", "bot", "sensor_depth", "baro", "z1perc", "irr", "wnd")
+ward10.epi0 <- ward10.epi0[,c("datetime","do.obs", "do.sat", "wtr", "z.mix", "baro", "z1perc", "irr", "wnd")]
+
+
+# add in thermistor zmix when available
+ward10.epi <- merge(ward10.epi0, ward10.zmix[,c("datetime", "top")], all.x=TRUE)
+w10.have.therm <- !is.na(ward10.epi[,"top"])
+ward10.epi[w10.have.therm, "z.mix"] <- ward10.epi[w10.have.therm, "top"]
+
 
 # format time
 ward10.epi[,"datetime"] <- as.POSIXct(ward10.epi[,"datetime"])

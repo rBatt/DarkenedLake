@@ -266,6 +266,7 @@ colMeans(ward10.epi.kal[good10,])
 
 good12 <- ward12.epi.kal[,"GPP"] > 0 & ward12.epi.kal[,"R"] < 0
 colMeans(ward12.epi.kal[good12,])
+wa12.kal.g2r <- ward12.epi.kal[good12,"GPP"]/-ward12.epi.kal[good12, "R"]
 
 
 # =====================================
@@ -273,15 +274,64 @@ colMeans(ward12.epi.kal[good12,])
 # =====================================
 w12.day <- is.day(ward12.epi[, "datetime"], 46.28)
 
+max.dZ <- function(x){
+	# if(all(is.na(diff(x[x[,"z.mix"]>=0.5,"z.mix"])))){return(data.frame(dZ=NA))}
+	if(all(is.na(diff(x[,"z.mix"])))){return(data.frame(dZ=NA))}
+	data.frame(
+		dZ=max(
+			cumsum(
+				na.omit(diff(x[,"z.mix"]))
+			)
+		)
+	)
+}
+
+max_subarray <- function(A) {
+   A <- diff(A[,"z.mix"])
+   max_ending_here <- 0
+   max_so_far <- 0
+   for (x in A) {
+      max_ending_here <- max(0, max_ending_here + x, na.rm=TRUE)
+      max_so_far <- max(max_so_far, max_ending_here, na.rm=TRUE)
+   }
+   data.frame(dZ=max_so_far)
+}
+
+max_subarray2 <- function(A) {
+   A <- A[-c(1:10),"z.mix"] - max(0.5, mean(A[1:10,"z.mix"]), na.rm=TRUE)
+   # max_ending_here <- 0
+   # max_so_far <- 0
+   # for (x in A) {
+   #    max_ending_here <- max(0, max_ending_here + x, na.rm=TRUE)
+   #    max_so_far <- max(max_so_far, max_ending_here, na.rm=TRUE)
+   # }
+   # data.frame(dZ=max_so_far)
+   if(all(is.na(A))){
+	return(data.frame(dZ=NA))
+   }
+   data.frame(dZ=max(A, na.rm=TRUE))
+}
+
 w12.doy <- LakeMetabolizer:::date2doy(ward12.epi[,"datetime"])
-w12.dZ <- ddply(cbind(doy=trunc(w12.doy), isDay=w12.day, ward12.epi), .variables=c("doy", "isDay"), function(x){data.frame(dZ=sum(diff(x[,"z.mix"]), na.rm=TRUE))})
+# w12.dZ <- ddply(cbind(doy=trunc(w12.doy), isDay=w12.day, ward12.epi), .variables=c("doy", "isDay"), .fun=max.dZ)
+w12.dZ <- ddply(cbind(doy=trunc(w12.doy), isDay=w12.day, ward12.epi), .variables=c("doy", "isDay"), .fun=max_subarray2)
 w12.dZ.day <- w12.dZ[w12.dZ[,"isDay"],"dZ"]
 w12.dZ.night <- w12.dZ[!w12.dZ[,"isDay"],"dZ"]
+dz.range <- range(w12.dZ[,"dZ"], na.rm=TRUE)
 dev.new()
-par(mfrow=c(2,1), mar=c(2,2,0.5,0.5))
-plot(w12.dZ[!w12.dZ[,"isDay"],c("doy","dZ")], type="l")
-plot(w12.dZ.night-w12.dZ.day, type="l")
-abline(h=0, col="blue")
+par(mfrow=c(2,1), mar=c(2.5,3.5,0.5,0.5), ps=10, mgp=c(1.5, 0.35, 0), tcl=-0.25)
 
+plot(w12.dZ[!w12.dZ[,"isDay"],c("doy","dZ")], type="l", ylab="nighttime\nmax cumulative deepening (m)", ylim=dz.range)
+abline(h=0, lty="dotted")
+abline(h=mean(w12.dZ[!w12.dZ[,"isDay"],"dZ"], na.rm=TRUE), col="blue")
+
+plot(w12.dZ[w12.dZ[,"isDay"],c("doy","dZ")], type="l", ylab="daytime\nmax cumulative deepening (m)", ylim=dz.range)
+abline(h=0, lty="dotted")
+abline(h=mean(w12.dZ[w12.dZ[,"isDay"],"dZ"], na.rm=TRUE), col="blue")
+
+kalmetab.dz <- merge(ward12.epi.kal, w12.dZ[w12.dZ[,"isDay"],c("doy","dZ")], all.x=TRUE)
+
+mean(w12.dZ[!w12.dZ[,"isDay"],"dZ"], na.rm=TRUE)
+mean(w12.dZ[w12.dZ[,"isDay"],"dZ"], na.rm=TRUE)
 
 
