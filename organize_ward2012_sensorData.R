@@ -3,14 +3,25 @@
 library("plyr")
 library("rLakeAnalyzer")
 
-# detach(package:LakeMetabolizer, unload=TRUE)
-# install.packages("/Users/Battrd/Documents/School&Work/WiscResearch/LakeMetabolizer", type="source", repos=NULL)
+detach(package:LakeMetabolizer, unload=TRUE)
+install.packages("/Users/Battrd/Documents/School&Work/WiscResearch/LakeMetabolizer", type="source", repos=NULL)
 library("LakeMetabolizer")
 
-source("/Users/Battrd/Documents/School&Work/WiscResearch/Isotopes_2012Analysis/Alme.R")
-source("/Users/Battrd/Documents/School&Work/WiscResearch/Isotopes_2012Analysis/ByeShort.R")
-source("/Users/Battrd/Documents/School&Work/WiscResearch/Isotopes_2012Analysis/Chunks.R")
-source("/Users/Battrd/Documents/School&Work/WiscResearch/Isotopes_2012Analysis/Light.R")
+# source("/Users/Battrd/Documents/School&Work/WiscResearch/Isotopes_2012Analysis/Alme.R")
+# source("/Users/Battrd/Documents/School&Work/WiscResearch/Isotopes_2012Analysis/ByeShort.R")
+# source("/Users/Battrd/Documents/School&Work/WiscResearch/Isotopes_2012Analysis/Chunks.R")
+# source("/Users/Battrd/Documents/School&Work/WiscResearch/Isotopes_2012Analysis/Light.R")
+
+# ===============
+# = Manual Zmix =
+# ===============
+w12.manZ.date0 <- c(105, 110, 117, 124, 131, 138, 145, 152, 159, 166, 173, 180, 187, 194, 201, 208, 215, 222, 229, 236, 241)
+w12.manZ.date <- as.POSIXct((w12.manZ.date0)*24*60*60, origin="2011-12-31", tz="GMT") # confirm: as.POSIXct("105-2012", format="%j-%Y")
+w12.manZ00 <- c(1.0,2.0,2.0,0.5,0.5, 1.0, 1.0, 1.5, 0.25, 1.0, 1.0, 0.5, 0.5, 1, 1, 1, 1, 1.5, 1.5, 1, 0.25)
+w12.manZ.interpDate <- seq(from=as.POSIXct("2012-04-14 00:00:00"), to=as.POSIXct("2012-08-28 23:55:00"), by=60*5)
+w12.manZ0 <- approx(x=w12.manZ.date, y=w12.manZ00, xout=w12.manZ.interpDate, method="constant", f=0, rule=2)
+w12.manZ <- data.frame("datetime"=w12.manZ0$x, "z.mix"=w12.manZ0$y)
+
 
 # ===========
 # = Weather =
