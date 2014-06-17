@@ -1,6 +1,10 @@
 
 library(plyr)
 detach(package:LakeMetabolizer, unload=TRUE)
+# library("roxygen2")
+# library("devtools")
+# roxygenise("/Users/Battrd/Documents/School&Work/WiscResearch/LakeMetabolizer", overwrite=FALSE)
+# document("/Users/Battrd/Documents/School&Work/WiscResearch/LakeMetabolizer", roclets="rd")
 # install.packages("/Users/Battrd/Documents/School&Work/WiscResearch/Isotopes_2012Analysis/lib/LakeMetabolizer", type="source", repos=NULL)
 install.packages("/Users/Battrd/Documents/School&Work/WiscResearch/LakeMetabolizer", type="source", repos=NULL)
 # update.packages("/Users/Battrd/Documents/School&Work/WiscResearch/Isotopes_2012Analysis/lib/LakeMetabolizer", type="source", repos=NULL)
@@ -23,108 +27,6 @@ Sat2Conc <- function(SDO2sat, SDtemp){ # convert DO % sat to mg/L
 }
 a.nc <- function(x) as.numeric(as.character(x)) # function to convert factor to numeric, but safe if starting as character, numeric, integer
 
-# =======================
-# = round.time Function =
-# =======================
-round.time <- function(x, units, input.format=NULL, output.format="%Y-%m-%d %H:%M:%S"){
-	# x = head(t.sonde0.na2[,"date"], 20) + 120
-	# units = "df.345 min"
-	# Check for invalid input classes
-	stopifnot(is.character(units)&is.character(output.format)&(is.null(input.format)|is.character(input.format)))
-	
-	# Determine time unit
-	unit.choices <- c("sec", "min", "hour", "day")
-	choices.or <- paste(unit.choices, collapse="|")
-	unit.pattern <- paste(".*(", choices.or, ").*", sep="")
-	unit <- gsub(unit.pattern, "\\1", units)
-	if(is.na(unit)){stop("not a valid unit, use sec, min, hour, or day")}
-	which.choice <- which(unit==unit.choices)
-	
-	# Determine time interval
-	u.time.pattern <- "(?:[0-9]+\\.[0-9]+)|(?:[0-9]+\\.)|(?:\\.[0-9]+)|(?:[0-9]+)"
-	u.time.char <- regmatches(units, regexpr(u.time.pattern, units, perl=TRUE))
-	u.time <- as.numeric(u.time.char)
-	u.time <- ifelse(is.na(u.time), 1, u.time)
-	
-	unit.cutoff <- switch(unit, sec=60, min=60, hour=24, day=1)
-	
-	# =========================================================================
-	# = Check for invalid input (before slow [attempted] conversion to POSIX) =
-	# =========================================================================
-	if(sign(u.time)==-1L){
-		stop("time interval must be positive")
-	}
-	# Deal with case where units are 1 second (or less)
-	if(unit=="sec" & u.time<=1L){
-		return(format.Date(x, format=output.format))
-	} else
-	
-	# Fractional time intervals – convert to smaller unit
-	if((trunc(u.time)-u.time)!=0){
-		if(sign(u.time)==1L){
-			while((trunc(u.time)-u.time)!=0){
-				if(unit=="sec"){stop("time interval must be an integer when converted to units of seconds")}
-				unit <- unit.choices[which.choice-1]
-				which.choice <- which(unit==unit.choices)
-				unit.cutoff <- switch(unit, sec=60, min=60, hour=24)
-				u.time <- unit.cutoff*u.time
-			}
-		}else{
-			stop("time interval must be positive")
-		}
-	} else 
-	
-	# Deal with case where units are days
-	if(unit=="day"){
-		if(u.time==1){
-			return(format.Date(trunc.POSIXt(x + 43200, units = units), format=output.format))
-		}else{
-			stop("units must be <= 1 day")
-		}
-	} else 
-	
-	# Deal w/ cases where time interval is 1 unit
-	if(u.time==1){
-			unit <- unit.choices[which.choice-1]
-			which.choice <- which(unit==unit.choices)
-			unit.cutoff <- switch(unit, sec=60, min=60, hour=24)
-			u.time <- unit.cutoff
-	} 
-	
-	# Deal with cases where time interval is > 1 of a larger unit
-	# Note that this follows up on case where u.time is > 1 and is not an integer
-	if(u.time>unit.cutoff){
-		u.time <- u.time%%unit.cutoff
-		mod.mess <- paste("Rounding to units =", u.time, unit) # may or may not want to make this a warning ...
-		warning(mod.mess)
-	}
-	
-	# =============================================
-	# = Convert to POSIX, or if can't, give error =
-	# =============================================
-	if(all(class(x)!="POSIX.ct")){
-		if(is.null(input.format)){
-			x <- as.POSIXct(x)
-		}else{
-			x <- as.POSIXct(x, format=input.format)
-		}
-	}
-	
-	# ===========================================================
-	# = Matching units (e.g., min) and unit multiples (e.g., 5) =
-	# ===========================================================
-	
-	which.choice <- which(unit==unit.choices)
-	form.unit <- c("%S", "%M", "%H", "%d")[which.choice]
-	mult <- as.integer(format.Date(x, format=form.unit))/u.time
-	after <- round(mult, 0)*u.time
-	# direction <- sign(after-before)
-	
-	# trunc.unit <- unit.choices[min(which.choice+1, length(unit.choices))]
-	trunc.unit <- unit.choices[min(which.choice+1, length(unit.choices))]
-	rounded <- trunc.POSIXt(x, trunc.unit) + switch(unit, sec = 1, min = 60, hour = 3600, day = 86400)*after
-	format.Date(rounded, format=output.format)
-}
 
 sondes <- list()
 for(i in 1:length(sites)){
@@ -183,7 +85,7 @@ for(i in 1:length(sites)){
 		t.sonde0.na2[,"dosat"] <- t.sonde0.na1[,"dosat"] - t.cumul.drift.sat
 		t.sonde0.na2[,"doobs"] <- t.sonde0.na1[,"doobs"] - t.cumul.drift.conc
 		
-		t.sonde0.na2[,"datetime"] <- round.time(t.sonde0.na2[,"datetime"], "5 minutes")
+		t.sonde0.na2[,"datetime"] <- LakeMetabolizer:::round.time(t.sonde0.na2[,"datetime"], "5 minutes")
 		
 		t.sonde <- t.sonde0.na2[!duplicated(t.sonde0.na2[,"datetime"]),]
 		t.sonde[,"zmix"] <- t.calInfo[j,"LayerBot"]
@@ -216,8 +118,8 @@ PeterWeather0 <- PeterWeather0[,c("Date", "Time", "Year", "PAR","WindSpd")]
 
 PeterWeather0[,"datetime"] <- paste(PeterWeather0[,"Date"], PeterWeather0[,"Time"])
 PeterWeather0[,"datetime"] <- gsub("^(?=[0-9]/)", "0", PeterWeather0[,"datetime"], perl=TRUE)
-PeterWeather0[,"datetime"] <- gsub("(?<=[0-9]{2}/)([0-9])(?=/)", "0\\1", PeterWeather0[,"date"], perl=TRUE)
-PeterWeather0[,"datetime"] <- as.character(as.POSIXct(PeterWeather0[,"datetime"], format="%m/%d/%y %I:%M:%S %p"))
+PeterWeather0[,"datetime"] <- gsub("(?<=[0-9]{2}/)([0-9])(?=/)", "0\\1", PeterWeather0[,"datetime"], perl=TRUE)
+PeterWeather0[,"datetime"] <- as.POSIXct(PeterWeather0[,"datetime"], format="%m/%d/%y %I:%M:%S %p")
 PeterWeather2010 <- PeterWeather0[,c("datetime", "PAR", "WindSpd")]
 
 
@@ -238,7 +140,7 @@ for(i in 1:length(thermFiles)){
 	tTherm0[,"datetime"] <- gsub("^(?=[0-9]/)", "0", tTherm0[,"datetime"], perl=TRUE)
 	tTherm0[,"datetime"] <- gsub("(?<=[0-9]{2}/)([0-9])(?=/)", "0\\1", tTherm0[,"datetime"], perl=TRUE)
 	tTherm0[,"datetime"] <- as.POSIXct(tTherm0[,"datetime"], format="%m/%d/%Y %H:%M", tz="GMT")
-	tTherm0[,"datetime"] <- round.time(tTherm0[,"datetime"], units="5 minutes")
+	tTherm0[,"datetime"] <- LakeMetabolizer:::round.time(tTherm0[,"datetime"], units="5 minutes")
 	rmDups <- !duplicated(tTherm0[,"datetime"])
 	tTherm <- tTherm0[rmDups,]
 	
@@ -254,17 +156,9 @@ for(i in 1:length(thermFiles)){
 w10.therm0 <- tThermCum[complete.cases(tThermCum),]
 
 
-ward10.zmix <- ts.meta.depths(w10.therm)
-ward10.zmix <- ward10.zmix[,"top"] < 0.25 & !is.na(ward10.zmix[,"top"])
-ward10.zmix[ward10.zmix, "top"] <- 0.25
-
-# tTherm[15000:15010,]
-
-Mode <- function(x){
-		ux <- unique(x)
-		ux[which.max(tabulate(match(x, ux)))]
-}
-
+ward10.zmix <- ts.meta.depths(w10.therm0)
+ward10.zmix.is0 <- ward10.zmix[,"top"] < 0.25 & !is.na(ward10.zmix[,"top"])
+ward10.zmix[ward10.zmix.is0, "top"] <- 0.25
 
 # =====================
 # = Organize 2010 Epi =
@@ -288,10 +182,10 @@ ward10.epi[w10.have.therm, "z.mix"] <- ward10.epi[w10.have.therm, "top"]
 ward10.epi[,"datetime"] <- as.POSIXct(ward10.epi[,"datetime"])
 
 # scale wind, calculate K, convert to K O2, scale K to sampling frequency
-ward10.epi.scale10 <- scale.exp.wind.base(ward10.epi[,"wnd"], 2) # scale wind speed to 10 m
-ward10.epi.k.cole <- k.cole.base(ward10.epi.scale10) # calculate k600 using Cole & Caraco method
-ward10.epi[,"k.gas"] <- k600.2.kGAS.base(ward10.epi.k.cole, ward10.epi[,"wtr"], gas="O2")
-ward10.epi[,"do.sat"] <- o2.at.sat.base(ward10.epi[,"wtr"], baro=ward10.epi[,"baro"])
+ward10.epi.scale10 <- LakeMetabolizer:::scale.exp.wind.base(ward10.epi[,"wnd"], 2) # scale wind speed to 10 m
+ward10.epi.k.cole <- LakeMetabolizer:::k.cole.base(ward10.epi.scale10) # calculate k600 using Cole & Caraco method
+ward10.epi[,"k.gas"] <- LakeMetabolizer:::k600.2.kGAS.base(ward10.epi.k.cole, ward10.epi[,"wtr"], gas="O2")
+ward10.epi[,"do.sat"] <- LakeMetabolizer:::o2.at.sat.base(ward10.epi[,"wtr"], baro=ward10.epi[,"baro"])
 
 ward10.epi <- ward10.epi[,c("datetime", "do.obs", "do.sat", "k.gas", "z.mix",  "irr", "wtr", "wnd")]
 

@@ -3,8 +3,8 @@
 library("plyr")
 library("rLakeAnalyzer")
 
-detach(package:LakeMetabolizer, unload=TRUE)
-install.packages("/Users/Battrd/Documents/School&Work/WiscResearch/LakeMetabolizer", type="source", repos=NULL)
+# detach(package:LakeMetabolizer, unload=TRUE)
+# install.packages("/Users/Battrd/Documents/School&Work/WiscResearch/LakeMetabolizer", type="source", repos=NULL)
 library("LakeMetabolizer")
 
 source("/Users/Battrd/Documents/School&Work/WiscResearch/Isotopes_2012Analysis/Alme.R")

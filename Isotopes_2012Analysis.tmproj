@@ -10,7 +10,7 @@
 			<key>filename</key>
 			<string>organize_ward2012_sensorData.R</string>
 			<key>lastUsed</key>
-			<date>2014-06-16T00:29:13Z</date>
+			<date>2014-06-17T14:18:25Z</date>
 			<key>selected</key>
 			<true/>
 		</dict>
@@ -18,7 +18,7 @@
 			<key>filename</key>
 			<string>organize_ward2010_sensorData.R</string>
 			<key>lastUsed</key>
-			<date>2014-06-16T00:29:13Z</date>
+			<date>2014-06-17T14:18:25Z</date>
 		</dict>
 	</array>
 	<key>fileHierarchyDrawerWidth</key>
@@ -30,44 +30,28 @@
 			<key>caret</key>
 			<dict>
 				<key>column</key>
-				<integer>9</integer>
+				<integer>0</integer>
 				<key>line</key>
-				<integer>325</integer>
+				<integer>440</integer>
 			</dict>
-			<key>columnSelection</key>
-			<false/>
 			<key>firstVisibleColumn</key>
 			<integer>0</integer>
 			<key>firstVisibleLine</key>
-			<integer>331</integer>
-			<key>selectFrom</key>
-			<dict>
-				<key>column</key>
-				<integer>0</integer>
-				<key>line</key>
-				<integer>325</integer>
-			</dict>
-			<key>selectTo</key>
-			<dict>
-				<key>column</key>
-				<integer>14</integer>
-				<key>line</key>
-				<integer>325</integer>
-			</dict>
+			<integer>418</integer>
 		</dict>
 		<key>organize_ward2012_sensorData.R</key>
 		<dict>
 			<key>caret</key>
 			<dict>
 				<key>column</key>
-				<integer>0</integer>
+				<integer>43</integer>
 				<key>line</key>
-				<integer>265</integer>
+				<integer>6</integer>
 			</dict>
 			<key>firstVisibleColumn</key>
 			<integer>0</integer>
 			<key>firstVisibleLine</key>
-			<integer>251</integer>
+			<integer>0</integer>
 		</dict>
 	</dict>
 	<key>openDocuments</key>
@@ -78,6 +62,6 @@
 	<key>showFileHierarchyDrawer</key>
 	<true/>
 	<key>windowFrame</key>
-	<string>{{1, 537}, {1772, 881}}</string>
+	<string>{{313, 652}, {1238, 515}}</string>
 </dict>
 </plist>
