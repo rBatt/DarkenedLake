@@ -121,24 +121,7 @@ w12m.r4 <- merge(w12m.r3, cbind("method"="bayes", ward12.meta.bay), all=TRUE)
 
 
 
-# ==========
-# = lower? =
-# ==========
-good10 <- ward10.epi.kal[,"GPP"] > 0 & ward10.epi.kal[,"R"] < 0
-colMeans(ward10.epi.kal[good10,])
-
-good12 <- ward12.epi.kal[,"GPP"] > 0 & ward12.epi.kal[,"R"] < 0
-late12 <-  (ward12.epi.kal[,"doy"] >= min(ward10.epi.kal[,"doy"]))
-early12 <-  (ward12.epi.kal[,"doy"] < min(ward10.epi.kal[,"doy"]))
-colMeans(ward12.epi.kal[good12&early12,])
-colMeans(ward12.epi.kal[good12&late12,])
-
 # save.image("/Users/Battrd/Documents/School&Work/WiscResearch/Isotopes_2012Analysis/Data/ward_2010&2012_metabolism_allModels_LakeMetabolizer.RData")
-
-
-# wa12.kal.g2r <- ward12.epi.kal[good12,"GPP"]/-ward12.epi.kal[good12, "R"]
-
-wa10.kal.g2r <- ward10.epi.kal[good10,"GPP"]/-ward10.epi.kal[good10, "R"]
 
 
 

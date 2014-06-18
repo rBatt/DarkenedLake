@@ -74,7 +74,6 @@ for(i in 1:nrow(ShalKey2012)){
 		if(tName=="A14APR12.CDF"){
 			ReadClassCDF <- c("character", "character", rep("numeric", 8))
 			tDat <- read.table(paste(dat.path, "WardSondes_2012/", tName, sep=""), sep=",", header=TRUE, skip=1, colClasses=ReadClassCDF)
-			# head(read.table(paste(dat.path, "WardSondes2012/", tName, sep=""), sep=","))
 			names(tDat) <- c("Date", "Time", "wtr", "SpCond", "pH", "BGA_conc", "BGA_RFU", "DOsat", "Chl_conc", "Chl_RFU", "Battery")
 			tDat[,"do.obs"] <- Sat2Conc(tDat[,"DOsat"], tDat[,"wtr"])
 		}
@@ -87,10 +86,8 @@ for(i in 1:nrow(ShalKey2012)){
 	if(tFormat=="txt"){
 		ReadClassTxt <- c(NA, NA, rep("numeric", 10))
 		tDat <- read.table(paste(dat.path, "WardSondes_2012/", tName, sep=""), sep=",", header=FALSE, skip=4, colClasses=ReadClassTxt)#[-c(1,2,3,4),]
-		# head(read.table(paste(dat.path, "WardSondes2012/", tName, sep=""), sep=","))
 		names(tDat) <- c("Date", "Time", "wtr", "SpCond", "pH", "BGA_conc", "BGA_RFU", "DOsat", "do.obs", "Chl_conc", "Chl_RFU", "Battery")
 		tDat[,"datetime"] <- as.POSIXct(paste(as.character(tDat[,"Date"]), as.character(tDat[,"Time"])), format="%Y/%m/%d %T", tz="GMT")
-		# tDat <- tDat[,-9]
 	}
 	
 	
@@ -191,14 +188,12 @@ ward12.meta.full <- merge(ward12.meta.full0, irr_wnd_2012, all.x=TRUE)
 
 # wind is already scaled above where UNDERC and peter were being combined
 
-# ward12.meta.k.cole <- k.cole.base(ward12.meta.full[,"wnd"]) # calculate k600 using Cole & Caraco method
 ward12.meta.full[,"k600.cole"] <- k.cole.base(ward12.meta.full[,"wnd"]) # calculate k600 using Cole & Caraco method
 ward12.meta.full[,"k.gas"] <- k600.2.kGAS.base(ward12.meta.full[,"k600.cole"], ward12.meta.full[,"wtr"], gas="O2")
 ward12.meta.full[,"k.gas"] <- 0L
 
 ward12.meta.full[,"doy"] <- LakeMetabolizer:::date2doy(ward12.meta0[,"datetime"])
 
-# ward12.meta.full[trunc(ward12.meta.full[,"doy"])==124L,"z.mix"]
 
 # Smooth metalimnetic temperature time series
 ward12.meta.full[,"watts"] <- watts.in(ward12.meta.full[,"top"], ward12.meta.full[,"bot"], ward12.meta.full[,"irr"], ward12.meta.full[,"z1perc"])
