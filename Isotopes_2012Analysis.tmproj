@@ -3,14 +3,26 @@
 <plist version="1.0">
 <dict>
 	<key>currentDocument</key>
-	<string>organize_ward2012_sensorData.R</string>
+	<string>ward_plot_metabolismMethods.R</string>
 	<key>documents</key>
 	<array>
 		<dict>
 			<key>filename</key>
+			<string>calculateMetabolism_WardPaul_2010&amp;2012.R</string>
+			<key>lastUsed</key>
+			<date>2014-06-18T16:23:27Z</date>
+		</dict>
+		<dict>
+			<key>filename</key>
 			<string>organize_ward2012_sensorData.R</string>
 			<key>lastUsed</key>
-			<date>2014-06-17T14:18:25Z</date>
+			<date>2014-06-18T00:53:18Z</date>
+		</dict>
+		<dict>
+			<key>filename</key>
+			<string>ward_plot_metabolismMethods.R</string>
+			<key>lastUsed</key>
+			<date>2014-06-18T16:23:27Z</date>
 			<key>selected</key>
 			<true/>
 		</dict>
@@ -18,13 +30,27 @@
 			<key>filename</key>
 			<string>organize_ward2010_sensorData.R</string>
 			<key>lastUsed</key>
-			<date>2014-06-17T14:18:25Z</date>
+			<date>2014-06-18T00:55:47Z</date>
 		</dict>
 	</array>
 	<key>fileHierarchyDrawerWidth</key>
 	<integer>200</integer>
 	<key>metaData</key>
 	<dict>
+		<key>calculateMetabolism_WardPaul_2010&amp;2012.R</key>
+		<dict>
+			<key>caret</key>
+			<dict>
+				<key>column</key>
+				<integer>15</integer>
+				<key>line</key>
+				<integer>9</integer>
+			</dict>
+			<key>firstVisibleColumn</key>
+			<integer>0</integer>
+			<key>firstVisibleLine</key>
+			<integer>61</integer>
+		</dict>
 		<key>organize_ward2010_sensorData.R</key>
 		<dict>
 			<key>caret</key>
@@ -32,21 +58,35 @@
 				<key>column</key>
 				<integer>0</integer>
 				<key>line</key>
-				<integer>440</integer>
+				<integer>218</integer>
 			</dict>
 			<key>firstVisibleColumn</key>
 			<integer>0</integer>
 			<key>firstVisibleLine</key>
-			<integer>418</integer>
+			<integer>208</integer>
 		</dict>
 		<key>organize_ward2012_sensorData.R</key>
 		<dict>
 			<key>caret</key>
 			<dict>
 				<key>column</key>
-				<integer>43</integer>
+				<integer>0</integer>
 				<key>line</key>
-				<integer>6</integer>
+				<integer>293</integer>
+			</dict>
+			<key>firstVisibleColumn</key>
+			<integer>0</integer>
+			<key>firstVisibleLine</key>
+			<integer>264</integer>
+		</dict>
+		<key>ward_plot_metabolismMethods.R</key>
+		<dict>
+			<key>caret</key>
+			<dict>
+				<key>column</key>
+				<integer>0</integer>
+				<key>line</key>
+				<integer>151</integer>
 			</dict>
 			<key>firstVisibleColumn</key>
 			<integer>0</integer>
@@ -58,10 +98,12 @@
 	<array>
 		<string>organize_ward2010_sensorData.R</string>
 		<string>organize_ward2012_sensorData.R</string>
+		<string>calculateMetabolism_WardPaul_2010&amp;2012.R</string>
+		<string>ward_plot_metabolismMethods.R</string>
 	</array>
 	<key>showFileHierarchyDrawer</key>
 	<true/>
 	<key>windowFrame</key>
-	<string>{{313, 652}, {1238, 515}}</string>
+	<string>{{3, 363}, {1227, 515}}</string>
 </dict>
 </plist>
