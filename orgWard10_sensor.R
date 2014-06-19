@@ -50,9 +50,9 @@ for(i in 1:length(sites)){
 		# print(t.dat[1,])
 		# Format dates in file
 		if(t.f%in%c("Ward09Test.csv")){
-			t.date <- as.POSIXct(paste(t.dat[,"Date"], t.dat[,"Time"]), format="%m/%d/%y %H:%M")
+			t.date <- as.POSIXct(paste(t.dat[,"Date"], t.dat[,"Time"]), format="%m/%d/%y %H:%M", tz="GMT")
 		}else{
-			t.date <- as.POSIXct(paste(t.dat[,"Date"], t.dat[,"Time"]), format="%m/%d/%y %H:%M:%S")
+			t.date <- as.POSIXct(paste(t.dat[,"Date"], t.dat[,"Time"]), format="%m/%d/%y %H:%M:%S", tz="GMT")
 		}
 		
 		t.year <- as.integer(format.Date(t.date, format="%Y"))
@@ -193,7 +193,7 @@ ward10.meta0 <- merge(ward10.meta00, irr_wnd_2010, all.x=TRUE)
 names(ward10.meta0) <- c("datetime","year", "doy", "do.obs", "do.sat", "wtr", "z.mix", "top", "bot", "sensor_depth", "baro", "z1perc", "irr", "wnd")
 
 # format time
-ward10.meta0[,"datetime"] <- as.POSIXct(ward10.meta0[,"datetime"])
+ward10.meta0[,"datetime"] <- as.POSIXct(ward10.meta0[,"datetime"], tz="GMT")
 
 # scale wind, calculate K, convert to K O2, scale K to sampling frequency
 ward10.meta0[,"k.gas"] <- 0
