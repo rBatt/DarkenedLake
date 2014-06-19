@@ -1,13 +1,13 @@
 
 
 library(plyr)
-detach(package:LakeMetabolizer, unload=TRUE)
+# detach(package:LakeMetabolizer, unload=TRUE)
 # library("roxygen2")
 # library("devtools")
 # roxygenise("/Users/Battrd/Documents/School&Work/WiscResearch/LakeMetabolizer", overwrite=FALSE)
 # document("/Users/Battrd/Documents/School&Work/WiscResearch/LakeMetabolizer", roclets="rd")
 # install.packages("/Users/Battrd/Documents/School&Work/WiscResearch/Isotopes_2012Analysis/lib/LakeMetabolizer", type="source", repos=NULL)
-install.packages("/Users/Battrd/Documents/School&Work/WiscResearch/LakeMetabolizer", type="source", repos=NULL)
+# install.packages("/Users/Battrd/Documents/School&Work/WiscResearch/LakeMetabolizer", type="source", repos=NULL)
 # update.packages("/Users/Battrd/Documents/School&Work/WiscResearch/Isotopes_2012Analysis/lib/LakeMetabolizer", type="source", repos=NULL)
 # install.packages("/Users/Battrd/Documents/School&Work/WiscResearch/LakeMetabolizer", type="source", repos=NULL)
 library("LakeMetabolizer")
@@ -157,7 +157,7 @@ ward10.zmix[ward10.zmix.is0, "top"] <- 0.25
 # =====================
 # merge weather and sonde
 # LakeMetabolizer:::pred.merge(sondes[[2]], PeterWeather2010, all=TRUE)
-ward10.epi0 <- merge(sondes[[2]], PeterWeather2010, all.x=TRUE)
+ward10.epi0 <- merge(sondes[[2]], irr_wnd_2010, all.x=TRUE)
 
 # fix names
 names(ward10.epi0) <- c("datetime","year", "doy", "do.obs", "do.sat", "wtr", "z.mix", "top", "bot", "sensor_depth", "baro", "z1perc", "irr", "wnd")

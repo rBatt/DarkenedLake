@@ -3,52 +3,52 @@
 <plist version="1.0">
 <dict>
 	<key>currentDocument</key>
-	<string>orgWeather_2010&amp;2012.R</string>
+	<string>calcMetab_W&amp;L_10&amp;12.R</string>
 	<key>documents</key>
 	<array>
 		<dict>
 			<key>filename</key>
 			<string>orgWeather_2010&amp;2012.R</string>
 			<key>lastUsed</key>
-			<date>2014-06-19T00:19:43Z</date>
-			<key>selected</key>
-			<true/>
+			<date>2014-06-19T01:25:25Z</date>
 		</dict>
 		<dict>
 			<key>filename</key>
 			<string>calcMetab_W&amp;L_10&amp;12.R</string>
 			<key>lastUsed</key>
-			<date>2014-06-19T00:19:43Z</date>
+			<date>2014-06-19T01:38:21Z</date>
+			<key>selected</key>
+			<true/>
 		</dict>
 		<dict>
 			<key>filename</key>
 			<string>orgPaul12_sensor.R</string>
 			<key>lastUsed</key>
-			<date>2014-06-19T00:19:40Z</date>
+			<date>2014-06-19T01:38:21Z</date>
 		</dict>
 		<dict>
 			<key>filename</key>
 			<string>orgPaul10_sensor.R</string>
 			<key>lastUsed</key>
-			<date>2014-06-19T00:19:38Z</date>
+			<date>2014-06-19T01:36:01Z</date>
 		</dict>
 		<dict>
 			<key>filename</key>
 			<string>orgWard12_sensor.R</string>
 			<key>lastUsed</key>
-			<date>2014-06-19T00:19:36Z</date>
+			<date>2014-06-19T01:34:20Z</date>
 		</dict>
 		<dict>
 			<key>filename</key>
 			<string>ward_plot_metabolismMethods.R</string>
 			<key>lastUsed</key>
-			<date>2014-06-19T00:06:16Z</date>
+			<date>2014-06-19T01:24:57Z</date>
 		</dict>
 		<dict>
 			<key>filename</key>
 			<string>orgWard10_sensor.R</string>
 			<key>lastUsed</key>
-			<date>2014-06-19T00:19:34Z</date>
+			<date>2014-06-19T01:31:34Z</date>
 		</dict>
 	</array>
 	<key>fileHierarchyDrawerWidth</key>
@@ -60,14 +60,30 @@
 			<key>caret</key>
 			<dict>
 				<key>column</key>
-				<integer>89</integer>
+				<integer>100</integer>
 				<key>line</key>
-				<integer>142</integer>
+				<integer>71</integer>
 			</dict>
+			<key>columnSelection</key>
+			<false/>
 			<key>firstVisibleColumn</key>
 			<integer>0</integer>
 			<key>firstVisibleLine</key>
-			<integer>124</integer>
+			<integer>57</integer>
+			<key>selectFrom</key>
+			<dict>
+				<key>column</key>
+				<integer>9</integer>
+				<key>line</key>
+				<integer>71</integer>
+			</dict>
+			<key>selectTo</key>
+			<dict>
+				<key>column</key>
+				<integer>100</integer>
+				<key>line</key>
+				<integer>71</integer>
+			</dict>
 		</dict>
 		<key>orgPaul10_sensor.R</key>
 		<dict>
@@ -76,42 +92,26 @@
 				<key>column</key>
 				<integer>0</integer>
 				<key>line</key>
-				<integer>74</integer>
+				<integer>83</integer>
 			</dict>
-			<key>columnSelection</key>
-			<false/>
 			<key>firstVisibleColumn</key>
 			<integer>0</integer>
 			<key>firstVisibleLine</key>
 			<integer>59</integer>
-			<key>selectFrom</key>
-			<dict>
-				<key>column</key>
-				<integer>139</integer>
-				<key>line</key>
-				<integer>80</integer>
-			</dict>
-			<key>selectTo</key>
-			<dict>
-				<key>column</key>
-				<integer>0</integer>
-				<key>line</key>
-				<integer>74</integer>
-			</dict>
 		</dict>
 		<key>orgPaul12_sensor.R</key>
 		<dict>
 			<key>caret</key>
 			<dict>
 				<key>column</key>
-				<integer>63</integer>
+				<integer>0</integer>
 				<key>line</key>
-				<integer>106</integer>
+				<integer>119</integer>
 			</dict>
 			<key>firstVisibleColumn</key>
 			<integer>0</integer>
 			<key>firstVisibleLine</key>
-			<integer>106</integer>
+			<integer>18</integer>
 		</dict>
 		<key>orgWard10_sensor.R</key>
 		<dict>
@@ -120,7 +120,7 @@
 				<key>column</key>
 				<integer>0</integer>
 				<key>line</key>
-				<integer>209</integer>
+				<integer>224</integer>
 			</dict>
 			<key>firstVisibleColumn</key>
 			<integer>0</integer>
@@ -132,53 +132,23 @@
 			<key>caret</key>
 			<dict>
 				<key>column</key>
-				<integer>20</integer>
+				<integer>170</integer>
 				<key>line</key>
-				<integer>224</integer>
+				<integer>228</integer>
 			</dict>
-			<key>columnSelection</key>
-			<false/>
 			<key>firstVisibleColumn</key>
 			<integer>0</integer>
 			<key>firstVisibleLine</key>
-			<integer>207</integer>
-			<key>selectFrom</key>
-			<dict>
-				<key>column</key>
-				<integer>12</integer>
-				<key>line</key>
-				<integer>224</integer>
-			</dict>
-			<key>selectTo</key>
-			<dict>
-				<key>column</key>
-				<integer>27</integer>
-				<key>line</key>
-				<integer>224</integer>
-			</dict>
+			<integer>206</integer>
 		</dict>
 		<key>orgWeather_2010&amp;2012.R</key>
 		<dict>
 			<key>caret</key>
 			<dict>
 				<key>column</key>
-				<integer>0</integer>
+				<integer>99</integer>
 				<key>line</key>
-				<integer>17</integer>
-			</dict>
-			<key>firstVisibleColumn</key>
-			<integer>0</integer>
-			<key>firstVisibleLine</key>
-			<integer>52</integer>
-		</dict>
-		<key>ward_plot_metabolismMethods.R</key>
-		<dict>
-			<key>caret</key>
-			<dict>
-				<key>column</key>
-				<integer>36</integer>
-				<key>line</key>
-				<integer>285</integer>
+				<integer>11</integer>
 			</dict>
 			<key>firstVisibleColumn</key>
 			<integer>0</integer>
@@ -188,13 +158,12 @@
 	</dict>
 	<key>openDocuments</key>
 	<array>
+		<string>orgWeather_2010&amp;2012.R</string>
 		<string>orgWard10_sensor.R</string>
 		<string>orgWard12_sensor.R</string>
 		<string>orgPaul10_sensor.R</string>
 		<string>orgPaul12_sensor.R</string>
 		<string>calcMetab_W&amp;L_10&amp;12.R</string>
-		<string>orgWeather_2010&amp;2012.R</string>
-		<string>ward_plot_metabolismMethods.R</string>
 	</array>
 	<key>showFileHierarchyDrawer</key>
 	<true/>

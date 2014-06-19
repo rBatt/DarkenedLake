@@ -3,8 +3,8 @@
 library("plyr")
 library("rLakeAnalyzer")
 
-detach(package:LakeMetabolizer, unload=TRUE)
-install.packages("/Users/Battrd/Documents/School&Work/WiscResearch/LakeMetabolizer", type="source", repos=NULL)
+# detach(package:LakeMetabolizer, unload=TRUE)
+# install.packages("/Users/Battrd/Documents/School&Work/WiscResearch/LakeMetabolizer", type="source", repos=NULL)
 library("LakeMetabolizer")
 
 # ===============
@@ -73,7 +73,7 @@ for(i in 1:nrow(ShalKey2012)){
 	if(tFormat=="CDF"){
 		if(tName=="A14APR12.CDF"){
 			ReadClassCDF <- c("character", "character", rep("numeric", 8))
-			tDat <- read.table(paste(dat.path, "WardSondes_2012/", tName, sep=""), sep=",", header=TRUE, skip=1, colClasses=ReadClassCDF)
+			tDat <- read.table(paste(dat.path, tName, sep=""), sep=",", header=TRUE, skip=1, colClasses=ReadClassCDF)
 			names(tDat) <- c("Date", "Time", "wtr", "SpCond", "pH", "BGA_conc", "BGA_RFU", "DOsat", "Chl_conc", "Chl_RFU", "Battery")
 			tDat[,"do.obs"] <- Sat2Conc(tDat[,"DOsat"], tDat[,"wtr"])
 		}
@@ -85,7 +85,7 @@ for(i in 1:nrow(ShalKey2012)){
 	
 	if(tFormat=="txt"){
 		ReadClassTxt <- c(NA, NA, rep("numeric", 10))
-		tDat <- read.table(paste(dat.path, "WardSondes_2012/", tName, sep=""), sep=",", header=FALSE, skip=4, colClasses=ReadClassTxt)#[-c(1,2,3,4),]
+		tDat <- read.table(paste(dat.path, tName, sep=""), sep=",", header=FALSE, skip=4, colClasses=ReadClassTxt)#[-c(1,2,3,4),]
 		names(tDat) <- c("Date", "Time", "wtr", "SpCond", "pH", "BGA_conc", "BGA_RFU", "DOsat", "do.obs", "Chl_conc", "Chl_RFU", "Battery")
 		tDat[,"datetime"] <- as.POSIXct(paste(as.character(tDat[,"Date"]), as.character(tDat[,"Time"])), format="%Y/%m/%d %T", tz="GMT")
 	}
@@ -143,14 +143,14 @@ for(i in 1:nrow(DeepKey2012)){
 	if(tFormat=="CDF"){
 		if(tName=="B14APR12.CDF"){
 			ReadClassCDF <- c("character", "character", rep("numeric", 8))
-			tDat <- read.table(paste(dat.path, "WardSondes_2012/", tName, sep=""), sep=",", header=TRUE, skip=1, colClasses=ReadClassCDF)
+			tDat <- read.table(paste(dat.path, tName, sep=""), sep=",", header=TRUE, skip=1, colClasses=ReadClassCDF)
 			names(tDat) <- c("Date", "Time", "wtr", "SpCond", "pH", "BGA_conc", "BGA_RFU", "DOsat", "Chl_conc", "Chl_RFU")
 			tDat[,"do.obs"] <- Sat2Conc(tDat[,"DOsat"], tDat[,"wtr"])
 		}
 		
 		if(all(tName!="B14APR12.CDF" & DeepKey2012[,"Depth"]=="B")){
 			ReadClassCDF <- c("character", "character", rep("numeric", 9))
-			tDat <- read.table(paste(dat.path, "WardSondes_2012/", tName, sep=""), sep=",", header=TRUE, skip=2, colClasses=ReadClassCDF)
+			tDat <- read.table(paste(dat.path, tName, sep=""), sep=",", header=TRUE, skip=2, colClasses=ReadClassCDF)
 			names(tDat) <- c("Date", "Time", "wtr", "SpCond", "pH", "BGA_conc", "BGA_RFU", "DOsat", "Chl_conc", "Chl_RFU", "do.obs")
 		}
 	
@@ -161,10 +161,9 @@ for(i in 1:nrow(DeepKey2012)){
 	
 	if(tFormat=="txt"){
 		ReadClassTxt <- c(NA, NA, rep("numeric", 10))
-		tDat <- read.table(paste(dat.path, "WardSondes_2012/", tName, sep=""), sep=",", header=FALSE, skip=4, colClasses=ReadClassTxt)#[-c(1,2,3,4),]
+		tDat <- read.table(paste(dat.path, tName, sep=""), sep=",", header=FALSE, skip=4, colClasses=ReadClassTxt)
 		names(tDat) <- c("Date", "Time", "wtr", "SpCond", "pH", "BGA_conc", "BGA_RFU", "DOsat", "do.obs", "Chl_conc", "Chl_RFU", "Battery")
 		tDat[,"datetime"] <- as.POSIXct(paste(as.character(tDat[,"Date"]), as.character(tDat[,"Time"])), format="%Y/%m/%d %T", tz="GMT")
-		# tDat <- tDat[,-9]
 	}
 	
 	

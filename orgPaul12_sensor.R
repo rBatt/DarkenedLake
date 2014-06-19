@@ -60,11 +60,11 @@ mz.interp.date <- seq(range(man.zimx0[,"datetime"])[1], to=range(man.zimx0[,"dat
 mz.interp.zmix <- approx(x=man.zimx0[,"datetime"], y=man.zimx0[,"Zmix"], xout=mz.interp.date, method="constant", rule=2, f=0)$y
 man.z.mix <- data.frame(datetime=mz.interp.date, manZ=mz.interp.zmix)
 
-paul10.zmix0 <- merge(paul12.therm[,c("datetime","z.mix")], man.z.mix, all=TRUE)
-miss.tchain.z <- is.na(paul10.zmix0[,"z.mix"])
-paul10.zmix0[miss.tchain.z,"z.mix"] <- paul10.zmix0[miss.tchain.z,"manZ"]
+paul12.zmix0 <- merge(paul12.therm[,c("datetime","z.mix")], man.z.mix, all=TRUE)
+miss.tchain.z <- is.na(paul12.zmix0[,"z.mix"])
+paul12.zmix0[miss.tchain.z,"z.mix"] <- paul12.zmix0[miss.tchain.z,"manZ"]
 
-paul10.zmix <- paul10.zmix0[,c("datetime", "z.mix")]
+paul12.zmix <- paul12.zmix0[,c("datetime", "z.mix")]
 
 
 
@@ -96,7 +96,7 @@ for(i in 1:length(FileNames)){
 
 
 # merge sonde data w/ tchain + manual zmix
-paul12.epi00 <- merge(paul12.epi000, paul10.zmix, all.x=TRUE)
+paul12.epi00 <- merge(paul12.epi000, paul12.zmix, all.x=TRUE)
 
 # a few more hours of z.mix data needed to be added to beginning via constant interpolation rule=2
 fill.zmix.ind <- is.na(paul12.epi00[,"z.mix"])
