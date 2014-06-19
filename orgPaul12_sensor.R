@@ -125,7 +125,7 @@ paul12.epi <- paul12.epi.full[,c("datetime", "do.obs", "do.sat", "k.gas", "z.mix
 # =======================
 # = Save organized data =
 # =======================
-save(paul12.epi.full, paul12.epi, file="/Users/Battrd/Documents/School&Work/WiscResearch/Isotopes_2012Analysis/Data/sondes_paul2010.RData")
+save(paul12.epi.full, paul12.epi, file="/Users/Battrd/Documents/School&Work/WiscResearch/Isotopes_2012Analysis/Data/sondes_paul2012.RData")
 
 write.table(paul12.epi.full, file="/Users/Battrd/Documents/School&Work/WiscResearch/Isotopes_2012Analysis/Data/paul12.epi.full.txt", row.names=FALSE)
 write.table(paul12.epi, file="/Users/Battrd/Documents/School&Work/WiscResearch/Isotopes_2012Analysis/Data/paul12.epi.txt", row.names=FALSE)
