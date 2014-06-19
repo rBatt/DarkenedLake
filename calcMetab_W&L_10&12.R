@@ -125,3 +125,23 @@ w12m.r4 <- merge(w12m.r3, cbind("method"="bayes", ward12.meta.bay), all=TRUE)
 
 
 
+# =============================================
+# = Notes on calculating GPP variance from KF =
+# =============================================
+# This was taken from SquealMetabolism_v0.3.1.r
+# Starting line 825
+# Inv_UprimeU <- solve((t(as.matrix(cbind(x[,2], x[,5]), nol=2))%*%as.matrix(cbind(x[,2], x[,5]), nol=2)))
+# ParamCovMat <- Inv_UprimeU*DO_KFnll$par[3] #multiplying by par[3] is multiplying by Queue, which "scales" the covariance matrix by the variance of the residuals.
+# GPPcoef_Var <- ParamCovMat[1,1] #solve(DO_KFnll$hessian)[1,1]#*DO_KFnll$par[3] #I'm not sure if solve(hessian) gives me a scaled or unscaled matrix.  If it is unscaled and I need scaled, I think I can get that with solve(hessian)*Q
+# Rcoef_Var <- ParamCovMat[2,2] #solve(DO_KFnll$hessian)[2,2]#*DO_KFnll$par[3]
+# #Qcoef_Var <- solve(DO_KFnll$hessian)[3,3]#*DO_KFnll$par[3]
+# GPP_Var <- sum(GPPcoef_Var*x[,2]^2)
+# R_Var <- sum(Rcoef_Var*log(x[,5])^2)
+# GPP_R_coefs_Cov <- ParamCovMat[1,2] #solve(DO_KFnll$hessian)[1,2]#*DO_KFnll$par[3]
+# #f = aA +/- bB
+# #var(f) = a^2*var(A) + b^2*var(B) +/- 2ab*cov(AB)
+# #var(NEP) = PAR^2*GPPcoef_Var + log(Temp)^2*Rcoef_Var + 2*PAR*log(Temp)*GPP_R_coefs_Cov
+# NEP_Var <- sum(GPPcoef_Var*x[,2]^2 + Rcoef_Var*log(x[,5])^2 + 2*x[,2]*x[,5]*abs(GPP_R_coefs_Cov))
+
+
+

@@ -18,8 +18,6 @@ save(irr_wnd_2010, file="/Users/Battrd/Documents/School&Work/WiscResearch/Isotop
 
 
 
-
-
 # ======================================
 # = Peter and UNDERC Weather from 2012 =
 # ======================================
