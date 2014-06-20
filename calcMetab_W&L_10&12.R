@@ -150,38 +150,67 @@ metab.light[,"gpp.bot"] <- metab.light[,"GPP"]*metab.light[,"val.bot"]
 # gpp.sonde <- gpp.ll(metab.light, "sonde")
 # gpp.bot <- gpp.ll(metab.light, "bot")
 
-gpp.layer <- data.frame(metab.light[,c("lake","year","doy","datetime","GPP","irr.sonde","irr.bot","dz.sonde","dz.bot")], gpp.sonde=gpp.sonde, gpp.bot=gpp.bot, gpp.tot=gpp.sonde+gpp.bot)
+# gpp.layer <- data.frame(metab.light[,c("lake","year","doy","datetime","GPP","irr.sonde","irr.bot","dz.sonde","dz.bot")], gpp.sonde=gpp.sonde, gpp.bot=gpp.bot, gpp.tot=gpp.sonde+gpp.bot)
+
+gpp.layer <- metab.light
+gpp.layer[,"gpp.tot"] <- gpp.layer[,"gpp.sonde"] + gpp.layer[,"gpp.bot"]
 
 ddply(gpp.layer, c("lake","year"), function(x)colMeans(x[,-c(1:4)]))
 
-dev.new(width=7, height=10)
+# =============
+# = Plot Ward =
+# =============
+dev.new(width=8, height=8)
 par(mfcol=c(3,2), mar=c(3.5,3.5,0.1,0.1), mgp=c(1.5, 0.5, 0), tcl=-0.25, ps=12, family="Times", cex=1)
 
 
 w10.ind <- gpp.layer[,"lake"]=="Ward" & gpp.layer[,"year"]==2010
 w10.gpp.sonde <- gpp.layer[w10.ind,"gpp.sonde"]
 w10.gpp.bottom <- gpp.layer[w10.ind,"gpp.bot"]
+w10.gpp.total <- w10.gpp.sonde + w10.gpp.bottom
 
 w12.ind <- gpp.layer[,"lake"]=="Ward" & gpp.layer[,"year"]==2012
-w12.top.sonde <- gpp.layer[w12.ind,"gpp.top"] + gpp.layer[w12.ind,"gpp.sonde"]
-w12.gpp.bottom <- gpp.layer[w10.ind, "gpp.bot"]
+w12.gpp.sonde <- gpp.layer[w12.ind,"gpp.sonde"]
+w12.gpp.bottom <- gpp.layer[w12.ind, "gpp.bot"]
+w12.gpp.total <- w12.gpp.sonde + w12.gpp.bottom
 
 #plot ward 2010
-
-# plot(gpp.layer[w10.ind, "doy"], gpp.layer[w10.ind,"GPP"], type="o", xlab="", ylab=bquote(Volumetric~~GPP~~(mg~O[2]~L^-1~d-1)))
-
-
-
-plot(gpp.layer[w10.ind, "doy"], w10.top.sonde, type="o", xlab="", ylab=bquote(Top~~GPP~~(mg~O[2]~m^-2~d-1)))
-plot(gpp.layer[w10.ind, "doy"], gpp.layer[w10.ind,"gpp.bot"], type="o", xlab="", ylab=bquote(Bottom~~GPP~~(mg~O[2]~m^-2~d-1)))
-plot(gpp.layer[w10.ind, "doy"], gpp.layer[w10.ind,"gpp.tot"], type="o", xlab="", ylab=bquote(Total~~GPP~~(mg~O[2]~m^-2~d-1)))
+plot(gpp.layer[w10.ind, "doy"], w10.gpp.sonde, type="o", xlab="", ylab=bquote(Top~~GPP~~(g~O[2]~m^-2~d^-1)), ylim=range(c(w10.gpp.sonde, w12.gpp.sonde)))
+plot(gpp.layer[w10.ind, "doy"], w10.gpp.bottom, type="o", xlab="", ylab=bquote(Bottom~~GPP~~(g~O[2]~m^-2~d^-1)), ylim=range(c(w10.gpp.bottom, w12.gpp.bottom)))
+plot(gpp.layer[w10.ind, "doy"], w10.gpp.total, type="o", xlab="", ylab=bquote(Total~~GPP~~(g~O[2]~m^-2~d^-1)), ylim=range(c(w10.gpp.total, w12.gpp.total)))
 
 
 #plot ward 2012
-# plot(gpp.layer[w12.ind, "doy"], gpp.layer[w12.ind,"GPP"], type="o", xlab="", ylab=bquote(Volumetric~~GPP~~(mg~O[2]~L^-1~d-1)))
-plot(gpp.layer[w12.ind, "doy"], w12.top.sonde, type="o", xlab="", ylab=bquote(Top~~GPP~~(mg~O[2]~m^-2~d-1)))
-plot(gpp.layer[w12.ind, "doy"], gpp.layer[w12.ind,"gpp.bot"], type="o", xlab="", ylab=bquote(Bottom~~GPP~~(mg~O[2]~m^-2~d-1)))
-plot(gpp.layer[w12.ind, "doy"], gpp.layer[w12.ind,"gpp.tot"], type="o", xlab="", ylab=bquote(Total~~GPP~~(mg~O[2]~m^-2~d-1)))
+plot(gpp.layer[w12.ind, "doy"], w12.gpp.sonde, type="o", xlab="", ylab=bquote(Top~~GPP~~(g~O[2]~m^-2~d^-1)), ylim=range(c(w10.gpp.sonde, w12.gpp.sonde)))
+plot(gpp.layer[w12.ind, "doy"], w12.gpp.bottom, type="o", xlab="", ylab=bquote(Bottom~~GPP~~(g~O[2]~m^-2~d^-1)), ylim=range(c(w10.gpp.bottom, w12.gpp.bottom)))
+plot(gpp.layer[w12.ind, "doy"], w12.gpp.total, type="o", xlab="", ylab=bquote(Total~~GPP~~(g~O[2]~m^-2~d^-1)), ylim=range(c(w10.gpp.total, w12.gpp.total)))
+
+
+# =============
+# = Plot Paul =
+# =============
+dev.new(width=8, height=8)
+par(mfcol=c(3,2), mar=c(3.5,3.5,0.1,0.1), mgp=c(1.5, 0.5, 0), tcl=-0.25, ps=12, family="Times", cex=1)
+l10.ind <- gpp.layer[,"lake"]=="Paul" & gpp.layer[,"year"]==2010
+l10.gpp.sonde <- gpp.layer[l10.ind,"gpp.sonde"]
+l10.gpp.bottom <- gpp.layer[l10.ind,"gpp.bot"]
+l10.gpp.total <- l10.gpp.sonde + l10.gpp.bottom
+
+l12.ind <- gpp.layer[,"lake"]=="Paul" & gpp.layer[,"year"]==2012
+l12.gpp.sonde <- gpp.layer[l12.ind,"gpp.sonde"]
+l12.gpp.bottom <- gpp.layer[l12.ind, "gpp.bot"]
+l12.gpp.total <- l12.gpp.sonde + l12.gpp.bottom
+
+#plot lard 2010
+plot(gpp.layer[l10.ind, "doy"], l10.gpp.sonde, type="o", xlab="", ylab=bquote(Top~~GPP~~(g~O[2]~m^-2~d^-1)), ylim=range(c(l10.gpp.sonde, l12.gpp.sonde)))
+plot(gpp.layer[l10.ind, "doy"], l10.gpp.bottom, type="o", xlab="", ylab=bquote(Bottom~~GPP~~(g~O[2]~m^-2~d^-1)), ylim=range(c(l10.gpp.bottom, l12.gpp.bottom)))
+plot(gpp.layer[l10.ind, "doy"], l10.gpp.total, type="o", xlab="", ylab=bquote(Total~~GPP~~(g~O[2]~m^-2~d^-1)), ylim=range(c(l10.gpp.total, l12.gpp.total)))
+
+
+#plot lard 2012
+plot(gpp.layer[l12.ind, "doy"], l12.gpp.sonde, type="o", xlab="", ylab=bquote(Top~~GPP~~(g~O[2]~m^-2~d^-1)), ylim=range(c(l10.gpp.sonde, l12.gpp.sonde)))
+plot(gpp.layer[l12.ind, "doy"], l12.gpp.bottom, type="o", xlab="", ylab=bquote(Bottom~~GPP~~(g~O[2]~m^-2~d^-1)), ylim=range(c(l10.gpp.bottom, l12.gpp.bottom)))
+plot(gpp.layer[l12.ind, "doy"], l12.gpp.total, type="o", xlab="", ylab=bquote(Total~~GPP~~(g~O[2]~m^-2~d^-1)), ylim=range(c(l10.gpp.total, l12.gpp.total)))
 
 
 
