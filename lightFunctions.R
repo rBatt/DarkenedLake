@@ -43,15 +43,15 @@ doLight <- function(x){
 	shalEpi <- x[,"z.mix"] < 0.7
 	
 	# loop through to calculate kd's and average irr's
-	kd.top <- rep(NA, nrow(x))
+	# kd.top <- rep(NA, nrow(x))
 	kd.sonde <- rep(NA, nrow(x))
 	kd.bot <- rep(NA, nrow(x))
 	
-	irr.top <- rep(NA, nrow(x))
+	# irr.top <- rep(NA, nrow(x))
 	irr.sonde <- rep(NA, nrow(x))
 	irr.bot <- rep(NA, nrow(x))
 	
-	size.top <- rep(NA, nrow(x))
+	# size.top <- rep(NA, nrow(x))
 	size.sonde <- rep(NA, nrow(x))
 	size.bot <- rep(NA, nrow(x))
 	
@@ -82,8 +82,8 @@ doLight <- function(x){
 			# GPP.sonde <- irr.sonde*(GPP*irr.sonde)*size.sonde == GPP*size.sonde
 			# GPP.total <- GPP.top + GPP.bot + GPP.sonde
 			# Note that below, when the sonde is in the epi, I am setting size.top = 0, as GPP.top is redundant with GPP.sonde
-			size.top[i] <- 0.5
-			size.sonde[i] <- 0.5
+			# size.top[i] <- 0.5
+			size.sonde[i] <- 1.0
 			z1.bot <- profDepths[t.bot.ind.shal][1]
 			z2.bot <- max(profDepths[t.bot.ind.shal])
 			size.bot[i] <- z2.bot-z1.bot
@@ -92,14 +92,14 @@ doLight <- function(x){
 			# this is if zmix is shallower than the sonde
 			
 			# calculate kd for each depth in a layer (I0=I@ 0m for each depth), and take average across all depths in layer		
-			kd.top[i] <- sum(kd.all[2:3])/2 # between 0m and 0.5m
-			kd.sonde[i] <- sum(kd.all[3:5])/3 # between 0.5 and 1.0
+			# kd.top[i] <- sum(kd.all[2:3])/2 # between 0m and 0.5m
+			kd.sonde[i] <- sum(kd.all[2:5])/4 # between 0.5 and 1.0
 			
 			kd.bot[i] <- sum(kd.all[t.bot.ind.shal])/sum(t.bot.ind.shal) # between 1.0 and depth w/ minimum non-zero light
 			
 			# calculate average irradiance in each layer
-			irr.top[i] <- irrInt(I0=t.irr.surf, z1=0, z2=0.5, kd=kd.top[i])/0.5 # / 0.5-0
-			irr.sonde[i] <- irrInt(I0=t.irr.surf, z1=0.5, z2=1.0, kd=kd.sonde[i])/0.5 # / 1.0 - 0.5
+			# irr.top[i] <- irrInt(I0=t.irr.surf, z1=0, z2=0.5, kd=kd.top[i])/0.5 # / 0.5-0
+			irr.sonde[i] <- irrInt(I0=t.irr.surf, z1=0, z2=1.0, kd=kd.sonde[i]) # /0.5 # / 1.0 - 0.5
 			
 			if(size.bot[i]>0 & is.finite(size.bot[i])){
 				irr.bot[i] <- irrInt(I0=t.irr.surf, z1=z1.bot, z2=z2.bot, kd=kd.bot[i])/(z2.bot-z1.bot)
@@ -107,14 +107,12 @@ doLight <- function(x){
 				irr.bot[i] <- 0
 			}
 			
-			
-
-			
+		
 		}else{
 			# if zmix is not shallower than the sonde
 			
 			# Layer thickness
-			size.top[i] <- 0
+			# size.top[i] <- 0
 			size.sonde[i] <- profDepths[t.epi.ind]
 			
 			if(any(t.bot.ind)){ # if there is any light in the bottom
@@ -129,16 +127,16 @@ doLight <- function(x){
 			
 			
 			# calculate average kd between surface and each depth in a layer
-			kd.top[i] <- sum(kd.all[2:t.epi.ind])/(t.epi.ind-1) # between 0m and zmix
-			kd.sonde[i] <- kd.top[i] # the sonde is also between 0m and zmix
+			# kd.top[i] <- sum(kd.all[2:t.epi.ind])/(t.epi.ind-1) # between 0m and zmix
+			kd.sonde[i] <- sum(kd.all[2:t.epi.ind])/(t.epi.ind-1) # kd.top[i] # the sonde is also between 0m and zmix
 			
 			t.bot.ind <- (t.irr.L & (cumsum(t.irr.L)>=t.epi.ind))[t.irr.L] # index to use for irradiance values that are below zmix, but non-0 light
 			# Note: subsetting with t.irr.L is necessary, otherwise t.bot.ind doesn't match the length of kd.all, and causes an error when light goes to 0 then back up above 0
 			kd.bot[i] <- sum(kd.all[t.bot.ind])/sum(t.bot.ind) # between zmix and depth w/ minimum non-zero light
 			
 			# calculate average irradiance
-			irr.top[i] <- irrInt(I0=t.irr.surf, z1=0, z2=profDepths[t.epi.ind], kd=kd.top[i])/profDepths[t.epi.ind]
-			irr.sonde[i] <- irr.top[i]
+			# irr.top[i] <- irrInt(I0=t.irr.surf, z1=0, z2=profDepths[t.epi.ind], kd=kd.top[i])/profDepths[t.epi.ind]
+			irr.sonde[i] <- irrInt(I0=t.irr.surf, z1=0, z2=profDepths[t.epi.ind], kd=kd.sonde[i])/profDepths[t.epi.ind] # irr.top[i]
 
 			if(size.bot[i]>0L & is.finite(size.bot[i])){
 				irr.bot[i] <- irrInt(I0=t.irr.surf, z1=z1.bot, z2=z2.bot, kd=kd.bot[i])/(z2.bot-z1.bot)
@@ -151,6 +149,10 @@ doLight <- function(x){
 	} # end looping through rows
 	
 	# data.frame(x[,1:5], kd.top=kd.top, kd.sonde=kd.sonde, kd.bot=kd.bot, irr.top=irr.top, irr.sonde=irr.sonde, irr.bot=irr.bot, size.top=size.top, size.sonde=size.sonde, size.bot=size.bot)
-	data.frame(x[,1:5], irr.top=irr.top, irr.sonde=irr.sonde, irr.bot=irr.bot, dz.top=size.top, dz.sonde=size.sonde, dz.bot=size.bot)
+	# data.frame(x[,1:5], irr.top=irr.top, irr.sonde=irr.sonde, irr.bot=irr.bot, dz.top=size.top, dz.sonde=size.sonde, dz.bot=size.bot)
+	data.frame(x[,1:5], irr.sonde=irr.sonde, irr.bot=irr.bot, dz.sonde=size.sonde, dz.bot=size.bot)
 	
 }
+
+
+

@@ -9,7 +9,7 @@ PeterWeather0 <- PeterWeather0[,c("Date", "Time", "Year", "PAR","WindSpd")]
 PeterWeather0[,"datetime"] <- paste(PeterWeather0[,"Date"], PeterWeather0[,"Time"])
 PeterWeather0[,"datetime"] <- gsub("^(?=[0-9]/)", "0", PeterWeather0[,"datetime"], perl=TRUE)
 PeterWeather0[,"datetime"] <- gsub("(?<=[0-9]{2}/)([0-9])(?=/)", "0\\1", PeterWeather0[,"datetime"], perl=TRUE)
-PeterWeather0[,"datetime"] <- as.POSIXct(PeterWeather0[,"datetime"], format="%m/%d/%y %I:%M:%S %p")
+PeterWeather0[,"datetime"] <- as.POSIXct(PeterWeather0[,"datetime"], format="%m/%d/%y %I:%M:%S %p", tz="GMT")
 irr_wnd_2010 <- PeterWeather0[,c("datetime", "PAR", "WindSpd")]
 names(irr_wnd_2010) <- c("datetime", "irr", "wnd")
 

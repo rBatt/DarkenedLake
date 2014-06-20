@@ -103,38 +103,88 @@ light000 <- rbind(w10.light000, w12.light000, l10.light000, l12.light000)
 
 
 light000[,"doy"] <- trunc(light000[,"doy"])
-light000[,"datetime"] <- as.POSIXct(trunc.POSIXt(light000[,"datetime"], "days"), tz="GMT")
+# light000[,"datetime"] <- as.POSIXct(trunc.POSIXt(light000[,"datetime"], "days"), tz="GMT")
+# light000[,"datetime"] <- as.POSIXct(trunc.POSIXt(light000[,"datetime"], "days"), tz="GMT")
+light000[,"year"] <- format.Date(light000[,"datetime"], format="%Y")
 
-light00 <- ddply(.data=light000, .variables=c("lake","datetime","doy"), .fun=function(x)colMeans(x[,c("z.mix","irr")], na.rm=TRUE))
-light00 <- light00[complete.cases(light00),]
+# light00 <- ddply(.data=light000, .variables=c("lake","datetime","year","doy"), .fun=function(x)colMeans(x[,c("z.mix","irr")], na.rm=TRUE))
+# light00 <- light00[complete.cases(light00),]
+
+light00 <- light000[complete.cases(light000),]
 
 
 light0 <- merge(light00, light.prof0, all=TRUE)
 
 
 
-light <- doLight(light0)
+light <- ddply(light0, c("lake","year"), doLight)
+
+light.vals00 <- data.frame(light[,1:4], "val.sonde"=light[,"dz.sonde"], "val.bot"=light[,"dz.bot"]*light[,"irr.bot"]/light[,"irr.sonde"])
+light.vals0 <- light.vals00
+light.vals0[,"datetime"] <- as.POSIXct(trunc.POSIXt(light.vals0[,"datetime"], "days"), tz="GMT")
+light.vals <- ddply(.data=light.vals0, c("lake","year","doy","datetime"), function(x)colMeans(x[,c("val.sonde","val.bot")], na.rm=TRUE))
+
+metab.light0 <- merge(kf.epi.good, light.vals, all.x=TRUE)
+
+metab.light <- metab.light0
+metab.light[,"gpp.sonde"] <- metab.light[,"GPP"]*metab.light[,"val.sonde"]
+metab.light[,"gpp.bot"] <- metab.light[,"GPP"]*metab.light[,"val.bot"]
+
+# gpp.ll <- function(x, layer){
+# 	# E.g., GPP in bot will be GPP.bot <- irr.bot*(GPP/irr.sonde)*size.bot
+# 	# GPP.top <- irr.top*(GPP/irr.sonde)*size.top
+# 	# GPP.sonde <- irr.sonde*(GPP*irr.sonde)*size.sonde == GPP*size.sonde
+# 	# GPP.total <- GPP.top + GPP.bot + GPP.sonde
+# 	# Note that below, when the sonde is in the epi, I am setting size.top = 0, as GPP.top is redundant with GPP.sonde
+# 	
+# 	irr.n <- paste("irr", layer, sep=".")
+# 	dz.n <- paste("dz", layer, sep=".")
+# 	
+# 	
+# 	gpp.l <- (x[,"GPP"] /x[,"irr.sonde"]) * x[,dz.n] * x[,irr.n] # g O2 m^-2 d^-1; areal units integrate volumetric over "layer"
+# 	gpp.l
+# 	
+# }
+
+# gpp.top <- gpp.ll(metab.light, "top")
+# gpp.sonde <- gpp.ll(metab.light, "sonde")
+# gpp.bot <- gpp.ll(metab.light, "bot")
+
+gpp.layer <- data.frame(metab.light[,c("lake","year","doy","datetime","GPP","irr.sonde","irr.bot","dz.sonde","dz.bot")], gpp.sonde=gpp.sonde, gpp.bot=gpp.bot, gpp.tot=gpp.sonde+gpp.bot)
+
+ddply(gpp.layer, c("lake","year"), function(x)colMeans(x[,-c(1:4)]))
+
+dev.new(width=7, height=10)
+par(mfcol=c(3,2), mar=c(3.5,3.5,0.1,0.1), mgp=c(1.5, 0.5, 0), tcl=-0.25, ps=12, family="Times", cex=1)
 
 
-metab.light <- merge(kf.epi.good, light, all.x=TRUE)
+w10.ind <- gpp.layer[,"lake"]=="Ward" & gpp.layer[,"year"]==2010
+w10.gpp.sonde <- gpp.layer[w10.ind,"gpp.sonde"]
+w10.gpp.bottom <- gpp.layer[w10.ind,"gpp.bot"]
 
-gpp.ll <- function(x, layer){
-	# E.g., GPP in bot will be GPP.bot <- irr.bot*(GPP/irr.sonde)*size.bot
-	# GPP.top <- irr.top*(GPP/irr.sonde)*size.top
-	# GPP.sonde <- irr.sonde*(GPP*irr.sonde)*size.sonde == GPP*size.sonde
-	# GPP.total <- GPP.top + GPP.bot + GPP.sonde
-	# Note that below, when the sonde is in the epi, I am setting size.top = 0, as GPP.top is redundant with GPP.sonde
-	
-	irr.n <- paste("irr", layer, sep=".")
-	dz.n <- paste("dz", layer, sep=".")
-	
-	gpp.m3 <- x[,"GPP"]*1000 # convert GPP from mg O2 per L per day to mg O2 per m^3 per day
-	
-	gpp.l <- x[,irr.n]*gpp.m3/x[,"irr.sonde"]*x[,dz.n] # mg O2 m^-2 d^-1; areal units integrate volumetric over "layer"
-	
-}
+w12.ind <- gpp.layer[,"lake"]=="Ward" & gpp.layer[,"year"]==2012
+w12.top.sonde <- gpp.layer[w12.ind,"gpp.top"] + gpp.layer[w12.ind,"gpp.sonde"]
+w12.gpp.bottom <- gpp.layer[w10.ind, "gpp.bot"]
 
-gpp.layer <- data.frame(metab.light[,c("lake","datetime","GPP")], gpp.top=)
+#plot ward 2010
+
+# plot(gpp.layer[w10.ind, "doy"], gpp.layer[w10.ind,"GPP"], type="o", xlab="", ylab=bquote(Volumetric~~GPP~~(mg~O[2]~L^-1~d-1)))
+
+
+
+plot(gpp.layer[w10.ind, "doy"], w10.top.sonde, type="o", xlab="", ylab=bquote(Top~~GPP~~(mg~O[2]~m^-2~d-1)))
+plot(gpp.layer[w10.ind, "doy"], gpp.layer[w10.ind,"gpp.bot"], type="o", xlab="", ylab=bquote(Bottom~~GPP~~(mg~O[2]~m^-2~d-1)))
+plot(gpp.layer[w10.ind, "doy"], gpp.layer[w10.ind,"gpp.tot"], type="o", xlab="", ylab=bquote(Total~~GPP~~(mg~O[2]~m^-2~d-1)))
+
+
+#plot ward 2012
+# plot(gpp.layer[w12.ind, "doy"], gpp.layer[w12.ind,"GPP"], type="o", xlab="", ylab=bquote(Volumetric~~GPP~~(mg~O[2]~L^-1~d-1)))
+plot(gpp.layer[w12.ind, "doy"], w12.top.sonde, type="o", xlab="", ylab=bquote(Top~~GPP~~(mg~O[2]~m^-2~d-1)))
+plot(gpp.layer[w12.ind, "doy"], gpp.layer[w12.ind,"gpp.bot"], type="o", xlab="", ylab=bquote(Bottom~~GPP~~(mg~O[2]~m^-2~d-1)))
+plot(gpp.layer[w12.ind, "doy"], gpp.layer[w12.ind,"gpp.tot"], type="o", xlab="", ylab=bquote(Total~~GPP~~(mg~O[2]~m^-2~d-1)))
+
+
+
 
 # =============================================
 # = Notes on calculating GPP variance from KF =
