@@ -60,7 +60,7 @@ paul10.epi.full0[,"z.mix"] <- approx(x=paul10.epi.full0[!z.mix.isna,"datetime"],
 paul10.epi.full0 <- merge(paul10.epi.full0, irr_wnd_2010, all.x=TRUE)
 
 # calculate other values needed for metabolism
-paul10.epi.full0[,"wnd"] <- LakeMetabolizer:::scale.exp.wind.base(paul10.epi.full0[,"wnd"], 2) # note that this step is already done for 2012 weather data
+paul10.epi.full0[,"wnd"] <- LakeMetabolizer:::wind.scale.base(paul10.epi.full0[,"wnd"], 2) # note that this step is already done for 2012 weather data
 paul10.epi.full0[,"k600.cole"] <- LakeMetabolizer:::k.cole.base(paul10.epi.full0[,"wnd"])
 paul10.epi.full0[,"k.gas"] <- LakeMetabolizer:::k600.2.kGAS.base(paul10.epi.full0[,"k600.cole"], paul10.epi.full0[,"wtr"])
 

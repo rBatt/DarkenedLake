@@ -174,7 +174,7 @@ ward10.epi.full[w10.have.therm, "z.mix"] <- ward10.epi.full[w10.have.therm, "top
 ward10.epi.full[,"datetime"] <- as.POSIXct(ward10.epi.full[,"datetime"])
 
 # scale wind, calculate K, convert to K O2, scale K to sampling frequency
-ward10.epi.full[,"wnd"] <- LakeMetabolizer:::scale.exp.wind.base(ward10.epi.full[,"wnd"], 2) # scale wind speed to 10 m
+ward10.epi.full[,"wnd"] <- LakeMetabolizer:::wind.scale.base(ward10.epi.full[,"wnd"], 2) # scale wind speed to 10 m
 ward10.epi.full[,"k600.cole"] <- LakeMetabolizer:::k.cole.base(ward10.epi.full[,"wnd"]) # calculate k600 using Cole & Caraco method
 ward10.epi.full[,"k.gas"] <- LakeMetabolizer:::k600.2.kGAS.base(ward10.epi.full[,"k600.cole"], ward10.epi.full[,"wtr"], gas="O2")
 ward10.epi.full[,"do.sat"] <- LakeMetabolizer:::o2.at.sat.base(ward10.epi.full[,"wtr"], baro=ward10.epi.full[,"baro"])

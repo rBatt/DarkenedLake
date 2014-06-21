@@ -68,7 +68,7 @@ names(UNDERC_PAR_WIND) <- c("Year", "DoY", "PAR", "Wind", "datetime")
 UNDERC_2add.wnd <- is.na(CombinePeterUNDERC[,"wnd"]) & !is.na(CombinePeterUNDERC[,"Wind"])
 UNDERC_2add.irr <- is.na(CombinePeterUNDERC[,"irr"]) & !is.na(CombinePeterUNDERC[,"PAR0"])
 
-CombinePeterUNDERC[!UNDERC_2add.wnd, "wnd"] <- scale.exp.wind.base(CombinePeterUNDERC[!UNDERC_2add.wnd, "wnd"], 2)
+CombinePeterUNDERC[!UNDERC_2add.wnd, "wnd"] <- wind.scale.base(CombinePeterUNDERC[!UNDERC_2add.wnd, "wnd"], 2)
 
 CombinePeterUNDERC[UNDERC_2add.wnd, "wnd"] <- CombinePeterUNDERC[UNDERC_2add.wnd, "Wind"]
 CombinePeterUNDERC[UNDERC_2add.irr, "irr"] <- CombinePeterUNDERC[UNDERC_2add.irr, "PAR0"]

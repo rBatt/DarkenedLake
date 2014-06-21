@@ -110,7 +110,7 @@ paul12.epi.full0 <- merge(paul12.epi0, irr_wnd_2012, all.x=TRUE) # merge weather
 
 # add various components needed for metabolism
 paul12.epi.full0[,"do.sat"] <- LakeMetabolizer:::o2.at.sat.base(paul12.epi.full0[,"wtr"], 960) # calculate saturated o2
-# paul12.epi.full0[,"wnd"] <- LakeMetabolizer:::scale.exp.wind.base(paul12.epi.full0[,"wnd"], 2) # scale wind up to 10m NOTE already done for 2012
+# paul12.epi.full0[,"wnd"] <- LakeMetabolizer:::wind.scale.base(paul12.epi.full0[,"wnd"], 2) # scale wind up to 10m NOTE already done for 2012
 paul12.epi.full0[,"k600.cole"] <- LakeMetabolizer:::k.cole.base(paul12.epi.full0[,"wnd"]) # calculate k600
 paul12.epi.full0[,"k.gas"] <- LakeMetabolizer:::k600.2.kGAS.base(paul12.epi.full0[,"k600.cole"], paul12.epi.full0[,"wtr"]) # calculate k.gas
 
