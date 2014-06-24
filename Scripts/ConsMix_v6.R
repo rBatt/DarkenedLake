@@ -61,7 +61,9 @@ if(TL>1){#for consumers higher than primary consumers
 		}
 
 #Define omega values
-ConsOmegaInfo <- data.frame("Snail"=c(0,0), "Zooplankton"=c(0.20, 0.0016), "Chaoborus"=c(0.14, 0.0036), "Fish"=c(0.12, 0.0004)) #from Solomon paper, c(mean, Variance)
+# ConsOmegaInfo <- data.frame("Snail"=c(0,0), "Zooplankton"=c(0.20, 0.0016), "Chaoborus"=c(0.14, 0.0036), "Fish"=c(0.12, 0.0004)) #from Solomon paper, c(mean, Variance)
+# The new Snail value in ConsOmegaInfo is from Bortolotti et al 2013 in Eco Apps "Hydrogen isotope variability in prairie weland systems: implications for studies of migratory connectivity"
+ConsOmegaInfo <- data.frame("Snail"=c(0.21, 0.03^2), "Zooplankton"=c(0.20, 0.0016), "Chaoborus"=c(0.14, 0.0036), "Fish"=c(0.12, 0.0004)) #from Solomon paper, c(mean, Variance)
 if(!is.null(ConsName)){OmegaInfo <- ConsOmegaInfo[,ConsName]}else{OmegaInfo <- Omega_Info}
 Omega <- 1-(1-OmegaInfo[1])^TL #compound omega
 Omega_Var <- TL*(1-OmegaInfo[1])^(TL-1)*OmegaInfo[2] - (1-OmegaInfo[1])^TL*log(1-OmegaInfo[1])*TL_Var #variance of compounded omega
