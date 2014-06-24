@@ -3,7 +3,7 @@
 library(plyr)
 library(LakeMetabolizer)
 
-source("/Users/Battrd/Documents/School&Work/WiscResearch/Isotopes_2012Analysis/lightFunctions.R")
+source("/Users/Battrd/Documents/School&Work/WiscResearch/Isotopes_2012Analysis/Scripts/lightFunctions.R")
 
 
 # ======================

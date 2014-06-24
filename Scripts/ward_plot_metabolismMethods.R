@@ -1,4 +1,4 @@
-load("/Users/Battrd/Documents/School&Work/WiscResearch/Isotopes_2012Analysis/Data/ward_2010&2012_metabolism_allModels_LakeMetabolizer.RData")
+load("/Users/Battrd/Documents/School&Work/WiscResearch/Isotopes_2012Analysis/Results/ward_2010&2012_metabolism_allModels_LakeMetabolizer.RData")
 
 # ================================================
 # = Plot Ward 2010 Epi Metabolism across Methods =
