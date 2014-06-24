@@ -45,8 +45,8 @@
 rm(list=ls())
 graphics.off()
 
-Version <- "v0.4.0_ModelSelection"
-FigureFolder <- paste("Figures_", Version, sep="")
+library(R2WinBUGS)
+
 Iterations <- 2000
 
 if(Sys.info()["sysname"]=="Windows"){
@@ -63,11 +63,10 @@ WINEPATH="/opt/local/bin/winepath"
 WINE="/opt/local/bin/wine"
 
 
-library(R2WinBUGS)
-setwd("/Users/Battrd/Documents/School&Work/WiscResearch/Isotopes_2010Analysis")
-source("ConsMix_v6.R")
-setwd("/Users/Battrd/Documents/School&Work/WiscResearch/Data/IsotopeData2012")
-DataRaw <- read.csv("WardIsotopes_2010&2012_17Jan2013.csv", header=TRUE)
+
+# setwd("/Users/Battrd/Documents/School&Work/WiscResearch/Isotopes_2010Analysis")
+source("/Users/Battrd/Documents/School&Work/WiscResearch/Isotopes_2012Analysis/Scripts/ConsMix.R")
+DataRaw <- read.csv("/Users/Battrd/Documents/School&Work/WiscResearch/Isotopes_2012Analysis/Data/IsotopeData2012/WardIsotopes_2010&2012_17Jan2013.csv", header=TRUE)
 Data <- subset(DataRaw, Taxon!="Nija" & !is.element(SampleID, c("O-0362", "V-0270", "P-1202", "P-1166", "O-0382", "P-1165", "P-1206", "P-1238", "P-1239", "P-1243", "Z-1110", "Z-1115", "Z-1195", "Z-1170", "O-0405", "P-1244")) & is.na(FishID))
 Months <- c("May", "Jun", "Jul", "Aug")
 
@@ -160,7 +159,7 @@ for(YearMix in c(2010, 2012)){
 	SupplyBUGS_pt1 <- list(T_dX, T_dX_Var, dD_Phyto_Epi_Mu, dD_Phyto_Epi_Shape, POM_dX_Epi_Obs, nPOM_Epi, dD_Phyto_Meta_Mu, dD_Phyto_Meta_Shape, POM_dX_Meta_Obs, nPOM_Meta)
 	names(SupplyBUGS_pt1) <- strsplit(c("T_dX, T_dX_Var, dD_Phyto_Epi_Mu, dD_Phyto_Epi_Shape, POM_dX_Epi_Obs, nPOM_Epi, dD_Phyto_Meta_Mu, dD_Phyto_Meta_Shape, POM_dX_Meta_Obs, nPOM_Meta"), split=", ")[[1]]
 	ParamBUGS_pt1 <- c("f", "P_dC_Epi", "P_dN_Epi", "P_dD_Epi", "P_dC_Epi_Var", "P_dN_Epi_Var", "P_dD_Epi_Var",  "P_dC_Meta", "P_dN_Meta", "P_dD_Meta", "P_dC_Meta_Var", "P_dN_Meta_Var", "P_dD_Meta_Var", "residSd")
-	BUGSfile_pt1 <- "/Users/Battrd/Documents/School&Work/WiscResearch/Isotopes_2010Analysis/mix_Cons_Mixture_Ward2010_v2_pt1.bug"
+	BUGSfile_pt1 <- "/Users/Battrd/Documents/School&Work/WiscResearch/Isotopes_2012Analysis/mix_Cons_Mixture_Ward2010_v2_pt1.bug"
 	if(.Platform$OS.type=="windows"){
 		bugsOut_pt1 <- bugs(SupplyBUGS_pt1, inits=NULL, ParamBUGS_pt1, BUGSfile_pt1, n.chains=8, n.iter=Iterations, program="winbugs", working.directory=NULL, debug=FALSE, clearWD=FALSE)
 	}else{
@@ -395,10 +394,10 @@ for(YearMix in c(2010, 2012)){
 	LegendTitle <- list(c("A)", "B)", "C)", "D)"), c("E", "F", "G", "H")) #CHANGED added )'s
 	PubCex=1
 	PanelNameAdj <- c(0.25, 0.33, 0.55, 0.58)
-	setwd(paste("/Users/battrd/Documents/School&Work/WiscResearch/Isotopes_2012Analysis/",FigureFolder,sep=""))
+	# setwd(paste("/Users/battrd/Documents/School&Work/WiscResearch/Isotopes_2012Analysis/",FigureFolder,sep=""))
 	
 	#Plot EPILIMNION
-	pdf(file=paste("EpiPhyto_Post_", YearMix, "_", Version, ".pdf", sep=""), width=3.5, height=3.5, family="Times", pointsize=9)
+	pdf(file=paste("/Users/battrd/Documents/School&Work/WiscResearch/Isotopes_2012Analysis/Figures/EpiPhyto_Post_", YearMix, "_", ".pdf", sep=""), width=3.5, height=3.5, family="Times", pointsize=9)
 	par(mfrow=c(2,2), las=1, mar=c(3,2.5,0.1,1), oma=c(0,0,0.2,0), cex=PubCex)
 	
 	TerrYLim <- range(density(bugsOut_pt1$sims.matrix[,"f[1]"], from=0, to=1)$y)*c(1, 1.15)
@@ -469,10 +468,10 @@ for(YearMix in c(2010, 2012)){
 	
 }#End Year loop
 
-setwd(paste("/Users/battrd/Documents/School&Work/WiscResearch/Isotopes_2012Analysis/",FigureFolder,sep=""))
+# setwd(paste("/Users/battrd/Documents/School&Work/WiscResearch/Isotopes_2012Analysis/",FigureFolder,sep=""))
 # GroupChoose <- 2
 
-pdf(file=paste(paste("ConsSummary_", "ModelSelction", "_", Version, sep=""), ".pdf", sep=""), height=7, width=8.5, pointsize=8, family="Times")
+pdf(file=paste(paste("/Users/battrd/Documents/School&Work/WiscResearch/Isotopes_2012Analysis/Figures/ConsSummary_", "ModelSelction", "_", sep=""), ".pdf", sep=""), height=7, width=8.5, pointsize=8, family="Times")
 # dev.new(width=8, height=8)
 par(mfcol=c(3,3), mar=c(2.5,3.5,1,0.5), cex=1)
 ConsChoicesShort <- c("All Terrestrial"="Terr", "Epi. Phytoplankton"= "Epi Phyt", "Meta. Phytoplankton"="Meta Phyt", "DOM"="DOM", "All Macrophytes"="Macroph", "Periphyton"="Periphy", "Floating Macrophytes"="Float Mac", "Submersed Macrophytes"="Sub Mac", "All Phytoplankton"="Phyto", "Local Terrestrial"="Local Terr")
@@ -522,9 +521,11 @@ dev.off()
 
 
 
-save(list=c("Data", "EndMembers"), file=paste("Data+Phyto_", Version, ".RData",sep=""))
+save(list=c("Data", "EndMembers"), file=paste("/Users/battrd/Documents/School&Work/WiscResearch/Isotopes_2012Analysis/Results/Data+Phyto.RData" ,sep=""))
 
-save(list=c("ResourceUse", "ConsChoices"), file=paste("ResourceUse2010&2012_", Version, ".RData",sep=""))
+save(list=c("ResourceUse", "ConsChoices"), file="/Users/battrd/Documents/School&Work/WiscResearch/Isotopes_2012Analysis/Results/ResourceUse2010&2012.RData")
 
 
-# aggregate(ResourceUse[,make.names(names(SourceOpts))], by=list("Year"=ResourceUse[,1], "Consumer"=ResourceUse[,3], "Grouping"=ResourceUse[,4]), FUN=median)
+
+
+
