@@ -7,8 +7,7 @@
 #_v0.4.0 (31-Oct-2013) I've realized that the mass of aquashade per liter is about 1/12 of what I thought it was ... so I'm seeing how/ if this changes anything at all
 
 OrigWD <- getwd()
-setwd("/Users/Battrd/Documents/School&Work/WiscResearch/Isotopes_2010Analysis")
-source("ConsMix_v6.DOM.Median.R")
+source("/Users/Battrd/Documents/School&Work/WiscResearch/Isotopes_2012Analysis/Scripts/ConsMix_v6.DOM.Median.R")
 
 
 #Aquashade dN = -0.02,	dC= -26.82,	 dD = -65.4
@@ -118,10 +117,8 @@ domResourceNames <- c("Terr", "Macroph", "Phyto", "Periphy")
 DOM_Comp2 <- aggregate(DOM_Comp[,"Proportion"], by=list("Year"=DOM_Comp[,"Year"], "Source"=DOM_Comp[,"Source"]), mean)
 DOM_Comp2[,"Source"] <- factor(DOM_Comp2[,"Source"], labels=c("Terr", "Macroph", "Phyto", "Periphy"))
 
-setwd(paste("/Users/battrd/Documents/School&Work/WiscResearch/Isotopes_2012Analysis/",FigureFolder,sep=""))
-# pdf(file=paste(paste("DOM_Comp_", Version, sep=""), ".pdf", sep=""), height=3.5, width=3.5, pointsize=9)
-png(file=paste(paste("DOM_Comp_", Version, sep=""), ".png", sep=""), units="in", res=300, height=3.5, width=3.5, pointsize=10)
-	# dev.new(width=8, height=8)
+
+png(file="/Users/battrd/Documents/School&Work/WiscResearch/Isotopes_2012Analysis/Figures/DOM_Comp.png", units="in", res=300, height=3.5, width=3.5, pointsize=10)
 par(mar=c(2.5,3.5,1,0.5), cex=1, ps=10)
 
 boxplot(Proportion~Year+Source, data=DOM_Comp, col=c("#FA807225","#3A5FCD25"), border=c("red","blue"), at=rep(c(0.5,3,5.5,8),each=2)+c(-.5, .5), show.names=FALSE, outline=FALSE, ylim=c(0,1), lwd=1.5, cex=1)
