@@ -26,7 +26,7 @@ load("/Users/Battrd/Documents/School&Work/WiscResearch/Isotopes_2012Analysis/Res
 # ===============
 # = New _v0.4.5 =
 # ===============
-setwd(paste("",FigureFolder,sep=""))
+# setwd(paste("",FigureFolder,sep=""))
 
 if(Save){
 	if(SaveType==".pdf"){pdf(file="/Users/battrd/Documents/School&Work/WiscResearch/Isotopes_2012Analysis/Figures/dTerrAlgae.pdf", sep=""), height=3, width=3.23)}
@@ -497,7 +497,7 @@ mtext(quote(italic(p)*CO[2]~(mu*atm)), side=2, line=1)
 #DO
 par(mar=c(1,2,0.2,0.25), cex=1, ps=9, family="serif", mgp=c(3,0.3,0), tcl=-0.25)
 load(file="/Users/Battrd/Documents/School&Work/WiscResearch/Data/PaulWard_2010&2012_Metabolism_v0.2.RData")
-boxplot(MeanDO~Year+Lake, data=AllDO, at=c(0.5,1.5, 3.5, 4.5), col=c(NA,"lightgray"), show.names=FALSE, outline=FALSE, lwd=1.25)
+boxplot(MeanDO~year+lake, data=AllDO, at=c(0.5,1.5, 3.5, 4.5), col=c(NA,"lightgray"), show.names=FALSE, outline=FALSE, lwd=1.25)
 axis(side=1, at=c(1,4), labels=FALSE)
 mtext(quote(DO~("%"*saturation)), side=2, line=1)
 

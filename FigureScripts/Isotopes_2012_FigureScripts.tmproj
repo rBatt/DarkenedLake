@@ -3,38 +3,40 @@
 <plist version="1.0">
 <dict>
 	<key>currentDocument</key>
-	<string>Cons_Mixture_Ward2010&amp;2012_Figures_v0.5.2.R</string>
+	<string>PhoticDepthAquaConc_Graph.R</string>
 	<key>documents</key>
 	<array>
 		<dict>
 			<key>filename</key>
-			<string>L&amp;W_Routine_2010&amp;2012_v4.r</string>
+			<string>L&amp;W_Routine_2010&amp;2012.R</string>
 			<key>lastUsed</key>
-			<date>2014-02-11T00:04:30Z</date>
+			<date>2014-06-25T16:16:07Z</date>
 		</dict>
 		<dict>
 			<key>filename</key>
-			<string>PhoticDepthAquaConc_Graph_v3.R</string>
+			<string>PhoticDepthAquaConc_Graph.R</string>
 			<key>lastUsed</key>
-			<date>2014-06-18T20:03:42Z</date>
+			<date>2014-06-25T22:10:13Z</date>
+			<key>selected</key>
+			<true/>
 		</dict>
 		<dict>
 			<key>filename</key>
-			<string>ZoopMassGraph_Ward&amp;Paul2010&amp;2012.r</string>
+			<string>ZoopMassGraph_Ward&amp;Paul2010&amp;2012.R</string>
 			<key>lastUsed</key>
-			<date>2013-10-27T22:47:30Z</date>
+			<date>2014-06-25T15:54:10Z</date>
 		</dict>
 		<dict>
 			<key>filename</key>
 			<string>L&amp;W_Routine_2010&amp;2012_v3.r</string>
 			<key>lastUsed</key>
-			<date>2014-05-14T19:24:20Z</date>
+			<date>2014-06-25T16:15:46Z</date>
 		</dict>
 		<dict>
 			<key>filename</key>
 			<string>changeUse_terrMac_vs_algal.R</string>
 			<key>lastUsed</key>
-			<date>2014-05-14T19:24:14Z</date>
+			<date>2014-06-25T18:54:58Z</date>
 		</dict>
 		<dict>
 			<key>filename</key>
@@ -46,27 +48,25 @@
 			<key>filename</key>
 			<string>LimnoZoops_CrunchedUp.R</string>
 			<key>lastUsed</key>
-			<date>2014-05-14T19:24:15Z</date>
+			<date>2014-06-25T18:58:14Z</date>
 		</dict>
 		<dict>
 			<key>filename</key>
 			<string>WardIso_Sensitivity_v0.5.0.R</string>
 			<key>lastUsed</key>
-			<date>2014-05-14T19:24:22Z</date>
+			<date>2014-06-25T17:16:14Z</date>
 		</dict>
 		<dict>
 			<key>filename</key>
 			<string>Cons_Mixture_Ward2010&amp;2012_Figures_v0.5.2.R</string>
 			<key>lastUsed</key>
-			<date>2014-06-24T22:43:12Z</date>
-			<key>selected</key>
-			<true/>
+			<date>2014-06-25T22:10:13Z</date>
 		</dict>
 		<dict>
 			<key>filename</key>
 			<string>IsotopeBiPlots_Ward2010&amp;2012_v0.3.0.R</string>
 			<key>lastUsed</key>
-			<date>2014-02-11T01:45:06Z</date>
+			<date>2014-06-25T18:54:58Z</date>
 		</dict>
 	</array>
 	<key>fileHierarchyDrawerWidth</key>
@@ -78,93 +78,137 @@
 			<key>caret</key>
 			<dict>
 				<key>column</key>
-				<integer>87</integer>
+				<integer>30</integer>
 				<key>line</key>
-				<integer>2</integer>
+				<integer>261</integer>
 			</dict>
+			<key>columnSelection</key>
+			<false/>
 			<key>firstVisibleColumn</key>
 			<integer>0</integer>
 			<key>firstVisibleLine</key>
 			<integer>0</integer>
+			<key>selectFrom</key>
+			<dict>
+				<key>column</key>
+				<integer>0</integer>
+				<key>line</key>
+				<integer>202</integer>
+			</dict>
+			<key>selectTo</key>
+			<dict>
+				<key>column</key>
+				<integer>30</integer>
+				<key>line</key>
+				<integer>261</integer>
+			</dict>
+		</dict>
+		<key>IsotopeBiPlots_Ward2010&amp;2012_v0.3.0.R</key>
+		<dict>
+			<key>caret</key>
+			<dict>
+				<key>column</key>
+				<integer>14</integer>
+				<key>line</key>
+				<integer>29</integer>
+			</dict>
+			<key>firstVisibleColumn</key>
+			<integer>0</integer>
+			<key>firstVisibleLine</key>
+			<integer>18</integer>
+		</dict>
+		<key>L&amp;W_Routine_2010&amp;2012.R</key>
+		<dict>
+			<key>caret</key>
+			<dict>
+				<key>column</key>
+				<integer>9</integer>
+				<key>line</key>
+				<integer>90</integer>
+			</dict>
+			<key>firstVisibleColumn</key>
+			<integer>0</integer>
+			<key>firstVisibleLine</key>
+			<integer>64</integer>
 		</dict>
 		<key>L&amp;W_Routine_2010&amp;2012_v3.r</key>
 		<dict>
 			<key>caret</key>
 			<dict>
 				<key>column</key>
-				<integer>42</integer>
+				<integer>127</integer>
 				<key>line</key>
-				<integer>84</integer>
+				<integer>93</integer>
 			</dict>
 			<key>firstVisibleColumn</key>
-			<integer>0</integer>
+			<integer>169</integer>
 			<key>firstVisibleLine</key>
-			<integer>0</integer>
-		</dict>
-		<key>L&amp;W_Routine_2010&amp;2012_v4.r</key>
-		<dict>
-			<key>caret</key>
-			<dict>
-				<key>column</key>
-				<integer>32</integer>
-				<key>line</key>
-				<integer>51</integer>
-			</dict>
-			<key>firstVisibleColumn</key>
-			<integer>0</integer>
-			<key>firstVisibleLine</key>
-			<integer>50</integer>
+			<integer>82</integer>
 		</dict>
 		<key>LimnoZoops_CrunchedUp.R</key>
 		<dict>
 			<key>caret</key>
 			<dict>
 				<key>column</key>
-				<integer>128</integer>
+				<integer>9</integer>
 				<key>line</key>
-				<integer>106</integer>
+				<integer>81</integer>
 			</dict>
 			<key>firstVisibleColumn</key>
 			<integer>0</integer>
 			<key>firstVisibleLine</key>
-			<integer>0</integer>
+			<integer>60</integer>
 		</dict>
-		<key>PhoticDepthAquaConc_Graph_v3.R</key>
+		<key>PhoticDepthAquaConc_Graph.R</key>
 		<dict>
 			<key>caret</key>
 			<dict>
 				<key>column</key>
-				<integer>0</integer>
+				<integer>41</integer>
 				<key>line</key>
-				<integer>57</integer>
+				<integer>84</integer>
 			</dict>
 			<key>firstVisibleColumn</key>
 			<integer>0</integer>
 			<key>firstVisibleLine</key>
-			<integer>73</integer>
+			<integer>74</integer>
 		</dict>
 		<key>WardIso_Sensitivity_v0.5.0.R</key>
 		<dict>
 			<key>caret</key>
 			<dict>
 				<key>column</key>
-				<integer>0</integer>
+				<integer>16</integer>
 				<key>line</key>
-				<integer>1</integer>
+				<integer>7</integer>
 			</dict>
 			<key>firstVisibleColumn</key>
 			<integer>0</integer>
 			<key>firstVisibleLine</key>
+			<integer>2</integer>
+		</dict>
+		<key>ZoopMassGraph_Ward&amp;Paul2010&amp;2012.R</key>
+		<dict>
+			<key>caret</key>
+			<dict>
+				<key>column</key>
+				<integer>33</integer>
+				<key>line</key>
+				<integer>50</integer>
+			</dict>
+			<key>firstVisibleColumn</key>
 			<integer>0</integer>
+			<key>firstVisibleLine</key>
+			<integer>38</integer>
 		</dict>
 		<key>changeUse_terrMac_vs_algal.R</key>
 		<dict>
 			<key>caret</key>
 			<dict>
 				<key>column</key>
-				<integer>0</integer>
+				<integer>150</integer>
 				<key>line</key>
-				<integer>25</integer>
+				<integer>15</integer>
 			</dict>
 			<key>firstVisibleColumn</key>
 			<integer>0</integer>
@@ -175,16 +219,18 @@
 	<key>openDocuments</key>
 	<array>
 		<string>Cons_Mixture_Ward2010&amp;2012_Figures_v0.5.2.R</string>
+		<string>IsotopeBiPlots_Ward2010&amp;2012_v0.3.0.R</string>
 		<string>WardIso_Sensitivity_v0.5.0.R</string>
 		<string>changeUse_terrMac_vs_algal.R</string>
 		<string>LimnoZoops_CrunchedUp.R</string>
 		<string>L&amp;W_Routine_2010&amp;2012_v3.r</string>
-		<string>PhoticDepthAquaConc_Graph_v3.R</string>
-		<string>L&amp;W_Routine_2010&amp;2012_v4.r</string>
+		<string>PhoticDepthAquaConc_Graph.R</string>
+		<string>ZoopMassGraph_Ward&amp;Paul2010&amp;2012.R</string>
+		<string>L&amp;W_Routine_2010&amp;2012.R</string>
 	</array>
 	<key>showFileHierarchyDrawer</key>
-	<false/>
+	<true/>
 	<key>windowFrame</key>
-	<string>{{0, 338}, {1440, 540}}</string>
+	<string>{{-1924, 781}, {1665, 637}}</string>
 </dict>
 </plist>

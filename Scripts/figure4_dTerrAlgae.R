@@ -1,11 +1,14 @@
 
-Save <- FALSE
+
 load("/Users/battrd/Documents/School&Work/WiscResearch/Isotopes_2012Analysis/Results/Cons_Mixture_Ward2010&2012.RData")
 
+Save <- TRUE
+SaveType <- ".png"
+
 if(Save){
-	if(SaveType==".pdf"){pdf(file="/Users/battrd/Documents/School&Work/WiscResearch/Isotopes_2012Analysis/Figures/dTerrAlgae.pdf", height=3, width=3.23)}
-	if(SaveType==".png"){png(file="/Users/battrd/Documents/School&Work/WiscResearch/Isotopes_2012Analysis/Figures/dTerrAlgae.png", units="in", res=600, height=3, width=3.23)}
-	if(SaveType==".eps"){setEPS(); postscript(file="/Users/battrd/Documents/School&Work/WiscResearch/Isotopes_2012Analysis/Figures/dTerrAlgae.eps", height=3, width=3.23, pointsize=10)}
+	if(SaveType==".pdf"){pdf(file="/Users/battrd/Documents/School&Work/WiscResearch/Isotopes_2012Analysis/Figures/fig4_dTerrAlgae.pdf", height=3, width=3.23)}
+	if(SaveType==".png"){png(file="/Users/battrd/Documents/School&Work/WiscResearch/Isotopes_2012Analysis/Figures/fig4_dTerrAlgae.png", units="in", res=600, height=3, width=3.23, type="cairo")}
+	if(SaveType==".eps"){setEPS(); postscript(file="/Users/battrd/Documents/School&Work/WiscResearch/Isotopes_2012Analysis/Figures/fig4_dTerrAlgae.eps", height=3, width=3.23, pointsize=10)}
 }else{
 	dev.new(height=3, width=3, pointsize=10, family="Times")
 }

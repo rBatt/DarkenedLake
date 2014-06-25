@@ -1,20 +1,22 @@
 
-Save <- FALSE
+
 load("/Users/Battrd/Documents/School&Work/WiscResearch/Isotopes_2012Analysis/Results/kf.epi.good.RData")
 load("/Users/Battrd/Documents/School&Work/WiscResearch/Isotopes_2012Analysis/Data/AllDO.RData")
 # load("/Users/Battrd/Documents/School&Work/WiscResearch/Isotopes_2012Analysis/Results/kf.epi.good.RData")
 load("/Users/Battrd/Documents/School&Work/WiscResearch/Isotopes_2012Analysis/Results/WardPaulMetabolism.kf.RData")
 load("/Users/Battrd/Documents/School&Work/WiscResearch/Isotopes_2012Analysis/Data/routine.smry.RData")
 
+Save <- TRUE
+SaveType <- ".png"
 
 # =============================================
 # = 4-panel, areal chlorophyll, pCO2, DO, NEP =
 # =============================================
 
 if(Save){
-	if(SaveType==".pdf"){pdf(file="/Users/battrd/Documents/School&Work/WiscResearch/Isotopes_2012Analysis/Figures/LimnoMetabZoops_PaulWard_2010&2012.pdf", height=5.5, width=4.33)}
-	if(SaveType==".png"){png(file="/Users/battrd/Documents/School&Work/WiscResearch/Isotopes_2012Analysis/Figures/LimnoMetabZoops_PaulWard_2010&2012.png", units="in", res=600, height=5.5, width=4.33)}
-	if(SaveType==".eps"){setEPS();postscript(file="/Users/battrd/Documents/School&Work/WiscResearch/Isotopes_2012Analysis/Figures/LimnoMetabZoops_PaulWard_2010&2012.eps", height=5.5, width=4.33)}
+	if(SaveType==".pdf"){pdf(file="/Users/battrd/Documents/School&Work/WiscResearch/Isotopes_2012Analysis/Figures/fig2_LimnoMetabZoops_PaulWard_2010&2012.pdf", height=5.5, width=4.33)}
+	if(SaveType==".png"){png(file="/Users/battrd/Documents/School&Work/WiscResearch/Isotopes_2012Analysis/Figures/fig2_LimnoMetabZoops_PaulWard_2010&2012.png", units="in", res=600, height=5.5, width=4.33, type="quartz")}
+	if(SaveType==".eps"){setEPS();postscript(file="/Users/battrd/Documents/School&Work/WiscResearch/Isotopes_2012Analysis/Figures/fig2_LimnoMetabZoops_PaulWard_2010&2012.eps", height=5.5, width=4.33)}
 }else{
 	dev.new(height=5.5, width=4.33)
 }
@@ -45,7 +47,7 @@ pWardPaulMetabolism.kf <- subset(WardPaulMetabolism.kf, doy>=143)
 pWardPaulMetabolism.kf[,"lake"] <- relevel(pWardPaulMetabolism.kf[,"lake"], ref="Paul")
 boxplot(NEP~year+lake, data=pWardPaulMetabolism.kf, at=c(0.5,1.5, 3.5, 4.5), col=c(NA,"lightgray"), show.names=FALSE, outline=FALSE, lwd=1.25)
 axis(side=1, at=c(1,4), labels=FALSE)
-mtext(quote(NEP~(mmol~O[2]~m^-3~d^-1)), side=2, line=1)
+mtext(quote(NEP~(mg~O[2]~L^-1~d^-1)), side=2, line=1)
 
 # Zoop biomass
 par(mar=c(1,2.25,0,0), cex=1, ps=9, family="serif", mgp=c(3,0.3,0), tcl=-0.25)

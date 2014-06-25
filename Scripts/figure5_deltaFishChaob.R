@@ -1,6 +1,8 @@
 
-Save <- FALSE
+
 load("/Users/battrd/Documents/School&Work/WiscResearch/Isotopes_2012Analysis/Results/Cons_Mixture_Ward2010&2012.RData")
+Save <- TRUE
+SaveType <- ".png"
 
 # ===============
 # = New _v0.4.7 =
@@ -13,8 +15,8 @@ fC <- rep("black",4)
 
 # dev.new(width=3.5, height=5)
 if(Save){
-	if(SaveType==".pdf"){pdf("/Users/battrd/Documents/School&Work/WiscResearch/Isotopes_2012Analysis/Figures/deltaFishChaob.pdf", sep=""), width=3.23, height=4.5)}
-	if(SaveType==".png"){png("/Users/battrd/Documents/School&Work/WiscResearch/Isotopes_2012Analysis/Figures/deltaFishChaob.png", sep=""), width=3.23, height=4.5, units="in", res=600)}
+	if(SaveType==".pdf"){pdf("/Users/battrd/Documents/School&Work/WiscResearch/Isotopes_2012Analysis/Figures/fig5_deltaFishChaob.pdf", width=3.23, height=4.5)}
+	if(SaveType==".png"){png("/Users/battrd/Documents/School&Work/WiscResearch/Isotopes_2012Analysis/Figures/fig5_deltaFishChaob.png", width=3.23, height=4.5, units="in", res=600, type="quartz")}
 }else{
 	dev.new(width=3.23, height=4.5)
 }
