@@ -46,6 +46,7 @@ rm(list=ls())
 graphics.off()
 
 library(R2WinBUGS)
+library(R2jags)
 
 Iterations <- 2000
 
@@ -160,11 +161,8 @@ for(YearMix in c(2010, 2012)){
 	names(SupplyBUGS_pt1) <- strsplit(c("T_dX, T_dX_Var, dD_Phyto_Epi_Mu, dD_Phyto_Epi_Shape, POM_dX_Epi_Obs, nPOM_Epi, dD_Phyto_Meta_Mu, dD_Phyto_Meta_Shape, POM_dX_Meta_Obs, nPOM_Meta"), split=", ")[[1]]
 	ParamBUGS_pt1 <- c("f", "P_dC_Epi", "P_dN_Epi", "P_dD_Epi", "P_dC_Epi_Var", "P_dN_Epi_Var", "P_dD_Epi_Var",  "P_dC_Meta", "P_dN_Meta", "P_dD_Meta", "P_dC_Meta_Var", "P_dN_Meta_Var", "P_dD_Meta_Var", "residSd")
 	BUGSfile_pt1 <- "/Users/Battrd/Documents/School&Work/WiscResearch/Isotopes_2012Analysis/mix_Cons_Mixture_Ward2010_v2_pt1.bug"
-	if(.Platform$OS.type=="windows"){
-		bugsOut_pt1 <- bugs(SupplyBUGS_pt1, inits=NULL, ParamBUGS_pt1, BUGSfile_pt1, n.chains=8, n.iter=Iterations, program="winbugs", working.directory=NULL, debug=FALSE, clearWD=FALSE)
-	}else{
-		bugsOut_pt1 <- bugs(SupplyBUGS_pt1, inits=NULL, ParamBUGS_pt1, BUGSfile_pt1, n.chains=8, n.iter=Iterations, program="winbugs", working.directory=BUGSWorkDir, clearWD=TRUE, useWINE=TRUE, newWINE=TRUE, WINEPATH=WINEPATH, WINE=WINE, debug=FALSE)
-	}
+	bugsOut_pt1 <- jags(SupplyBUGS_pt1, inits=NULL, ParamBUGS_pt1, BUGSfile_pt1, n.chains=8, n.iter=Iterations)
+
 
 
 	#Extract and name relevant information concerning epilimnetic and metalimnetic phytoplankton
@@ -366,7 +364,7 @@ for(YearMix in c(2010, 2012)){
 			Cons_Data <- subset(Data, Taxon==Cons[g_Cons] & Year==YearMix, select=c("Trophic","d13C","d15N","dD"))
 			Cons_dX_Obs <- matrix(data=c(Cons_Data[,2], Cons_Data[,3], Cons_Data[,4]), ncol=3)
 			ConsName <- as.character(subset(Data, Taxon==Cons[g_Cons] & Year==YearMix, select=Type)[1,1])#There should be a better way to do this...
-			assign(Temp_BugOut, ConsMix(Cons_dX_Obs=Cons_dX_Obs, TL=TL[g_Cons], Srcs_dX=Srcs_dX_Ward, Srcs_dX_Var=Srcs_dX_Var_Ward, Water_dD_Mu, Water_dD_Var, FractModel=TRUE, SrcNames=SourceNames[[f_Src]], ConsName=ConsName, GraphTitle=GraphTitle[g_Cons], WINE=WINE, WINEPATH= WINEPATH, nChains=8, ChainLength=Iterations, working.directory=BUGSWorkDir, Plot=FALSE))
+			assign(Temp_BugOut, ConsMix(Cons_dX_Obs=Cons_dX_Obs, TL=TL[g_Cons], Srcs_dX=Srcs_dX_Ward, Srcs_dX_Var=Srcs_dX_Var_Ward, Water_dD_Mu, Water_dD_Var, FractModel=TRUE, SrcNames=SourceNames[[f_Src]], ConsName=ConsName, GraphTitle=GraphTitle[g_Cons], nChains=8, ChainLength=Iterations, Plot=FALSE))
 			
 			
 			
@@ -401,11 +399,11 @@ for(YearMix in c(2010, 2012)){
 	pdf(file=paste("/Users/battrd/Documents/School&Work/WiscResearch/Isotopes_2012Analysis/Figures/EpiPhyto_Post_", YearMix, ".pdf", sep=""), width=3.5, height=3.5, family="Times", pointsize=9)
 	par(mfrow=c(2,2), las=1, mar=c(3,2.5,0.1,1), oma=c(0,0,0.2,0), cex=PubCex)
 	
-	TerrYLim <- range(density(bugsOut_pt1$sims.matrix[,"f[1]"], from=0, to=1)$y)*c(1, 1.15)
-	plot.density(density(bugsOut_pt1$sims.matrix[,"f[1]"], from=0, to=1),xlab="", ylab="", main="", bty="l", xaxt="s", zero.line=FALSE, ylim=TerrYLim)
+	TerrYLim <- range(density(bugsOut_pt1$BUGSoutput$sims.matrix[,"f[1]"], from=0, to=1)$y)*c(1, 1.15)
+	plot.density(density(bugsOut_pt1$BUGSoutput$sims.matrix[,"f[1]"], from=0, to=1),xlab="", ylab="", main="", bty="l", xaxt="s", zero.line=FALSE, ylim=TerrYLim)
 	title(main=LegendTitle[[1]][1], adj=0.025, line=-0.7, font.main=1, cex.main=PubCex) #CHANGED changed the adj from 1 to 0.1, added font.main=1, line from -0.5 to -1
 	mtext("Terrestrial", side=3, line=-0.9, outer=FALSE, las=0, font=1, adj=PanelNameAdj[1], cex=PubCex) #CHANGED line from 0 to -1, deleted cex=0.85, changed font=3 to 1
-	title(paste(round(bugsOut_pt1$BUGSoutput$mean[[1]][1]*100, 0), "%", sep=""),  adj=0.1, line=-1.75, font.main=3, cex.main=PubCex) #CHANGED deleted cex.main=0.85,
+	title(paste(round(bugsOut_pt1$BUGSoutput$mean$f[1]*100, 0), "%", sep=""),  adj=0.1, line=-1.75, font.main=3, cex.main=PubCex) #CHANGED deleted cex.main=0.85,
 	
 	PdCYLim <- range(density(bugsOut_pt1$BUGSoutput$sims.matrix[,"P_dC_Epi"])$y)*c(1, 1.15)
 	plot.density(density(bugsOut_pt1$BUGSoutput$sims.matrix[,"P_dC_Epi"]), main="", ylab="", xlab="", bty="l", xaxt="s", zero.line=FALSE, ylim=PdCYLim)
@@ -417,7 +415,7 @@ for(YearMix in c(2010, 2012)){
 	plot.density(density(bugsOut_pt1$BUGSoutput$sims.matrix[,"f[2]"], from=0, to=1),  main="", xlab="", ylab="", bty="l", xaxt="s", zero.line=FALSE, ylim=PhytYLim)
 	title(main=LegendTitle[[1]][2], adj=0.025, line=-0.7, font.main=1, cex.main=PubCex)
 	mtext("Phytoplankton", side=3, line=-0.9, outer=FALSE, las=0, font=1, adj=PanelNameAdj[2], cex=PubCex)
-	title(paste(round(bugsOut_pt1$BUGSoutput$mean[[1]][2]*100, 0), "%", sep=""),  adj=0.1, line=-1.75, font.main=3, cex.main=PubCex)
+	title(paste(round(bugsOut_pt1$BUGSoutput$mean$f[2]*100, 0), "%", sep=""),  adj=0.1, line=-1.75, font.main=3, cex.main=PubCex)
 	mtext("Fraction of POM", side=1, line=2, cex=PubCex, font=1, outer=FALSE)
 	
 	PdNYLim <- range(density(bugsOut_pt1$BUGSoutput$sims.matrix[,"P_dN_Epi"])$y)*c(1, 1.15)
@@ -438,7 +436,7 @@ for(YearMix in c(2010, 2012)){
 	plot.density(density(bugsOut_pt1$BUGSoutput$sims.matrix[,"f[3]"], from=0, to=1),xlab="", ylab="", main="", bty="l", xaxt="s", zero.line=FALSE, ylim=TerrYLim)
 	title(main=LegendTitle[[1]][1], adj=0.025, line=-0.7, font.main=1, cex.main=PubCex) #CHANGED changed the adj from 1 to 0.1, added font.main=1, line from -0.5 to -1
 	mtext("Terrestrial", side=3, line=-0.9, outer=FALSE, las=0, font=1, adj=PanelNameAdj[1], cex=PubCex) #CHANGED line from 0 to -1, deleted cex=0.85, changed font=3 to 1
-	title(paste(round(bugsOut_pt1$BUGSoutput$mean[[1]][3]*100, 0), "%", sep=""),  adj=0.1, line=-1.75, font.main=3, cex.main=PubCex) #CHANGED deleted cex.main=0.85,
+	title(paste(round(bugsOut_pt1$BUGSoutput$mean$f[3]*100, 0), "%", sep=""),  adj=0.1, line=-1.75, font.main=3, cex.main=PubCex) #CHANGED deleted cex.main=0.85,
 	
 	PdCYLim <- range(density(bugsOut_pt1$BUGSoutput$sims.matrix[,"P_dC_Meta"])$y)*c(1, 1.15)
 	plot.density(density(bugsOut_pt1$BUGSoutput$sims.matrix[,"P_dC_Meta"]), main="", ylab="", xlab="", bty="l", xaxt="s", zero.line=FALSE, ylim=PdCYLim, xlim=c(-75 , 0))
@@ -472,7 +470,7 @@ for(YearMix in c(2010, 2012)){
 # setwd(paste("/Users/battrd/Documents/School&Work/WiscResearch/Isotopes_2012Analysis/",FigureFolder,sep=""))
 # GroupChoose <- 2
 
-pdf(file=paste("/Users/battrd/Documents/School&Work/WiscResearch/Isotopes_2012Analysis/Figures/ConsSummary_", "ModelSelction.pdf", sep=""), height=7, width=8.5, pointsize=8, family="Times")
+pdf(file="/Users/battrd/Documents/School&Work/WiscResearch/Isotopes_2012Analysis/Figures/ConsSummary_ModelSelction.pdf", height=7, width=8.5, pointsize=8, family="Times")
 # dev.new(width=8, height=8)
 par(mfcol=c(3,3), mar=c(2.5,3.5,1,0.5), cex=1)
 ConsChoicesShort <- c("All Terrestrial"="Terr", "Epi. Phytoplankton"= "Epi Phyt", "Meta. Phytoplankton"="Meta Phyt", "DOM"="DOM", "All Macrophytes"="Macroph", "Periphyton"="Periphy", "Floating Macrophytes"="Float Mac", "Submersed Macrophytes"="Sub Mac", "All Phytoplankton"="Phyto", "Local Terrestrial"="Local Terr")

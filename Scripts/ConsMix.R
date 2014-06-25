@@ -47,8 +47,9 @@
 	#(11-April-2013) Added the working.directory argument
 
 
-ConsMix <- function(Cons_dX_Obs, TL, Srcs_dX, Srcs_dX_Var, Water_dD_Mu, Water_dD_Var, FractModel=TRUE, SrcNames=NULL, ConsName=NULL, Omega_Info=NULL, TL_Var=0.1, Plot=TRUE, NewPlot=TRUE, DispMu=TRUE, GraphTitle=NULL, nChains=5, ChainLength=1000, WINE="/opt/local/bin/wine", WINEPATH="/opt/local/bin/winepath", working.directory=NULL ...){
+ConsMix <- function(Cons_dX_Obs, TL, Srcs_dX, Srcs_dX_Var, Water_dD_Mu, Water_dD_Var, FractModel=TRUE, SrcNames=NULL, ConsName=NULL, Omega_Info=NULL, TL_Var=0.1, Plot=TRUE, NewPlot=TRUE, DispMu=TRUE, GraphTitle=NULL, nChains=5, ChainLength=1000, ...){
 require(R2WinBUGS)
+require(R2jags)
 nCons <- nrow(Cons_dX_Obs)#correction made from _v5: changed ncol to nrow
 nSrcs <- ncol(Srcs_dX)
 
@@ -225,13 +226,13 @@ names(SupplyBUGS_NoFract) <- strsplit(c("nSrcs, Srcs_dX, Srcs_dX_Var, nCons, Con
 
 ParamBUGS <- c("DietF")
 
-if(.Platform$OS.type=="windows"){
-	bugsOut <- bugs(if(FractModel==TRUE){SupplyBUGS}else{SupplyBUGS_NoFract}, inits=NULL, ParamBUGS, ConsMixModel_File, n.chains=nChains, n.iter=ChainLength, program="winbugs",...)
-	}else{
-		print(WINE)
-		print(WINEPATH)
-	bugsOut <- bugs(if(FractModel==TRUE){SupplyBUGS}else{SupplyBUGS_NoFract}, inits=NULL, ParamBUGS, ConsMixModel_File, n.chains=nChains, n.iter=ChainLength, program="winbugs", useWINE=TRUE, newWINE=TRUE, WINEPATH=WINEPATH, WINE=WINE,...)
-	}
+# if(.Platform$OS.type=="windows"){
+	bugsOut <- jags(if(FractModel==TRUE){SupplyBUGS}else{SupplyBUGS_NoFract}, inits=NULL, ParamBUGS, ConsMixModel_File, n.chains=nChains, n.iter=ChainLength, ...)
+	# }else{
+		# print(WINE)
+		# print(WINEPATH)
+	# bugsOut <- bugs(if(FractModel==TRUE){SupplyBUGS}else{SupplyBUGS_NoFract}, inits=NULL, ParamBUGS, ConsMixModel_File, n.chains=nChains, n.iter=ChainLength, program="winbugs", useWINE=TRUE, newWINE=TRUE, WINEPATH=WINEPATH, WINE=WINE,...)
+	# }
 
 
 
@@ -247,27 +248,27 @@ if(Plot==TRUE){
 		if(NewPlot==TRUE){dev.new(height=8, width=8)}
 		par(mfrow=c(2,2), family="Times", las=1, mar=c(2,2,3,2), oma=c(3,3,3,0))
 		}
-	plot.density(density(bugsOut$sims.matrix[,1], from=0, to=1), xlab="", ylab="", main="", bty="l",...)
+	plot.density(density(bugsOut$BUGSoutput$sims.matrix[,1], from=0, to=1), xlab="", ylab="", main="", bty="l",...)
 	mtext("Density", side=2, line=3, outer=FALSE, las=0)
 	mtext(SrcNames[1], side=3, line=0.5, outer=FALSE, las=0, font=3)
 	if(DispMu==TRUE){
 		if(.Platform$OS.type=="windows"){
-			legend("topright", legend=paste("mu=", round(bugsOut$mean[[1]][1], 2), sep=""), bty="n")
+			legend("topright", legend=paste("mu=", round(bugsOut$BUGSoutput$mean[[1]][1], 2), sep=""), bty="n")
 				}else{
-					legend("topright", legend=paste("µ=", round(bugsOut$mean[[1]][1], 2), sep=""), bty="n")
+					legend("topright", legend=paste("µ=", round(bugsOut$BUGSoutput$mean[[1]][1], 2), sep=""), bty="n")
 					}	
 		}
 	
 	if(nSrcs>=2){
-		plot.density(density(bugsOut$sims.matrix[,2], from=0, to=1), main="", ylab="", xlab="", bty="l",...)
+		plot.density(density(bugsOut$BUGSoutput$sims.matrix[,2], from=0, to=1), main="", ylab="", xlab="", bty="l",...)
 		if(nSrcs<=3){mtext("Percent Diet", side=1, line=3, outer=FALSE, las=0)}
 		if(nSrcs==2){mtext("Density", side=2, line=3, outer=FALSE, las=0)}
 		mtext(SrcNames[2], side=3, line=0.5, outer=FALSE, las=0, font=3)
 			if(DispMu==TRUE){
 			if(.Platform$OS.type=="windows"){
-				legend("topright", legend=paste("mu=", round(bugsOut$mean[[1]][2], 2), sep=""), bty="n")
+				legend("topright", legend=paste("mu=", round(bugsOut$BUGSoutput$mean[[1]][2], 2), sep=""), bty="n")
 					}else{
-						legend("topright", legend=paste("µ=", round(bugsOut$mean[[1]][2], 2), sep=""), bty="n")
+						legend("topright", legend=paste("µ=", round(bugsOut$BUGSoutput$mean[[1]][2], 2), sep=""), bty="n")
 						}	
 			}
 		}
@@ -278,21 +279,21 @@ if(Plot==TRUE){
 		mtext(SrcNames[3], side=3, line=0.5, outer=FALSE, las=0, font=3)
 			if(DispMu==TRUE){
 			if(.Platform$OS.type=="windows"){
-				legend("topright", legend=paste("mu=", round(bugsOut$mean[[1]][3], 2), sep=""), bty="n")
+				legend("topright", legend=paste("mu=", round(bugsOut$BUGSoutput$mean[[1]][3], 2), sep=""), bty="n")
 					}else{
-						legend("topright", legend=paste("µ=", round(bugsOut$mean[[1]][3], 2), sep=""), bty="n")
+						legend("topright", legend=paste("µ=", round(bugsOut$BUGSoutput$mean[[1]][3], 2), sep=""), bty="n")
 						}	
 			}
 	}
 	if(nSrcs==4){
-		plot.density(density(bugsOut$sims.matrix[,4], from=0, to=1), main="", ylab="", xlab="Percent Diet", bty="l",...)
+		plot.density(density(bugsOut$BUGSoutput$sims.matrix[,4], from=0, to=1), main="", ylab="", xlab="Percent Diet", bty="l",...)
 		mtext("Percent Diet", side=1, line=3, outer=FALSE, las=0)
 		mtext(paste(SrcNames[4], collapse=", "), side=3, line=0.5, outer=FALSE, las=0, font=3)
 			if(DispMu==TRUE){
 			if(.Platform$OS.type=="windows"){
-				legend("topright", legend=paste("mu=", round(bugsOut$mean[[1]][4], 2), sep=""), bty="n")
+				legend("topright", legend=paste("mu=", round(bugsOut$BUGSoutput$mean[[1]][4], 2), sep=""), bty="n")
 					}else{
-						legend("topright", legend=paste("µ=", round(bugsOut$mean[[1]][4], 2), sep=""), bty="n")
+						legend("topright", legend=paste("µ=", round(bugsOut$BUGSoutput$mean[[1]][4], 2), sep=""), bty="n")
 						}	
 			}
 	}
