@@ -9,7 +9,7 @@ library("DescTools")
 library("cluster")
 library("tikzDevice")
 
-setwd("/Users/battrd/Documents/School&Work/WiscResearch/Isotopes_2012Analysis")
+# setwd("/Users/battrd/Documents/School&Work/WiscResearch/Isotopes_2012Analysis")
 load("Cons_Mixture_Ward2010&2012_v0.4.7.RData")
 FigureFolder <- paste("Figures/Figures_", "v0.5.2", sep="")
 SaveType <- c(".pdf", ".png", ".eps")[2]
@@ -17,132 +17,21 @@ Version <- "v0.4.7"
 ThisVersion <- "v0.5.2"
 
 Save <- c(TRUE, FALSE)[1]
-PlotViolin.default <- function(x, ..., horizontal = FALSE, bw = "SJ", na.rm = FALSE, names = NULL, args.boxplot = NULL){
-    vlnplt <- function(x, y, center, horizontal = FALSE, col = NA, 
-        border = par("fg"), lty = 1, lwd = 1, density = NULL, 
-        angle = 45, fillOddEven = FALSE, ...) {
-        x <- c(x, rev(x))
-        y <- c(y, -rev(y))
-        y <- y + center
-        if (horizontal == FALSE) {
-            tmp = x
-            x = y
-            y = tmp
-        }
-        polygon(x = x, y = y, border = border, col = col, lty = lty, 
-            lwd = lwd, density = density, angle = angle, fillOddEven = fillOddEven, 
-            ...)
-    }
-    m <- match.call(expand.dots = FALSE)
-    pars <- m$...[names(m$...)[!is.na(match(names(m$...), c("cex", 
-        "cex.axis", "cex.lab", "cex.main", "cex.sub", "col.axis", 
-        "col.lab", "col.main", "col.sub", "family", "font", "font.axis", 
-        "font.lab", "font.main", "font.sub", "las", "tck", "tcl", 
-        "xaxt", "xpd", "yaxt")))]]
-    oldpar <- par(pars)
-    on.exit(par(oldpar))
-    args <- list(x, ...)
-    namedargs <- if (!is.null(attributes(args)$names)) 
-        attributes(args)$names != ""
-    else rep(FALSE, length = length(args))
-    groups <- if (is.list(x)) 
-        x
-    else args[!namedargs]
-    if (0 == (n <- length(groups))) 
-        stop("invalid first argument")
-    if (length(class(groups))) 
-        groups <- unclass(groups)
-    if (!missing(names)) 
-        attr(groups, "names") <- names
-    else {
-        if (is.null(attr(groups, "names"))) 
-            attr(groups, "names") <- 1:n
-        names <- attr(groups, "names")
-    }
-    xvals <- matrix(0, nrow = 512, ncol = n)
-    yvals <- matrix(0, nrow = 512, ncol = n)
-    center <- 1:n
-    for (i in 1:n) {
-        if (na.rm) 
-            xi <- na.omit(groups[[i]])
-        else xi <- groups[[i]]
-        tmp.dens <- density(xi, bw = bw, from=0, to=1)
-        xvals[, i] <- tmp.dens$x
-        yvals.needtoscale <- tmp.dens$y
-        yvals.scaled <- 7/16 * yvals.needtoscale/max(yvals.needtoscale)
-        yvals[, i] <- yvals.scaled
-    }
-    if (horizontal == FALSE) {
-        xrange <- c(1/2, n + 1/2)
-        yrange <- range(xvals)
-    }
-    else {
-        xrange <- range(xvals)
-        yrange <- c(1/2, n + 1/2)
-    }
-    plot.args <- m$...[names(m$...)[!is.na(match(names(m$...), 
-        c("xlim", "ylim", "main", "xlab", "ylab", "panel.first", 
-            "panel.last", "frame.plot", "add")))]]
-    if (!"xlim" %in% names(plot.args)) 
-        plot.args <- c(plot.args, list(xlim = xrange))
-    if (!"ylim" %in% names(plot.args)) 
-        plot.args <- c(plot.args, list(ylim = yrange))
-    if (!"xlab" %in% names(plot.args)) 
-        plot.args <- c(plot.args, list(xlab = ""))
-    if (!"ylab" %in% names(plot.args)) 
-        plot.args <- c(plot.args, list(ylab = ""))
-    if (!"frame.plot" %in% names(plot.args)) 
-        plot.args <- c(plot.args, list(frame.plot = TRUE))
-    if (!"add" %in% names(plot.args)) 
-        add <- FALSE
-    else add <- plot.args$add
-    if (!add) 
-        do.call(plot, c(plot.args, list(x = 0, y = 0, type = "n", 
-            axes = FALSE)))
-    poly.args <- args[names(args)[!is.na(match(names(args), c("border", 
-        "col", "lty", "lwd", "density", "angle", "fillOddEven")))]]
-    poly.args <- lapply(poly.args, rep, length.out = n)
-    for (i in 1:n) do.call(vlnplt, c(lapply(poly.args, "[", i), 
-        list(x = xvals[, i]), list(y = yvals[, i]), list(center = center[i]), 
-        list(horizontal = horizontal)))
-    axes <- Coalesce(unlist(m$...[names(m$...)[!is.na(match(names(m$...), 
-        c("axes")))]]), TRUE)
-    if (axes) {
-        xaxt <- Coalesce(unlist(m$...[names(m$...)[!is.na(match(names(m$...), 
-            c("xaxt")))]]), TRUE)
-        if (xaxt != "n") 
-            if (horizontal == TRUE) 
-                axis(1)
-            else axis(1, at = 1:n, labels = names)
-        yaxt <- Coalesce(unlist(m$...[names(m$...)[!is.na(match(names(m$...), 
-            c("yaxt")))]]), TRUE)
-        if (yaxt != "n") 
-            if (horizontal == TRUE) 
-                axis(2, at = 1:n, labels = names)
-            else axis(2)
-    }
-    if (!identical(args.boxplot, NA)) {
-        args1.boxplot <- list(col = "black", add = TRUE, boxwex = 0.05, 
-            axes = FALSE, outline = FALSE, whisklty = 1, staplelty = 0, 
-            medcol = "white")
-        args1.boxplot[names(args.boxplot)] <- args.boxplot
-        do.call(boxplot, c(list(x, horizontal = horizontal), 
-            args1.boxplot))
-    }
-}
 
 
-load("/Users/Battrd/Documents/School&Work/WiscResearch/Isotopes_2012Analysis/Figures/Figures_v0.4.0_ModelSelection/Sensitivity_v0.0.5.RData")
+
+# load("/Users/Battrd/Documents/School&Work/WiscResearch/Isotopes_2012Analysis/Figures/Figures_v0.4.0_ModelSelection/Sensitivity_v0.0.5.RData")
+load("/Users/Battrd/Documents/School&Work/WiscResearch/Isotopes_2012Analysis/Results/Orgd_ConsMix_Sensit.RData")
 
 # ===============
 # = New _v0.4.5 =
 # ===============
-setwd(paste("/Users/battrd/Documents/School&Work/WiscResearch/Isotopes_2012Analysis/",FigureFolder,sep=""))
+setwd(paste("",FigureFolder,sep=""))
 
 if(Save){
-	if(SaveType==".pdf"){pdf(file=paste(paste("dTerrAlgae_", Version, sep=""), ".pdf", sep=""), height=3, width=3.23)}
-	if(SaveType==".png"){png(file=paste(paste("dTerrAlgae_", Version, sep=""), ".png", sep=""), units="in", res=600, height=3, width=3.23)}
-	if(SaveType==".eps"){setEPS(); postscript(file=paste(paste("dTerrAlgae_", Version, sep=""), ".eps", sep=""), height=3, width=3.23, pointsize=10)}
+	if(SaveType==".pdf"){pdf(file="/Users/battrd/Documents/School&Work/WiscResearch/Isotopes_2012Analysis/Figures/dTerrAlgae.pdf", sep=""), height=3, width=3.23)}
+	if(SaveType==".png"){png(file="/Users/battrd/Documents/School&Work/WiscResearch/Isotopes_2012Analysis/Figures/dTerrAlgae.png", sep=""), units="in", res=600, height=3, width=3.23)}
+	if(SaveType==".eps"){setEPS(); postscript(file="/Users/battrd/Documents/School&Work/WiscResearch/Isotopes_2012Analysis/Figures/dTerrAlgae.eps", sep=""), height=3, width=3.23, pointsize=10)}
 }else{
 	dev.new(height=3, width=3, pointsize=10, family="Times")
 }
@@ -184,10 +73,9 @@ fN <- rev(c("FHM", "DAC", "CMM", "BHD1")) #fish names
 fC <- rep("black",4)
 
 # dev.new(width=3.5, height=5)
-setwd(paste("/Users/battrd/Documents/School&Work/WiscResearch/Isotopes_2012Analysis/",FigureFolder,sep=""))
 if(Save){
-	if(SaveType==".pdf"){pdf(paste("deltaFishChaob_", Version, ".pdf", sep=""), width=3.23, height=4.5)}
-	if(SaveType==".png"){png(paste("deltaFishChaob_", Version, ".png", sep=""), width=3.23, height=4.5, units="in", res=600)}
+	if(SaveType==".pdf"){pdf("/Users/battrd/Documents/School&Work/WiscResearch/Isotopes_2012Analysis/Figures/deltaFishChaob.pdf", sep=""), width=3.23, height=4.5)}
+	if(SaveType==".png"){png("/Users/battrd/Documents/School&Work/WiscResearch/Isotopes_2012Analysis/Figures/deltaFishChaob.png", sep=""), width=3.23, height=4.5, units="in", res=600)}
 }else{
 	dev.new(width=3.23, height=4.5)
 }
@@ -585,9 +473,9 @@ names(cYearMean) <- c("Lake", "Year", "Mass")
 # =============================================
 
 if(Save){
-	if(SaveType==".pdf"){pdf(file=paste(paste("LimnoMetabZoops_PaulWard_2010&2012_", Version, sep=""), ".pdf", sep=""), height=5.5, width=4.33)}
-	if(SaveType==".png"){png(file=paste(paste("LimnoMetabZoops_PaulWard_2010&2012_", Version, sep=""), ".png", sep=""), units="in", res=600, height=5.5, width=4.33)}
-	if(SaveType==".eps"){setEPS();postscript(file=paste(paste("LimnoMetabZoops_PaulWard_2010&2012_", Version, sep=""), ".eps", sep=""), height=5.5, width=4.33)}
+	if(SaveType==".pdf"){pdf(file="/Users/battrd/Documents/School&Work/WiscResearch/Isotopes_2012Analysis/Figures/LimnoMetabZoops_PaulWard_2010&2012.pdf", height=5.5, width=4.33)}
+	if(SaveType==".png"){png(file="/Users/battrd/Documents/School&Work/WiscResearch/Isotopes_2012Analysis/Figures/LimnoMetabZoops_PaulWard_2010&2012.png", units="in", res=600, height=5.5, width=4.33)}
+	if(SaveType==".eps"){setEPS();postscript(file="/Users/battrd/Documents/School&Work/WiscResearch/Isotopes_2012Analysis/Figures/LimnoMetabZoops_PaulWard_2010&2012.eps", height=5.5, width=4.33)}
 }else{
 	dev.new(height=5.5, width=4.33)
 }
@@ -641,9 +529,9 @@ nZ <- zData[,"Taxon"]=="Nauplii"
 zData2 <- zData
 zData2[nZ,"Mass"] <- zData2[nZ,"Mass"]/1
 if(Save){
-	if(SaveType==".pdf"){pdf(file=paste(paste("zoop_byTaxon_2010&2012_", Version, sep=""), ".pdf", sep=""), height=3.23, width=3.23)}
-	if(SaveType==".png"){png(file=paste(paste("zoop_byTaxon_2010&2012_", Version, sep=""), ".png", sep=""), units="in", res=600, height=3.23, width=3.23)}
-	if(SaveType==".eps"){setEPS();postscript(file=paste(paste("zoop_byTaxon_2010&2012_", Version, sep=""), ".eps", sep=""), height=3.23, width=3.23)}
+	if(SaveType==".pdf"){pdf(file="/Users/battrd/Documents/School&Work/WiscResearch/Isotopes_2012Analysis/Figures/zoop_byTaxon_2010&2012.pdf", height=3.23, width=3.23)}
+	if(SaveType==".png"){png(file="/Users/battrd/Documents/School&Work/WiscResearch/Isotopes_2012Analysis/Figures/zoop_byTaxon_2010&2012.png", units="in", res=600, height=3.23, width=3.23)}
+	if(SaveType==".eps"){setEPS();postscript(file="/Users/battrd/Documents/School&Work/WiscResearch/Isotopes_2012Analysis/Figures/zoop_byTaxon_2010&2012.eps", height=3.23, width=3.23)}
 }else{
 	dev.new(height=3.22, width=3.22)
 }
@@ -668,9 +556,7 @@ if(Save){dev.off()}
 # ===================
 # = Isotope biplots =
 # ===================
-setwd("/Users/Battrd/Documents/School&Work/WiscResearch/Isotopes_2012Analysis")
-load(paste("Data+Phyto_", "v0.4.6", ".RData",sep=""))
-ThisVersion <- "v0.5.1"
+load("/Users/battrd/Documents/School&Work/WiscResearch/Isotopes_2012Analysis/Results/Data+Phyto.RData")
 CexScale <- 0.8
 
 
@@ -807,7 +693,7 @@ for(i in 1:length(GraphLayers)){
 		options(tikzMetricPackages = c("\\usepackage[utf8]{inputenc}",
 		    "\\usepackage[T1]{fontenc}", "\\usetikzlibrary{calc}",
 		    "\\usepackage{amssymb}","\\usepackage{tensor}"))
-		tikz(file=paste(FigureFolder,"/BiPlots/Ward2010&2012_IsoBiPlot_", GraphLayers[i], "_", ThisVersion, ".tex", sep=""), width=3.23, height=5.25, standAlone=TRUE, 
+		tikz(file=paste("/Users/battrd/Documents/School&Work/WiscResearch/Isotopes_2012Analysis/Figures/BiPlots/Ward2010&2012_IsoBiPlot_", GraphLayers[i], ".tex", sep=""), width=3.23, height=5.25, standAlone=TRUE, 
 		packages = c("\\usepackage{tikz}",
 		                 "\\usepackage[active,tightpage,psfixbb]{preview}",
 		                 "\\PreviewEnvironment{pgfpicture}",
@@ -844,7 +730,7 @@ for(i in 1:length(GraphLayers)){
 	
 	# Add points
 	# points(muDataGroup[,IsoNames[nPlots[1:2,1]]], pch=ifelse(muDataGroup[,"Trophic"]==0, 21, 22), bg=ifelse(muDataGroup[,"Year"]==2010, "white", "gray85"), cex=2.7*CexScale, xlab=LabelIso[nPlots[1,1]], ylab=LabelIso[nPlots[2,1]], xlim=Lims1[[1]], ylim=Lims1[[2]])
-		points(muDataGroup[,IsoNames[nPlots[1:2,1]]], pch=ifelse(muDataGroup[,"Trophic"]==0, 21, 22), bg=ifelse(muDataGroup[,"Year"]==2010, "white", "gray85"), cex=2.7*CexScale, xlab="", ylab="", xlim=Lims1[[1]], ylim=Lims1[[2]])
+	points(muDataGroup[,IsoNames[nPlots[1:2,1]]], pch=ifelse(muDataGroup[,"Trophic"]==0, 21, 22), bg=ifelse(muDataGroup[,"Year"]==2010, "white", "gray85"), cex=2.7*CexScale, xlab="", ylab="", xlim=Lims1[[1]], ylim=Lims1[[2]])
 	TaxID <- as.numeric(muDataGroup[,"TaxID"])
 	Move17_Index <- which(muDataGroup[,"TaxID"]==17)
 	Move17_d_CND <- c(-0.5,0,8)
@@ -885,14 +771,6 @@ for(i in 1:length(GraphLayers)){
 	title(main=LegendTitle[2], adj=0.025, line=-1.5, cex.main=PubCex*1.25, font.main=1)
 	
 	
-
-	# if(GraphLayers[i]=="EndMembers"){		
-	# 	encircle(floatI, cy="d15N", col="forestgreen", lty="dashed", lwd=2)
-	# 	encircle(subI, cy="d15N", col="forestgreen", lty="dashed", lwd=2)
-	# 	encircle(terrI, cy="d15N", col="brown", lty="solid", lwd=2)
-	# 	encircle(phytoI, cy="d15N", col="forestgreen", lty="solid", lwd=2)
-	# 	encircle(periI, cy="d15N", col="forestgreen", lty="solid", lwd=2)
-	# }
 	if(Save){dev.off()}
 	print(cbind(muDataGroup, "ID"=TaxID)[order(TaxID),])
 }

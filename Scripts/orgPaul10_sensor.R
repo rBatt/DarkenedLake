@@ -31,6 +31,7 @@ paul10.therm0 <- paul10.therm00[,c("datetime", names(paul10.therm00)[grepl("wtr_
 paul10.zmix <- ts.meta.depths(paul10.therm0)[,c("datetime", "top")]
 names(paul10.zmix)[2] <- "z.mix"
 
+paul10.therm <- merge(paul10.therm0, paul10.zmix, all=TRUE)
 
 # ============================
 # = Read in Paul 2010 Sondes =
@@ -75,8 +76,9 @@ paul10.epi <- paul10.epi.full[,c("datetime", "do.obs", "do.sat", "k.gas", "z.mix
 # =======================
 # = Save organized data =
 # =======================
-save(paul10.epi.full, paul10.epi, file="/Users/Battrd/Documents/School&Work/WiscResearch/Isotopes_2012Analysis/Data/sondes_paul2010.RData")
+save(paul10.therm, paul10.epi.full, paul10.epi, file="/Users/Battrd/Documents/School&Work/WiscResearch/Isotopes_2012Analysis/Data/sondes_paul2010.RData")
 
+write.table(paul10.therm, file="/Users/Battrd/Documents/School&Work/WiscResearch/Isotopes_2012Analysis/Data/paul10.therm.txt", row.names=FALSE)
 write.table(paul10.epi.full, file="/Users/Battrd/Documents/School&Work/WiscResearch/Isotopes_2012Analysis/Data/paul10.epi.full.txt", row.names=FALSE)
 write.table(paul10.epi, file="/Users/Battrd/Documents/School&Work/WiscResearch/Isotopes_2012Analysis/Data/paul10.epi.txt", row.names=FALSE)
 

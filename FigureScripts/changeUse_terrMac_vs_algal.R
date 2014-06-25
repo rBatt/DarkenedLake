@@ -2,16 +2,18 @@
 # ===============
 # = New _v0.4.5 =
 # ===============
-setwd(paste("/Users/battrd/Documents/School&Work/WiscResearch/Isotopes_2012Analysis/",FigureFolder,sep=""))
+# setwd(paste("/Users/battrd/Documents/School&Work/WiscResearch/Isotopes_2012Analysis/",FigureFolder,sep=""))
+
+
 
 tm25 <- rowSums(cbind(Chosen25th[,c("All.Terrestrial", "Floating.Macrophytes")]), na.rm=TRUE)
 tmMed <- rowSums(cbind(ChosenMedDiffs[,c("All.Terrestrial", "Floating.Macrophytes")]), na.rm=TRUE)
 tm75 <- rowSums(cbind(Chosen75th[,c("All.Terrestrial", "Floating.Macrophytes")]), na.rm=TRUE)
 
 if(Save){
-	if(SaveType==".pdf"){pdf(file=paste(paste("dAlgae_vs_terrMac_", Version, sep=""), ".pdf", sep=""), height=3, width=3.23)}
-	if(SaveType==".png"){png(file=paste(paste("dAlgae_vs_terrMac_", Version, sep=""), ".png", sep=""), units="in", res=300, height=3, width=3.23)}
-	if(SaveType==".eps"){setEPS(); postscript(file=paste(paste("dAlgae_vs_terrMac_", Version, sep=""), ".eps", sep=""), height=3, width=3.23, pointsize=10)}
+	if(SaveType==".pdf"){pdf(file="/Users/battrd/Documents/School&Work/WiscResearch/Isotopes_2012Analysis/Figures/dAlgae_vs_terrMac.pdf", height=3, width=3.23)}
+	if(SaveType==".png"){png(file="/Users/battrd/Documents/School&Work/WiscResearch/Isotopes_2012Analysis/Figures/dAlgae_vs_terrMac.png", units="in", res=300, height=3, width=3.23)}
+	if(SaveType==".eps"){setEPS(); postscript(file="/Users/battrd/Documents/School&Work/WiscResearch/Isotopes_2012Analysis/Figures/dAlgae_vs_terrMac.eps", height=3, width=3.23, pointsize=10)}
 }else{
 	dev.new(height=4, width=3, pointsize=10, family="Times")
 }

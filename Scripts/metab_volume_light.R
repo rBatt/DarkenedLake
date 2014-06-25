@@ -9,10 +9,10 @@ source("/Users/Battrd/Documents/School&Work/WiscResearch/Isotopes_2012Analysis/S
 # ======================
 # = Read in sonde data =
 # ======================
-load("/Users/Battrd/Documents/School&Work/WiscResearch/Isotopes_2012Analysis/Results/sondes_ward2012.RData")
-load("/Users/Battrd/Documents/School&Work/WiscResearch/Isotopes_2012Analysis/Results/sondes_ward2010.RData")
-load("/Users/Battrd/Documents/School&Work/WiscResearch/Isotopes_2012Analysis/Results/sondes_paul2010.RData")
-load("/Users/Battrd/Documents/School&Work/WiscResearch/Isotopes_2012Analysis/Results/sondes_paul2012.RData")
+load("/Users/Battrd/Documents/School&Work/WiscResearch/Isotopes_2012Analysis/Data/sondes_ward2012.RData")
+load("/Users/Battrd/Documents/School&Work/WiscResearch/Isotopes_2012Analysis/Data/sondes_ward2010.RData")
+load("/Users/Battrd/Documents/School&Work/WiscResearch/Isotopes_2012Analysis/Data/sondes_paul2010.RData")
+load("/Users/Battrd/Documents/School&Work/WiscResearch/Isotopes_2012Analysis/Data/sondes_paul2012.RData")
 
 # ==============================
 # = Read in metabolism results =

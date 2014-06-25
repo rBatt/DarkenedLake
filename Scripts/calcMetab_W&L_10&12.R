@@ -16,6 +16,7 @@ load("/Users/Battrd/Documents/School&Work/WiscResearch/Isotopes_2012Analysis/Dat
 # Ward 2010 Epilimnion
 # Kalman
 ward10.epi.kal <- metab(ward10.epi, "kalman")
+ward10.epi.bk <- metab(ward10.epi, "bookkeep", lake.lat=46.28)
 
 
 # Ward 2010 Metalimnion
@@ -31,6 +32,7 @@ ward10.meta.kal <- metab(ward10.meta, "kalman")
 # Ward 2012 Epi Metabolism
 # Kalman
 ward12.epi.kal <- metab(ward12.epi, "kalman")
+ward12.epi.bk <- metab(ward12.epi, "bookkeep", lake.lat=46.28)
 
 
 # Ward 2012 Meta Metabolism
@@ -58,9 +60,10 @@ paul12.epi.kal <- metab(paul12.epi, "kalman")
 
 
 
-# ===========
-# = Summary =
-# ===========
+
+# ==================
+# = Summary Kalman =
+# ==================
 colMeans(ward10.epi.kal[ward10.epi.kal[,"GPP"]>0&ward10.epi.kal[,"R"]<0,])
 colMeans(ward12.epi.kal[ward12.epi.kal[,"GPP"]>0&ward12.epi.kal[,"R"]<0&ward12.epi.kal[,"doy"]>137,])
 
@@ -79,6 +82,20 @@ kf.epi.good <- rbind(
 kf.epi.good[,"datetime"] <- as.POSIXct(do.call(paste, as.list(kf.epi.good[,c("year","doy")])), format="%Y %j", tz="GMT")
 rownames(kf.epi.good) <- NULL
 
+WardPaulMetabolism.kf <- rbind(
+	cbind("lake"="Ward", ward10.epi.kal),
+	cbind("lake"="Ward", ward12.epi.kal),
+	cbind("lake"="Paul", paul10.epi.kal),
+	cbind("lake"="Paul", paul12.epi.kal)
+	)
+	
+# =======================
+# = Summary Bookkeeping =
+# =======================
+colMeans(ward10.epi.bk[ward10.epi.bk[,"GPP"]>0&ward10.epi.bk[,"R"]<0,])
+colMeans(ward12.epi.bk[ward12.epi.bk[,"GPP"]>0&ward12.epi.bk[,"R"]<0&ward12.epi.bk[,"doy"]>137,])
+
+
 # ================
 # = Save results =
 # ================
@@ -91,8 +108,7 @@ save(paul10.epi.kal, file="/Users/Battrd/Documents/School&Work/WiscResearch/Isot
 save(paul12.epi.kal, file="/Users/Battrd/Documents/School&Work/WiscResearch/Isotopes_2012Analysis/Results/paul12.epi.kal.RData")
 
 save(kf.epi.good, file="/Users/Battrd/Documents/School&Work/WiscResearch/Isotopes_2012Analysis/Results/kf.epi.good.RData")
-
-
+save(WardPaulMetabolism.kf, file="/Users/Battrd/Documents/School&Work/WiscResearch/Isotopes_2012Analysis/Results/WardPaulMetabolism.kf.RData")
 
 
 # =============================================

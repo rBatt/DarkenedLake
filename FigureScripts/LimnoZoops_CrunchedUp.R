@@ -26,9 +26,9 @@ names(cYearMean) <- c("Lake", "Year", "Mass")
 
 
 if(Save){
-	if(SaveType==".pdf"){pdf(file=paste(paste("ZoopChaob_PaulWard_2010&2012_", Version, sep=""), ".pdf", sep=""), height=1.75, width=4.33)}
-	if(SaveType==".png"){png(file=paste(paste("ZoopChaob_PaulWard_2010&2012_", Version, sep=""), ".png", sep=""), units="in", res=200, height=1.75, width=4.33)}
-	if(SaveType==".eps"){setEPS();postscript(file=paste(paste("ZoopChaob_PaulWard_2010&2012_", Version, sep=""), ".eps", sep=""), height=1.75, width=4.33)}
+	if(SaveType==".pdf"){pdf(file="/Users/battrd/Documents/School&Work/WiscResearch/Isotopes_2012Analysis/Figures/ZoopChaob_PaulWard_2010&2012.pdf", height=1.75, width=4.33)}
+	if(SaveType==".png"){png(file="/Users/battrd/Documents/School&Work/WiscResearch/Isotopes_2012Analysis/Figures/ZoopChaob_PaulWard_2010&2012.png", units="in", res=200, height=1.75, width=4.33)}
+	if(SaveType==".eps"){setEPS();postscript(file="/Users/battrd/Documents/School&Work/WiscResearch/Isotopes_2012Analysis/Figures/ZoopChaob_PaulWard_2010&2012.eps", height=1.75, width=4.33)}
 }else{
 	dev.new(height=1.75, width=4.33)
 }
@@ -80,9 +80,9 @@ VarAnalyze <- c("Color","Temp","Zmix","Secchi","Light","DOC","DIC", "pH", "TN", 
 # =============================================
 
 if(Save){
-	if(SaveType==".pdf"){pdf(file=paste(paste("LimnoMetab_PaulWard_2010&2012_", Version, sep=""), ".pdf", sep=""), height=4, width=4.33)}
-	if(SaveType==".png"){png(file=paste(paste("LimnoMetab_PaulWard_2010&2012_", Version, sep=""), ".png", sep=""), units="in", res=200, height=3.5, width=4.33)}
-	if(SaveType==".eps"){setEPS();postscript(file=paste(paste("LimnoMetab_PaulWard_2010&2012_", Version, sep=""), ".eps", sep=""), height=4, width=4.33)}
+	if(SaveType==".pdf"){pdf(file="/Users/battrd/Documents/School&Work/WiscResearch/Isotopes_2012Analysis/Figures/LimnoMetab_PaulWard_2010&2012.pdf", height=4, width=4.33)}
+	if(SaveType==".png"){png(file="/Users/battrd/Documents/School&Work/WiscResearch/Isotopes_2012Analysis/Figures/LimnoMetab_PaulWard_2010&2012.png", units="in", res=200, height=3.5, width=4.33)}
+	if(SaveType==".eps"){setEPS();postscript(file="/Users/battrd/Documents/School&Work/WiscResearch/Isotopes_2012Analysis/Figures/LimnoMetab_PaulWard_2010&2012.eps", height=4, width=4.33)}
 }else{
 	dev.new(height=4, width=4.33)
 }

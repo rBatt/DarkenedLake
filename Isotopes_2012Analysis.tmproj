@@ -3,187 +3,173 @@
 <plist version="1.0">
 <dict>
 	<key>currentDocument</key>
-	<string>orgWard12_sensor.R</string>
+	<string>Scripts/Cons_Mixture_Ward2010&amp;2012.R</string>
 	<key>documents</key>
 	<array>
 		<dict>
 			<key>filename</key>
-			<string>orgWeather_2010&amp;2012.R</string>
+			<string>Scripts/plotMetabolism.R</string>
 			<key>lastUsed</key>
-			<date>2014-06-19T01:25:25Z</date>
+			<date>2014-06-24T22:39:06Z</date>
 		</dict>
 		<dict>
 			<key>filename</key>
-			<string>calcMetab_W&amp;L_10&amp;12.R</string>
+			<string>Scripts/metab_volume_light.R</string>
 			<key>lastUsed</key>
-			<date>2014-06-23T14:24:20Z</date>
+			<date>2014-06-24T22:39:15Z</date>
 		</dict>
 		<dict>
 			<key>filename</key>
-			<string>orgPaul12_sensor.R</string>
+			<string>Scripts/calcMetab_W&amp;L_10&amp;12.R</string>
 			<key>lastUsed</key>
-			<date>2014-06-19T17:46:32Z</date>
+			<date>2014-06-24T22:39:22Z</date>
 		</dict>
 		<dict>
 			<key>filename</key>
-			<string>orgPaul10_sensor.R</string>
+			<string>Scripts/orgWard10_sensor.R</string>
 			<key>lastUsed</key>
-			<date>2014-06-19T18:31:11Z</date>
+			<date>2014-06-24T22:39:35Z</date>
 		</dict>
 		<dict>
 			<key>filename</key>
-			<string>orgWard12_sensor.R</string>
+			<string>Scripts/orgPaul12_sensor.R</string>
 			<key>lastUsed</key>
-			<date>2014-06-23T14:27:56Z</date>
+			<date>2014-06-24T22:39:52Z</date>
+		</dict>
+		<dict>
+			<key>filename</key>
+			<string>Scripts/orgPaul10_sensor.R</string>
+			<key>lastUsed</key>
+			<date>2014-06-24T22:39:59Z</date>
+		</dict>
+		<dict>
+			<key>filename</key>
+			<string>Scripts/orgWeather_2010&amp;2012.R</string>
+			<key>lastUsed</key>
+			<date>2014-06-24T22:40:04Z</date>
+		</dict>
+		<dict>
+			<key>filename</key>
+			<string>Scripts/lightFunctions.R</string>
+			<key>lastUsed</key>
+			<date>2014-06-24T22:40:08Z</date>
+		</dict>
+		<dict>
+			<key>filename</key>
+			<string>Scripts/orgWard12_sensor.R</string>
+			<key>lastUsed</key>
+			<date>2014-06-24T22:40:22Z</date>
+		</dict>
+		<dict>
+			<key>filename</key>
+			<string>Scripts/ward_plot_metabolismMethods.R</string>
+			<key>lastUsed</key>
+			<date>2014-06-24T22:42:06Z</date>
+		</dict>
+		<dict>
+			<key>filename</key>
+			<string>Scripts/ward_vol_depth_bathy.R</string>
+			<key>lastUsed</key>
+			<date>2014-06-24T22:42:15Z</date>
+		</dict>
+		<dict>
+			<key>filename</key>
+			<string>Scripts/Cons_Mixture_Ward2010&amp;2012_ModelSelection.R</string>
+			<key>lastUsed</key>
+			<date>2014-06-25T02:26:33Z</date>
+		</dict>
+		<dict>
+			<key>filename</key>
+			<string>Scripts/Cons_Mixture_Ward2010&amp;2012.R</string>
+			<key>lastUsed</key>
+			<date>2014-06-25T02:26:33Z</date>
 			<key>selected</key>
 			<true/>
 		</dict>
 		<dict>
 			<key>filename</key>
-			<string>ward_plot_metabolismMethods.R</string>
+			<string>Scripts/ConsMix.R</string>
 			<key>lastUsed</key>
-			<date>2014-06-19T01:24:57Z</date>
+			<date>2014-06-25T02:26:04Z</date>
 		</dict>
 		<dict>
 			<key>filename</key>
-			<string>orgWard10_sensor.R</string>
+			<string>Scripts/DOM_Composition.R</string>
 			<key>lastUsed</key>
-			<date>2014-06-23T14:27:56Z</date>
+			<date>2014-06-25T02:26:06Z</date>
 		</dict>
 	</array>
 	<key>fileHierarchyDrawerWidth</key>
 	<integer>200</integer>
 	<key>metaData</key>
 	<dict>
-		<key>calcMetab_W&amp;L_10&amp;12.R</key>
+		<key>Scripts/ConsMix.R</key>
 		<dict>
 			<key>caret</key>
 			<dict>
 				<key>column</key>
-				<integer>0</integer>
+				<integer>68</integer>
 				<key>line</key>
-				<integer>104</integer>
+				<integer>281</integer>
 			</dict>
 			<key>firstVisibleColumn</key>
 			<integer>0</integer>
 			<key>firstVisibleLine</key>
-			<integer>0</integer>
+			<integer>264</integer>
 		</dict>
-		<key>orgPaul10_sensor.R</key>
+		<key>Scripts/Cons_Mixture_Ward2010&amp;2012.R</key>
 		<dict>
 			<key>caret</key>
 			<dict>
 				<key>column</key>
-				<integer>0</integer>
+				<integer>180</integer>
 				<key>line</key>
-				<integer>83</integer>
+				<integer>46</integer>
 			</dict>
 			<key>firstVisibleColumn</key>
 			<integer>0</integer>
 			<key>firstVisibleLine</key>
-			<integer>59</integer>
+			<integer>33</integer>
 		</dict>
-		<key>orgPaul12_sensor.R</key>
+		<key>Scripts/Cons_Mixture_Ward2010&amp;2012_ModelSelection.R</key>
 		<dict>
 			<key>caret</key>
 			<dict>
 				<key>column</key>
-				<integer>27</integer>
+				<integer>96</integer>
 				<key>line</key>
-				<integer>121</integer>
+				<integer>526</integer>
 			</dict>
-			<key>columnSelection</key>
-			<false/>
 			<key>firstVisibleColumn</key>
 			<integer>0</integer>
 			<key>firstVisibleLine</key>
-			<integer>107</integer>
-			<key>selectFrom</key>
-			<dict>
-				<key>column</key>
-				<integer>14</integer>
-				<key>line</key>
-				<integer>121</integer>
-			</dict>
-			<key>selectTo</key>
-			<dict>
-				<key>column</key>
-				<integer>29</integer>
-				<key>line</key>
-				<integer>121</integer>
-			</dict>
+			<integer>448</integer>
 		</dict>
-		<key>orgWard10_sensor.R</key>
+		<key>Scripts/DOM_Composition.R</key>
 		<dict>
 			<key>caret</key>
 			<dict>
 				<key>column</key>
-				<integer>33</integer>
+				<integer>394</integer>
 				<key>line</key>
-				<integer>51</integer>
-			</dict>
-			<key>columnSelection</key>
-			<false/>
-			<key>firstVisibleColumn</key>
-			<integer>0</integer>
-			<key>firstVisibleLine</key>
-			<integer>37</integer>
-			<key>selectFrom</key>
-			<dict>
-				<key>column</key>
-				<integer>15</integer>
-				<key>line</key>
-				<integer>51</integer>
-			</dict>
-			<key>selectTo</key>
-			<dict>
-				<key>column</key>
-				<integer>33</integer>
-				<key>line</key>
-				<integer>51</integer>
-			</dict>
-		</dict>
-		<key>orgWard12_sensor.R</key>
-		<dict>
-			<key>caret</key>
-			<dict>
-				<key>column</key>
-				<integer>170</integer>
-				<key>line</key>
-				<integer>228</integer>
+				<integer>107</integer>
 			</dict>
 			<key>firstVisibleColumn</key>
 			<integer>0</integer>
 			<key>firstVisibleLine</key>
-			<integer>109</integer>
-		</dict>
-		<key>orgWeather_2010&amp;2012.R</key>
-		<dict>
-			<key>caret</key>
-			<dict>
-				<key>column</key>
-				<integer>99</integer>
-				<key>line</key>
-				<integer>11</integer>
-			</dict>
-			<key>firstVisibleColumn</key>
-			<integer>0</integer>
-			<key>firstVisibleLine</key>
-			<integer>0</integer>
+			<integer>94</integer>
 		</dict>
 	</dict>
 	<key>openDocuments</key>
 	<array>
-		<string>orgWeather_2010&amp;2012.R</string>
-		<string>orgWard10_sensor.R</string>
-		<string>orgWard12_sensor.R</string>
-		<string>orgPaul10_sensor.R</string>
-		<string>orgPaul12_sensor.R</string>
-		<string>calcMetab_W&amp;L_10&amp;12.R</string>
+		<string>Scripts/Cons_Mixture_Ward2010&amp;2012_ModelSelection.R</string>
+		<string>Scripts/Cons_Mixture_Ward2010&amp;2012.R</string>
+		<string>Scripts/ConsMix.R</string>
+		<string>Scripts/DOM_Composition.R</string>
 	</array>
 	<key>showFileHierarchyDrawer</key>
 	<true/>
 	<key>windowFrame</key>
-	<string>{{32, 363}, {1227, 515}}</string>
+	<string>{{2, 638}, {1629, 780}}</string>
 </dict>
 </plist>

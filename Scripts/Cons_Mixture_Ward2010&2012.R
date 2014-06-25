@@ -58,19 +58,6 @@ Save <- c(TRUE, FALSE)[2]
 SaveType <- c(".pdf", ".png")[2]
 ConsChoose <- c("Calanoid", "Mesocyclops", "Chaoborus", "Helisoma trivolvis", "FHM", "DAC", "CMM", "BHD1", "BHD2",  "YWP", "PKS")[c(1,3:8)]
 
-if(Sys.info()["sysname"]=="Windows"){
-	windowsFonts(Times=windowsFont("TT Times New Roman"))
-	BUGSWorkDir <- NULL
-}else{
-	BUGSWorkDir <- "~/.wine/drive_c/temp/Rtmp"
-}
-
-#Select the top 2 if on Snow Leopard, the bottom 2 if on Leopard, and the selection doesn't matter if on a PC
-# WINE="/Applications/Darwine/Wine.bundle/Contents/bin/wine"
-# WINEPATH="/Applications/Darwine/Wine.bundle/Contents/bin/winepath"
-WINEPATH="/opt/local/bin/winepath"
-WINE="/opt/local/bin/wine"
-
 
 source("/Users/Battrd/Documents/School&Work/WiscResearch/Isotopes_2012Analysis/Scripts/ConsMix.R")
 DataRaw <- read.csv("/Users/Battrd/Documents/School&Work/WiscResearch/Isotopes_2012Analysis/Data/IsotopeData2012/WardIsotopes_2010&2012_17Jan2013.csv", header=TRUE)
@@ -531,13 +518,13 @@ for(YearMix in c(2010, 2012)){
 
 # setwd(paste("/Users/battrd/Documents/School&Work/WiscResearch/Isotopes_2012Analysis/",FigureFolder,sep=""))
 GroupChoose <- 1
-if(Save){
-	if(SaveType==".pdf"){pdf(file=paste("/Users/battrd/Documents/School&Work/WiscResearch/Isotopes_2012Analysis/Figures/ConsSummary_", "Grouping", GroupChoose, ".pdf", sep=""), height=7, width=8.5, pointsize=8, family="Times")	}
-	if(SaveType==".png"){png(file=paste("/Users/battrd/Documents/School&Work/WiscResearch/Isotopes_2012Analysis/Figures/ConsSummary_", "Grouping", GroupChoose, ".png", sep=""), units="in", res=200, height=7, width=8.5, pointsize=8, family="Times")}
-}else{
-	dev.new(height=7, width=8.5, family="Times", pointsize=8)
-}
-par(mfcol=c(3,3), mar=c(2.5,3.5,1,0.5), cex=1)
+# if(Save){
+# 	if(SaveType==".pdf"){pdf(file=paste("/Users/battrd/Documents/School&Work/WiscResearch/Isotopes_2012Analysis/Figures/ConsSummary_", "Grouping", GroupChoose, ".pdf", sep=""), height=7, width=8.5, pointsize=8, family="Times")	}
+# 	if(SaveType==".png"){png(file=paste("/Users/battrd/Documents/School&Work/WiscResearch/Isotopes_2012Analysis/Figures/ConsSummary_", "Grouping", GroupChoose, ".png", sep=""), units="in", res=200, height=7, width=8.5, pointsize=8, family="Times")}
+# }else{
+# 	dev.new(height=7, width=8.5, family="Times", pointsize=8)
+# }
+# par(mfcol=c(3,3), mar=c(2.5,3.5,1,0.5), cex=1)
 ConsChoicesShort <- c("All Terrestrial"="Terr", "Epi. Phytoplankton"= "Epi Phyt", "Meta. Phytoplankton"="Meta Phyt", "DOM"="DOM", "All Macrophytes"="Macroph", "Periphyton"="Periphy", "Floating Macrophytes"="Float Mac", "Submersed Macrophytes"="Sub Mac", "All Phytoplankton"="Phyto", "Local Terrestrial"="Local Terr")
 ConsNameMedium <- c("Calanoid"="Calanoid", "Chaoborus"="Chaoborus", "Helisoma trivolvis"="Helisoma trivolvis", "FHM"="Fathead", "DAC"="Dace", "BHD1"="Sm Bullhead", "BHD2"="Lg Bullhead", "CMM"= "Mud Minn.", "PKS"="Pumpkinseed", "YWP"="Perch", "Mesocyclops"="Mesocyclops")
 
@@ -555,12 +542,12 @@ for(i in 1:length(Cons)){
 	
 	# aggregate(ThisRU[,"Proportion"], by=list("Year"=ThisRU[,1], "Source"=ThisRU[,"Source"]), FUN=median)
 	
-	ThisAt_Axis <- c(0.5,3,5.5,8)[1:length(ResourceNames)]
-	boxplot(Proportion~Year+Source, data=ThisRU, col=c("#FA807225","#3A5FCD25"), border=c("red","blue"), at=rep(ThisAt_Axis,each=2)+c(-.5, .5), show.names=FALSE, outline=FALSE, ylim=c(0,1), lwd=1.5)
-	axis(side=1, at=ThisAt_Axis, labels=ResourceNames)
-	mtext(ConsNameMedium[Cons[i]], side=2, line=2)
+	# ThisAt_Axis <- c(0.5,3,5.5,8)[1:length(ResourceNames)]
+	# boxplot(Proportion~Year+Source, data=ThisRU, col=c("#FA807225","#3A5FCD25"), border=c("red","blue"), at=rep(ThisAt_Axis,each=2)+c(-.5, .5), show.names=FALSE, outline=FALSE, ylim=c(0,1), lwd=1.5)
+	# axis(side=1, at=ThisAt_Axis, labels=ResourceNames)
+	# mtext(ConsNameMedium[Cons[i]], side=2, line=2)
 }
-if(Save){dev.off()}
+# if(Save){dev.off()}
 
 
 
@@ -570,9 +557,7 @@ ChosenSd <- aggregate(ResourceUse[,make.names(names(SourceOpts))], by=list("Year
 
 ChosenTerr <- data.frame(ChosenMean[, c("Year", "Consumer", "All.Terrestrial")], "sd"=ChosenSd[, "All.Terrestrial"])#[-c(15,16),] #I wanted to remove the BHD2
 muChoTerr <- c(mean(ChosenTerr[which(ChosenTerr[,"Year"]==2010), "All.Terrestrial"]), mean(ChosenTerr[which(ChosenTerr[,"Year"]==2012), "All.Terrestrial"]))
-# sdChoTerr <- c(sd(ChosenTerr[which(ChosenTerr[,"Year"]==2010), "All.Terrestrial"]), sd(ChosenTerr[which(ChosenTerr[,"Year"]==2012), "All.Terrestrial"]))
-# sdChoTerr <- c(sd(ChosenTerr[which(ChosenTerr[,"Year"]==2010), "All.Terrestrial"]), sd(ChosenTerr[which(ChosenTerr[,"Year"]==2012), "All.Terrestrial"]))
-# sdChoTerr <- c(sqrt(sum(ChosenTerr[which(ChosenTerr[,"Year"]==2010), "sd"]^2)), sqrt(sum(ChosenTerr[which(ChosenTerr[,"Year"]==2012), "sd"]^2)))
+
 
 
 ChosenAlgae <- data.frame(ChosenMean[, c("Year", "Consumer")], "Phyto"=ChosenMean[,"All.Phytoplankton"], "Peri"=ChosenMean[,"Periphyton"], "PhytoSd"=ChosenSd[, "All.Phytoplankton"], "PeriSd"=ChosenSd[, "Periphyton"])
@@ -587,7 +572,6 @@ muChoAlgae <- c(mean(ChosenAlgae[Alg2010, "Algae"], na.rm=TRUE), mean(ChosenAlga
 # ===============
 # = New _v0.4.5 =
 # ===============
-# setwd(paste("/Users/battrd/Documents/School&Work/WiscResearch/Isotopes_2012Analysis/",FigureFolder,sep=""))
 quantDiff <- function(x){
 	nums <- sapply(x, is.numeric)
 	d <- x[x[,"Year"]==2012,nums] - x[x[,"Year"]==2010,nums]
@@ -602,31 +586,31 @@ ChosenMedDiffs <- ChosenMedDiffs0[order(ChosenMedDiffs0[,3]),]
 Chosen25th <- aggregate(UseDiffs[,udOrder[-1]], by=list("Consumer"=UseDiffs[,1]), FUN=quantile, probs=0.25, na.rm=TRUE)[order(ChosenMedDiffs0[,3]),]
 Chosen75th <- aggregate(UseDiffs[,udOrder[-1]], by=list("Consumer"=UseDiffs[,1]), FUN=quantile, probs=0.75, na.rm=TRUE)[order(ChosenMedDiffs0[,3]),]
 
-if(Save){
-	if(SaveType==".pdf"){pdf(file="/Users/battrd/Documents/School&Work/WiscResearch/Isotopes_2012Analysis/Figures/dTerrAlgae.pdf", height=4, width=3.4, pointsize=10, family="Times")}
-	if(SaveType==".png"){png(file="/Users/battrd/Documents/School&Work/WiscResearch/Isotopes_2012Analysis/Figures/dTerrAlgae.png", units="in", res=200, height=5, width=3, pointsize=10, family="Times")}
-	if(SaveType==".eps"){setEPS(); postscript(file="/Users/battrd/Documents/School&Work/WiscResearch/Isotopes_2012Analysis/Figures/dTerrAlgae.eps", height=5, width=3, pointsize=10)}
-}else{
-	dev.new(height=5, width=3, pointsize=10, family="Times")
-}
-par(mfrow=c(2,1), mar=c(1,3.5,0.5,0.5), oma=c(5,0,0,0), ps=10, cex=1)
-
-aYlim <- c(min(Chosen25th[,"Algae"], na.rm=TRUE), max(Chosen75th[,"Algae"], na.rm=TRUE))
-plot(ChosenMedDiffs[,"Algae"], ylim=aYlim, xlab="", xaxt="n", ylab="", xlim=c(1,length(ChosenMedDiffs[,"Algae"]))+c(-0.5,0.5))
-abline(h=0, lty="dashed", col="gray")
-arrows(x0=1:length(ChosenMedDiffs[,"Algae"]), y0=Chosen25th[,"Algae"], x1=1:length(ChosenMedDiffs[,"Algae"]), y1=Chosen75th[,"Algae"], angle=90, code=3, length=0.05)
-axis(side=1, labels=FALSE)
-mtext("Change in algal", side=2, line=2.5)
-
-tYlim <- c(min(Chosen25th[,"All.Terrestrial"], na.rm=TRUE), max(Chosen75th[,"All.Terrestrial"], na.rm=TRUE))
-plot(ChosenMedDiffs[,"All.Terrestrial"], ylim=tYlim, xlab="", xaxt="n", ylab="", xlim=c(1,length(ChosenMedDiffs[,"All.Terrestrial"]))+c(-0.5,0.5))
-abline(h=0, lty="dashed", col="gray")
-arrows(x0=1:length(ChosenMedDiffs[,"All.Terrestrial"]), y0=Chosen25th[,"All.Terrestrial"], x1=1:length(ChosenMedDiffs[,"All.Terrestrial"]), y1=Chosen75th[,"All.Terrestrial"], angle=90, code=3, length=0.05)
-axis(side=1, labels=FALSE)
-ConsNames <- c("U. limi", "S. oregonensis", "Phoxinus spp.", "A. melas", "P. promelas", "Chaoborus spp.", "H. trivolvis")
-text(x=1:7, y=-0.56, labels=ConsNames, srt=45, xpd=NA,adj=c(1.1,1.1), cex=1, font=3)
-mtext("Change in terrestrial", side=2, line=2.5)
-if(Save){dev.off()}
+# if(Save){
+# 	if(SaveType==".pdf"){pdf(file="/Users/battrd/Documents/School&Work/WiscResearch/Isotopes_2012Analysis/Figures/dTerrAlgae.pdf", height=4, width=3.4, pointsize=10, family="Times")}
+# 	if(SaveType==".png"){png(file="/Users/battrd/Documents/School&Work/WiscResearch/Isotopes_2012Analysis/Figures/dTerrAlgae.png", units="in", res=200, height=5, width=3, pointsize=10, family="Times")}
+# 	if(SaveType==".eps"){setEPS(); postscript(file="/Users/battrd/Documents/School&Work/WiscResearch/Isotopes_2012Analysis/Figures/dTerrAlgae.eps", height=5, width=3, pointsize=10)}
+# }else{
+# 	dev.new(height=5, width=3, pointsize=10, family="Times")
+# }
+# par(mfrow=c(2,1), mar=c(1,3.5,0.5,0.5), oma=c(5,0,0,0), ps=10, cex=1)
+# 
+# aYlim <- c(min(Chosen25th[,"Algae"], na.rm=TRUE), max(Chosen75th[,"Algae"], na.rm=TRUE))
+# plot(ChosenMedDiffs[,"Algae"], ylim=aYlim, xlab="", xaxt="n", ylab="", xlim=c(1,length(ChosenMedDiffs[,"Algae"]))+c(-0.5,0.5))
+# abline(h=0, lty="dashed", col="gray")
+# arrows(x0=1:length(ChosenMedDiffs[,"Algae"]), y0=Chosen25th[,"Algae"], x1=1:length(ChosenMedDiffs[,"Algae"]), y1=Chosen75th[,"Algae"], angle=90, code=3, length=0.05)
+# axis(side=1, labels=FALSE)
+# mtext("Change in algal", side=2, line=2.5)
+# 
+# tYlim <- c(min(Chosen25th[,"All.Terrestrial"], na.rm=TRUE), max(Chosen75th[,"All.Terrestrial"], na.rm=TRUE))
+# plot(ChosenMedDiffs[,"All.Terrestrial"], ylim=tYlim, xlab="", xaxt="n", ylab="", xlim=c(1,length(ChosenMedDiffs[,"All.Terrestrial"]))+c(-0.5,0.5))
+# abline(h=0, lty="dashed", col="gray")
+# arrows(x0=1:length(ChosenMedDiffs[,"All.Terrestrial"]), y0=Chosen25th[,"All.Terrestrial"], x1=1:length(ChosenMedDiffs[,"All.Terrestrial"]), y1=Chosen75th[,"All.Terrestrial"], angle=90, code=3, length=0.05)
+# axis(side=1, labels=FALSE)
+# ConsNames <- c("U. limi", "S. oregonensis", "Phoxinus spp.", "A. melas", "P. promelas", "Chaoborus spp.", "H. trivolvis")
+# text(x=1:7, y=-0.56, labels=ConsNames, srt=45, xpd=NA,adj=c(1.1,1.1), cex=1, font=3)
+# mtext("Change in terrestrial", side=2, line=2.5)
+# if(Save){dev.off()}
 
 # ===================
 # = END new _v0.4.5 =
@@ -639,244 +623,109 @@ if(Save){dev.off()}
 cI10 <- ResourceUse[,"Consumer"]=="Chaoborus" & ResourceUse[,"Year"]==2010 #index of 2010 chaob posterior
 cI12 <- ResourceUse[,"Consumer"]=="Chaoborus" & ResourceUse[,"Year"]==2012 #index of 2012 chaob posterior
 fN <- rev(c("FHM", "DAC", "CMM", "BHD1")) #fish names
-# fC <- tim.colors(n=18, alpha=1)[4*c(0.75,2.5,3.25,4)]
 fC <- rep("black",4)
+
+# pdf("/Users/battrd/Documents/School&Work/WiscResearch/Isotopes_2012Analysis/Figures/deltaFishChaob.pdf", width=3.5, height=5)
+# par(mfrow=c(1,1), mar=c(2,1,1,0.5), oma=c(0.5,0.5,0,0), ps=9, las=1, tcl=0.25, mgp=c(3,0.25,0), yaxp=c(0,20,10), family="Times")
+# r <- c("All.Phytoplankton", "All.Terrestrial")[1]
+# pC10 <- ResourceUse[cI10,r] #phytoplankton for chaoborus in 2010
+# pC12 <- ResourceUse[cI12,r] #phytoplankton for chaoborus in 2012
+# # plot(density(pC10), xlim=c(0,1), ylim=c(0,7), zero.line=FALSE, main="")
+# for(f in 1:length(fN)){
+# 	vertOff <- 5*(f-1)
+# 	#2010 distribution of differences
+# 	fI10 <- ResourceUse[,"Consumer"]==fN[f] & ResourceUse[,"Year"]==2010
+# 	pF10 <- ResourceUse[fI10,r]
+# 	d10 <- density(pF10-pC10)
+# 	dx10 <- d10$x
+# 	dy10 <- d10$y + vertOff
 # 
-# dev.new(width=3.5, height=5)
-# par(mfrow=c(1,2), mar=c(2,1,1,0.5), oma=c(0.5,0.5,0,0), ps=9, las=1, tcl=0.25, mgp=c(3,0.25,0), yaxp=c(0,20,10))
-# for(R in 1:2){
-# 	r <- c("All.Phytoplankton", "All.Terrestrial")[R]
-# 	pC10 <- ResourceUse[cI10,r] #phytoplankton for chaoborus in 2010
-# 	pC12 <- ResourceUse[cI12,r] #phytoplankton for chaoborus in 2012
-# 	# plot(density(pC10), xlim=c(0,1), ylim=c(0,7), zero.line=FALSE, main="")
-# 	for(f in 1:length(fN)){
-# 		vertOff <- 5*(f-1)
-# 		#2010 distribution of differences
-# 		fI10 <- ResourceUse[,"Consumer"]==fN[f] & ResourceUse[,"Year"]==2010
-# 		pF10 <- ResourceUse[fI10,r]
-# 		d10 <- density(pF10-pC10)
-# 		dx10 <- d10$x
-# 		dy10 <- d10$y + vertOff
-# 	
-# 		#2012 distribution of differences
-# 		fI12 <- ResourceUse[,"Consumer"]==fN[f] & ResourceUse[,"Year"]==2012
-# 		pF12 <- ResourceUse[fI12,r]
-# 		d12 <- density(pF12-pC12)
-# 		dx12 <- d12$x
-# 		dy12 <- d12$y + vertOff
-# 	
-# 		h <- max(c(dy10, dy12))+0.25
-# 	
-# 		#graph 2010
-# 		if(f==1){
-# 			plot(dx10,dy10, col=fC[f],xlim=c(-1,0.5), ylim=c(0,20), pch=NA, yaxt="n")
-# 			# axis(side=2, at=seq(0,20, 0.75), labels=FALSE, tcl=0.1)
-# 			axis(side=2, at=seq(0,20, 3), labels=FALSE, tcl=0.25)
-# 			abline(h=0, col="lightgray", lty="dashed")
-# 			segments(x0=0, x1=0, y0=vertOff, y1=(h), lty="dashed")
-# 			lines(dx10,dy10, col=fC[f], type="l")
-# 		}else{
-# 			lines(dx10,dy10, col=fC[f])
-# 			abline(h=vertOff, col="lightgray", lty="dashed")
-# 			segments(x0=0, x1=0, y0=vertOff, y1=(h), lty="dashed")
-# 		}
-# 	
-# 		#2012 graph
-# 		lines(dx12,dy12, col=fC[f], lwd=3)
-# 	
-# 		#means of distributions of differences, and arrows showing change between years
-# 		mu10 <- mean(pF10-pC10)
-# 		mu12 <- mean(pF12-pC12)
-# 		arrows(x0=mu10, y0=h, x1=mu12,y1=h, length=0.075, col=fC[f], lwd=2)
-# 		mtext(c("Phytoplankton", "Terrestrial")[R], side=3, line=0.1)
-# 	}
-# }
-# mtext(quote(phi1[Fish]-phi1[Chaob]), side=1, line=-0.5, outer=TRUE, cex=1.2)
-
-
-
-# dev.new(width=3.5, height=5)
-# setwd(paste("/Users/battrd/Documents/School&Work/WiscResearch/Isotopes_2012Analysis/",FigureFolder,sep=""))
-pdf("/Users/battrd/Documents/School&Work/WiscResearch/Isotopes_2012Analysis/Figures/deltaFishChaob.pdf", width=3.5, height=5)
-par(mfrow=c(1,1), mar=c(2,1,1,0.5), oma=c(0.5,0.5,0,0), ps=9, las=1, tcl=0.25, mgp=c(3,0.25,0), yaxp=c(0,20,10), family="Times")
-r <- c("All.Phytoplankton", "All.Terrestrial")[1]
-pC10 <- ResourceUse[cI10,r] #phytoplankton for chaoborus in 2010
-pC12 <- ResourceUse[cI12,r] #phytoplankton for chaoborus in 2012
-# plot(density(pC10), xlim=c(0,1), ylim=c(0,7), zero.line=FALSE, main="")
-for(f in 1:length(fN)){
-	vertOff <- 5*(f-1)
-	#2010 distribution of differences
-	fI10 <- ResourceUse[,"Consumer"]==fN[f] & ResourceUse[,"Year"]==2010
-	pF10 <- ResourceUse[fI10,r]
-	d10 <- density(pF10-pC10)
-	dx10 <- d10$x
-	dy10 <- d10$y + vertOff
-
-	#2012 distribution of differences
-	fI12 <- ResourceUse[,"Consumer"]==fN[f] & ResourceUse[,"Year"]==2012
-	pF12 <- ResourceUse[fI12,r]
-	d12 <- density(pF12-pC12)
-	dx12 <- d12$x
-	dy12 <- d12$y + vertOff
-
-	h <- max(c(dy10, dy12))+0.25
-
-	#graph 2010
-	if(f==1){
-		plot(dx10,dy10, col=fC[f],xlim=c(-1,0.5), ylim=c(0,20), pch=NA, yaxt="n")
-		# axis(side=2, at=seq(0,20, 0.75), labels=FALSE, tcl=0.1)
-		axis(side=2, at=seq(0,20, 3), labels=FALSE, tcl=0.25)
-		abline(h=0, col="lightgray", lty="dashed")
-		segments(x0=0, x1=0, y0=vertOff, y1=(h), lty="dashed")
-		lines(dx10,dy10, col=fC[f], type="l")
-	}else{
-		lines(dx10,dy10, col=fC[f])
-		abline(h=vertOff, col="lightgray", lty="dashed")
-		segments(x0=0, x1=0, y0=vertOff, y1=(h), lty="dashed")
-	}
-
-	#2012 graph
-	lines(dx12,dy12, col=fC[f], lwd=3)
-
-	#means of distributions of differences, and arrows showing change between years
-	mu10 <- mean(pF10-pC10)
-	mu12 <- mean(pF12-pC12)
-	arrows(x0=mu10, y0=h, x1=mu12,y1=h, length=0.075, col=fC[f], lwd=2)
-	text(x=-1.1, y=h, labels=rev(c("P. promelas", "Phoxinus", "U. limi", "A. melas"))[f], font=3, col=fC[f], pos=4)
-	# if(f==2){
-	# 	text(x=-1.1, y=h, labels=quote(phantom(Phoxinus)~~spp.), col=fC[f], pos=4)
-	# }
-}
-mtext(quote(Fish~phi1[Phytoplankton]-Chaob.~phi1[Phytoplankton]), side=1, line=-0.5, outer=TRUE, cex=1.2)
-mtext("Posterior Density", side=2, line=0.35, cex=1.2, las=0)
-legend("topright", bty="n", legend=c("2010","2012"), lwd=c(1,2), inset=c(0,-0.025))
-dev.off()
-
-# ===================
-# = END New _v0.4.7 =
-# ===================
-
-
+# 	#2012 distribution of differences
+# 	fI12 <- ResourceUse[,"Consumer"]==fN[f] & ResourceUse[,"Year"]==2012
+# 	pF12 <- ResourceUse[fI12,r]
+# 	d12 <- density(pF12-pC12)
+# 	dx12 <- d12$x
+# 	dy12 <- d12$y + vertOff
 # 
-# for(i in 1:length(unique(ChosenTerr[,"Consumer"]))){
-# 	tcons <- unique(ChosenTerr[,"Consumer"])[i]
-# 	tempo <- subset(ChosenTerr, Consumer==tcons)
-# 	y2010 <- which(tempo[,"Year"]==2010)
-# 	y2012 <- which(tempo[,"Year"]==2012)
-# 	sds <- c(tempo[y2010,"sd"], tempo[y2012,"sd"])
-# 	mus <- c(tempo[y2010,"All.Terrestrial"], tempo[y2012,"All.Terrestrial"])
-# 	dmu <- diff(mus)
-# 	dmu_sd <- sqrt(sum(sds^2))
-# 	if(i==1){
-# 		dChosenTerr <- data.frame("Consumers"=tcons, "dTerr"=dmu, "dTerr_sd"=dmu_sd)
+# 	h <- max(c(dy10, dy12))+0.25
+# 
+# 	#graph 2010
+# 	if(f==1){
+# 		plot(dx10,dy10, col=fC[f],xlim=c(-1,0.5), ylim=c(0,20), pch=NA, yaxt="n")
+# 		axis(side=2, at=seq(0,20, 3), labels=FALSE, tcl=0.25)
+# 		abline(h=0, col="lightgray", lty="dashed")
+# 		segments(x0=0, x1=0, y0=vertOff, y1=(h), lty="dashed")
+# 		lines(dx10,dy10, col=fC[f], type="l")
 # 	}else{
-# 		dChosenTerr <- rbind(dChosenTerr, data.frame("Consumers"=tcons, "dTerr"=dmu, "dTerr_sd"=dmu_sd))
+# 		lines(dx10,dy10, col=fC[f])
+# 		abline(h=vertOff, col="lightgray", lty="dashed")
+# 		segments(x0=0, x1=0, y0=vertOff, y1=(h), lty="dashed")
 # 	}
-# 	
-# 	Atempo <- subset(ChosenAlgae, Consumer==tcons)
-# 	Asds <- c(Atempo[y2010,"AlgaeSd"], Atempo[y2012,"AlgaeSd"])
-# 	Amus <- c(Atempo[y2010,"Algae"], Atempo[y2012,"Algae"])
-# 	Admu <- diff(Amus)
-# 	Admu_sd <- sqrt(sum(Asds^2))
-# 	if(i==1){
-# 		dChosenAlgae <- data.frame("Consumers"=tcons, "dAlgae"=Admu, "dAlgae_sd"=Admu_sd)
-# 	}else{
-# 		dChosenAlgae <- rbind(dChosenAlgae, data.frame("Consumers"=tcons, "dAlgae"=Admu, "dAlgae_sd"=Admu_sd))
-# 	}
+# 
+# 	#2012 graph
+# 	lines(dx12,dy12, col=fC[f], lwd=3)
+# 
+# 	#means of distributions of differences, and arrows showing change between years
+# 	mu10 <- mean(pF10-pC10)
+# 	mu12 <- mean(pF12-pC12)
+# 	arrows(x0=mu10, y0=h, x1=mu12,y1=h, length=0.075, col=fC[f], lwd=2)
+# 	text(x=-1.1, y=h, labels=rev(c("P. promelas", "Phoxinus", "U. limi", "A. melas"))[f], font=3, col=fC[f], pos=4)
+# 
 # }
-# 
-# ordCT <- order(dChosenTerr[,"dTerr"])
-# dChosenTerr <- dChosenTerr[ordCT,]
-# dChosenAlgae <- dChosenAlgae[ordCT,]
-# 
-# dArrBots <- dChosenTerr[,"dTerr"] - dChosenTerr[,"dTerr_sd"]
-# dArrTops <- dChosenTerr[,"dTerr"] + dChosenTerr[,"dTerr_sd"]
-# Ylim <- c(-0.65, 0.65) #range(dArrBots, dArrTops)
-# 
-# AdArrBots <- dChosenAlgae[,"dAlgae"] - dChosenAlgae[,"dAlgae_sd"]
-# AdArrTops <- dChosenAlgae[,"dAlgae"] + dChosenAlgae[,"dAlgae_sd"]
-# AYlim <- c(-0.5, 0.5) #range(AdArrBots, AdArrTops)
-# 
-# 
+# mtext(quote(Fish~phi1[Phytoplankton]-Chaob.~phi1[Phytoplankton]), side=1, line=-0.5, outer=TRUE, cex=1.2)
+# mtext("Posterior Density", side=2, line=0.35, cex=1.2, las=0)
+# legend("topright", bty="n", legend=c("2010","2012"), lwd=c(1,2), inset=c(0,-0.025))
+# dev.off()
+
+
+
+# NeatConsNames <- c("Calanoid"="S. oregonensis", "Mesocyclops"="Mesocyclops", "Chaoborus"="Chaoborus spp.", "Helisoma trivolvis"="H. trivolvis", "FHM"="P. promelas", "DAC"="Phoxinus spp.", "BHD1"="A. melas", "BHD2"="A. melas", "CMM"= "U. limi", "PKS"="L. gibbosus", "YWP"="P. flavescens")
 # if(Save){
-# 	if(SaveType==".pdf"){pdf(file=paste(paste("dTerrAlgae_", Version, sep=""), ".pdf", sep=""), height=4, width=3.4, pointsize=10, family="Times")}
-# 	if(SaveType==".png"){png(file=paste(paste("dTerrAlgae_", Version, sep=""), ".png", sep=""), units="in", res=200, height=5, width=3, pointsize=10, family="Times")}
-# 	if(SaveType==".eps"){setEPS(); postscript(file=paste(paste("dTerrAlgae_", Version, sep=""), ".eps", sep=""), height=5, width=3, pointsize=10)}
+# 	if(SaveType==".pdf"){pdf(file="/Users/battrd/Documents/School&Work/WiscResearch/Isotopes_2012Analysis/Figures/NeatSummary.pdf", height=7, width=6.811, pointsize=10)}
+# 	if(SaveType==".png"){png(file="/Users/battrd/Documents/School&Work/WiscResearch/Isotopes_2012Analysis/Figures/NeatSummary.png", units="in", res=200, height=7, width=6.811, pointsize=10)}
+# 	if(SaveType==".eps"){setEPS();postscript(file="/Users/battrd/Documents/School&Work/WiscResearch/Isotopes_2012Analysis/Figures/NeatSummary.eps", height=7, width=6.811, pointsize=10)}
 # }else{
-# 	dev.new(height=4, width=3.4, pointsize=10, family="Times")
+# 	dev.new(height=7, width=6.811, pointsize=10, family="Times")
 # }
-# par(mfrow=c(2,1), mar=c(1,3.5,0.5,0.5), oma=c(5,0,0,0), ps=10, cex=1)
+# layout(matrix(c(1,2,3,4,4,6,5,5,7), ncol=3, byrow=TRUE), widths=c(2.4/7, 2/7, 2.6/7, 2/7, 2/7, 3/7, 2/7, 2/7, 3/7))
+# # par(mar=c(2.5,0.5,1,0.5), oma=c(0,2,0,0)), cex=1)
+# for(i in 1:length(Cons)){
+# 	Yaxt <- ifelse(is.element(i, c(1,4,5)), "s", "n")
+# 	LegPos <- ifelse(is.element(i, c(1,2,4,5)), "topleft", "topright")
+# 	if(Yaxt=="s"){
+# 		par(mar=c(2.5,3,1,0.5),cex=1)
+# 	}else{
+# 		par(mar=c(2.5,0.5,1,0.5),cex=1)
+# 	}
+# 	# LegPos <- c("topleft", "topleft", "topright", "topright", "topleft", "topright", "topright")[i]
+# 	NamesThisUse <- make.names(ConsChoices[[Cons[i]]][[GroupChoose]])
+# 	AllNamesThisuse <- c("Year", "Month", "Consumer", "Grouping", NamesThisUse)
+# 	ThisRU0 <- droplevels(subset(ResourceUse, Consumer==Cons[i] & Grouping==GroupChoose & Month=="Pooled"))[AllNamesThisuse] #try to subset only the sources that were part of the analysis for this consumer
+# 	ThisRU00 <- reshape(ThisRU0, varying=list(c(NamesThisUse)), times=ConsChoices[[Cons[i]]][[GroupChoose]], ids=1:nrow(ThisRU0), timevar="Source", v.names="Proportion", direction="long")
 # 
-# #Plot delta algae
-# plot(dChosenAlgae[,"dAlgae"], ylim=AYlim, xlab="", xaxt="n", ylab="", xlim=c(1,length(dChosenAlgae[,"dAlgae"]))+c(-0.5,0.5))
-# abline(h=0, lty="dashed", col="gray")
-# arrows(x0=1:length(dChosenAlgae[,"dAlgae"]), y0=AdArrBots, x1=1:length(dChosenAlgae[,"dAlgae"]), y1=AdArrTops, angle=90, code=3, length=0.125)
-# axis(side=1, labels=FALSE)
-# mtext("Change in algal", side=2, line=2.5)
-# 
-# #plot delta terrestrial
-# plot(dChosenTerr[,"dTerr"], ylim=Ylim, xlab="", xaxt="n", ylab="", xlim=c(1,length(dChosenTerr[,"dTerr"]))+c(-0.5,0.5))
-# abline(h=0, lty="dashed", col="gray")
-# arrows(x0=1:length(dChosenTerr[,"dTerr"]), y0=dArrBots, x1=1:length(dChosenTerr[,"dTerr"]), y1=dArrTops, angle=90, code=3, length=0.125)
-# axis(side=1, labels=FALSE)
-# ConsNames <- c("U. limi", "S. oregonensis", "Phoxinus spp.", "A. melas", "P. promelas", "Chaoborus spp.", "H. trivolvis")
-# # ConsNames <- c("Mud Minn", "Calanoid", "Dace", "Bullhead", "Fathead", "Chaob", "Snail")
-# # text(x=1:7, y=-0.6, labels=dChosenTerr[,"Consumers"], srt=45, xpd=TRUE)
-# text(x=1:7, y=-0.76, labels=ConsNames, srt=45, xpd=NA,adj=c(1.1,1.1), cex=1, font=3)
-# mtext("Change in terrestrial", side=2, line=2.5)
+# 	ThisRU <- ThisRU00[,c("Year", "Month", "Consumer", "Grouping", "Source", "Proportion")]
+# 	row.names(ThisRU) <- NULL
+# 	ResourceNames <- ConsChoicesShort[ConsChoices[[Cons[i]]][[GroupChoose]]]
+# 	
+# 	ThisRU[,"Source"] <- factor(ThisRU[,"Source"], levels=ConsChoices[[Cons[i]]][[GroupChoose]], ordered=TRUE)
+# 	
+# 	# aggregate(ThisRU[,"Proportion"], by=list("Year"=ThisRU[,1], "Source"=ThisRU[,"Source"]), FUN=median)
+# 	
+# 	ThisAt_Axis <- c(0.5,3.5,6.5,9.5)[1:length(ResourceNames)]
+# 	# boxplot(Proportion~Year+Source, data=ThisRU, col=c("#FA807225","#3A5FCD25"), border=c("red","blue"), at=rep(ThisAt_Axis,each=2)+c(-.5, .5), show.names=FALSE, outline=FALSE, ylim=c(0,1), lwd=1.5, yaxt=Yaxt)
+# 	boxplot(Proportion~Year+Source, data=ThisRU, border=c("red","blue"), at=rep(ThisAt_Axis,each=2)+c(-.5, .5), show.names=FALSE, outline=FALSE, ylim=c(0,1), lwd=1.5, yaxt=Yaxt)
+# 	axis(side=1, at=ThisAt_Axis, labels=ResourceNames)
+# 	if(Yaxt=="n"){axis(side=2, labels=FALSE)}
+# 	# mtext(ConsNameMedium[Cons[i]], side=2, line=2)
+# 	# legend(LegPos, NeatConsNames[Cons[i]])
+# 	X <- c("topleft"=-0.9, "topright"=ThisAt_Axis[length(ResourceNames)]+1)
+# 	Pos <- c("topleft"=4, "topright"=2)
+# 	text(x=X[LegPos], y=0.95, labels=NeatConsNames[Cons[i]], pos=Pos[LegPos], font=3)
+# 	if(i==length(Cons)){
+# 		mtext("Proportion of Diet", side=2, line=-1, outer=TRUE)
+# 	}
+# }
 # if(Save){dev.off()}
-
-
-
-# layout.show(layout(matrix(c(1,2,3,4,4,6,5,5,7), ncol=3, byrow=TRUE), widths=c(2/7, 2/7, 2.8/7, 2/7, 2/7, 3/7, 2/7, 2/7, 3/7)))
-# NeatConsNames <- c("Calanoid"="Calanoid", "Mesocyclops"="Mesocyclops", "Chaoborus"="Chaoborus", "Helisoma trivolvis"="Snail (H. trivolvis)", "FHM"="Fathead", "DAC"="Dace", "BHD1"="YoY Bullhead", "BHD2"="Lg Bullhead", "CMM"= "Mud Minn.", "PKS"="Pumpkinseed", "YWP"="Perch")
-NeatConsNames <- c("Calanoid"="S. oregonensis", "Mesocyclops"="Mesocyclops", "Chaoborus"="Chaoborus spp.", "Helisoma trivolvis"="H. trivolvis", "FHM"="P. promelas", "DAC"="Phoxinus spp.", "BHD1"="A. melas", "BHD2"="A. melas", "CMM"= "U. limi", "PKS"="L. gibbosus", "YWP"="P. flavescens")
-if(Save){
-	if(SaveType==".pdf"){pdf(file="/Users/battrd/Documents/School&Work/WiscResearch/Isotopes_2012Analysis/Figures/NeatSummary.pdf", height=7, width=6.811, pointsize=10)}
-	if(SaveType==".png"){png(file="/Users/battrd/Documents/School&Work/WiscResearch/Isotopes_2012Analysis/Figures/NeatSummary.png", units="in", res=200, height=7, width=6.811, pointsize=10)}
-	if(SaveType==".eps"){setEPS();postscript(file="/Users/battrd/Documents/School&Work/WiscResearch/Isotopes_2012Analysis/Figures/NeatSummary.eps", height=7, width=6.811, pointsize=10)}
-}else{
-	dev.new(height=7, width=6.811, pointsize=10, family="Times")
-}
-layout(matrix(c(1,2,3,4,4,6,5,5,7), ncol=3, byrow=TRUE), widths=c(2.4/7, 2/7, 2.6/7, 2/7, 2/7, 3/7, 2/7, 2/7, 3/7))
-# par(mar=c(2.5,0.5,1,0.5), oma=c(0,2,0,0)), cex=1)
-for(i in 1:length(Cons)){
-	Yaxt <- ifelse(is.element(i, c(1,4,5)), "s", "n")
-	LegPos <- ifelse(is.element(i, c(1,2,4,5)), "topleft", "topright")
-	if(Yaxt=="s"){
-		par(mar=c(2.5,3,1,0.5),cex=1)
-	}else{
-		par(mar=c(2.5,0.5,1,0.5),cex=1)
-	}
-	# LegPos <- c("topleft", "topleft", "topright", "topright", "topleft", "topright", "topright")[i]
-	NamesThisUse <- make.names(ConsChoices[[Cons[i]]][[GroupChoose]])
-	AllNamesThisuse <- c("Year", "Month", "Consumer", "Grouping", NamesThisUse)
-	ThisRU0 <- droplevels(subset(ResourceUse, Consumer==Cons[i] & Grouping==GroupChoose & Month=="Pooled"))[AllNamesThisuse] #try to subset only the sources that were part of the analysis for this consumer
-	ThisRU00 <- reshape(ThisRU0, varying=list(c(NamesThisUse)), times=ConsChoices[[Cons[i]]][[GroupChoose]], ids=1:nrow(ThisRU0), timevar="Source", v.names="Proportion", direction="long")
-
-	ThisRU <- ThisRU00[,c("Year", "Month", "Consumer", "Grouping", "Source", "Proportion")]
-	row.names(ThisRU) <- NULL
-	ResourceNames <- ConsChoicesShort[ConsChoices[[Cons[i]]][[GroupChoose]]]
-	
-	ThisRU[,"Source"] <- factor(ThisRU[,"Source"], levels=ConsChoices[[Cons[i]]][[GroupChoose]], ordered=TRUE)
-	
-	# aggregate(ThisRU[,"Proportion"], by=list("Year"=ThisRU[,1], "Source"=ThisRU[,"Source"]), FUN=median)
-	
-	ThisAt_Axis <- c(0.5,3.5,6.5,9.5)[1:length(ResourceNames)]
-	# boxplot(Proportion~Year+Source, data=ThisRU, col=c("#FA807225","#3A5FCD25"), border=c("red","blue"), at=rep(ThisAt_Axis,each=2)+c(-.5, .5), show.names=FALSE, outline=FALSE, ylim=c(0,1), lwd=1.5, yaxt=Yaxt)
-	boxplot(Proportion~Year+Source, data=ThisRU, border=c("red","blue"), at=rep(ThisAt_Axis,each=2)+c(-.5, .5), show.names=FALSE, outline=FALSE, ylim=c(0,1), lwd=1.5, yaxt=Yaxt)
-	axis(side=1, at=ThisAt_Axis, labels=ResourceNames)
-	if(Yaxt=="n"){axis(side=2, labels=FALSE)}
-	# mtext(ConsNameMedium[Cons[i]], side=2, line=2)
-	# legend(LegPos, NeatConsNames[Cons[i]])
-	X <- c("topleft"=-0.9, "topright"=ThisAt_Axis[length(ResourceNames)]+1)
-	Pos <- c("topleft"=4, "topright"=2)
-	text(x=X[LegPos], y=0.95, labels=NeatConsNames[Cons[i]], pos=Pos[LegPos], font=3)
-	if(i==length(Cons)){
-		mtext("Proportion of Diet", side=2, line=-1, outer=TRUE)
-	}
-}
-if(Save){dev.off()}
 
 
 # source("DOM_Composition_v0.2.0.R")

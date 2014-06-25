@@ -1,5 +1,4 @@
 
-rm(list=ls())
 # ======================================
 # = Load Data for sensitivity analysis =
 # ======================================
@@ -26,4 +25,4 @@ for(i in 1:length(cn)){
 	sensit[[cn[i]]] <- crit4
 	sensit2[[cn[i]]] <- critX
 }
-save(sensit, sensit2, file="/Users/Battrd/Documents/School&Work/WiscResearch/Isotopes_2012Analysis/Figures/Figures_v0.4.0_ModelSelection/Sensitivity_v0.0.5.RData")
+save(sensit, sensit2, file="/Users/Battrd/Documents/School&Work/WiscResearch/Isotopes_2012Analysis/Results/Orgd_ConsMix_Sensit.RData")

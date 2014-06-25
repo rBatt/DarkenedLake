@@ -148,9 +148,13 @@ for(i in 1:length(thermFiles)){
 w10.therm0 <- tThermCum[complete.cases(tThermCum),]
 
 
+
 ward10.zmix <- ts.meta.depths(w10.therm0)
 ward10.zmix.is0 <- ward10.zmix[,"top"] < 0.25 & !is.na(ward10.zmix[,"top"])
 ward10.zmix[ward10.zmix.is0, "top"] <- 0.25
+
+ward10.therm <- merge(w10.therm0, ward10.zmix[,c("datetime","top")], all=TRUE)
+names(ward10.therm)[names(ward10.therm)=="top"] <- "z.mix"
 
 # =====================
 # = Organize 2010 Epi =
@@ -212,8 +216,9 @@ ward10.meta <- ward10.meta0[,c("datetime", "do.obs", "do.sat", "k.gas", "z.mix",
 # ==============================
 # = Save 2010 Ward Sensor Data =
 # ==============================
-save(ward10.epi.full, ward10.epi, ward10.meta.full, ward10.meta, file="/Users/Battrd/Documents/School&Work/WiscResearch/Isotopes_2012Analysis/Data/sondes_ward2010.RData")
+save(ward10.therm, ward10.epi.full, ward10.epi, ward10.meta.full, ward10.meta, file="/Users/Battrd/Documents/School&Work/WiscResearch/Isotopes_2012Analysis/Data/sondes_ward2010.RData")
 
+write.table(ward10.therm, file="/Users/Battrd/Documents/School&Work/WiscResearch/Isotopes_2012Analysis/Data/ward10.therm.txt", row.names=FALSE)
 write.table(ward10.epi.full, file="/Users/Battrd/Documents/School&Work/WiscResearch/Isotopes_2012Analysis/Data/ward10.epi.full.txt", row.names=FALSE)
 write.table(ward10.epi, file="/Users/Battrd/Documents/School&Work/WiscResearch/Isotopes_2012Analysis/Data/ward10.epi.txt", row.names=FALSE)
 write.table(ward10.meta.full, file="/Users/Battrd/Documents/School&Work/WiscResearch/Isotopes_2012Analysis/Data/ward10.meta.full.txt", row.names=FALSE)

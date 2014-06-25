@@ -31,6 +31,7 @@ Therms0[,"datetime"] <- as.POSIXct(Therms0[,"doy"]*24*60*60, origin="2012-01-01"
 Therms <- Therms0[,c("datetime",t.wtr.names)]
 Therms[,"datetime"] <- LakeMetabolizer:::round.time(Therms[,"datetime"], "5 minutes")
 Therms <- Therms[!duplicated(Therms[,"datetime"]),]
+ward12.therm <- Therms
 
 ward12.zmix000 <- ts.meta.depths(Therms)
 ward12.zmix00 <- ward12.zmix000
@@ -39,6 +40,8 @@ ward12.zmix00[ward12.zmix00_is0, "top"] <- 0.25
 
 ward12.zmix0 <- ward12.zmix00[,c("datetime", "top")]
 names(ward12.zmix0) <- c("datetime", "z.mix")
+
+ward12.therm <- merge(Therms, ward12.zmix0, all=TRUE)
 
 w12.bothZ <- merge(ward12.zmix0, w12.manZ, all=TRUE)
 w12z.isNA <- is.na(w12.bothZ[,"z.mix"])
@@ -219,8 +222,9 @@ ward12.meta <- ward12.meta.full[,c("datetime", "do.obs", "do.sat", "k.gas", "z.m
 # ==============================
 # = Save 2012 Ward Sensor Data =
 # ==============================
-save(ward12.epi.full, ward12.epi, ward12.meta.full, ward12.meta, file="/Users/Battrd/Documents/School&Work/WiscResearch/Isotopes_2012Analysis/Data/sondes_ward2012.RData")
+save(ward12.therm, ward12.epi.full, ward12.epi, ward12.meta.full, ward12.meta, file="/Users/Battrd/Documents/School&Work/WiscResearch/Isotopes_2012Analysis/Data/sondes_ward2012.RData")
 
+write.table(ward12.therm, file="/Users/Battrd/Documents/School&Work/WiscResearch/Isotopes_2012Analysis/Data/ward12.therm.txt", row.names=FALSE)
 write.table(ward12.epi.full, file="/Users/Battrd/Documents/School&Work/WiscResearch/Isotopes_2012Analysis/Data/ward12.epi.full.txt", row.names=FALSE)
 write.table(ward12.epi, file="/Users/Battrd/Documents/School&Work/WiscResearch/Isotopes_2012Analysis/Data/ward12.epi.txt", row.names=FALSE)
 write.table(ward12.meta.full, file="/Users/Battrd/Documents/School&Work/WiscResearch/Isotopes_2012Analysis/Data/ward12.meta.full.txt", row.names=FALSE)
