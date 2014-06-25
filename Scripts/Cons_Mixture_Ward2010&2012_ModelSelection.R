@@ -469,49 +469,49 @@ for(YearMix in c(2010, 2012)){
 
 # setwd(paste("/Users/battrd/Documents/School&Work/WiscResearch/Isotopes_2012Analysis/",FigureFolder,sep=""))
 # GroupChoose <- 2
-
-pdf(file="/Users/battrd/Documents/School&Work/WiscResearch/Isotopes_2012Analysis/Figures/ConsSummary_ModelSelction.pdf", height=7, width=8.5, pointsize=8, family="Times")
-# dev.new(width=8, height=8)
-par(mfcol=c(3,3), mar=c(2.5,3.5,1,0.5), cex=1)
-ConsChoicesShort <- c("All Terrestrial"="Terr", "Epi. Phytoplankton"= "Epi Phyt", "Meta. Phytoplankton"="Meta Phyt", "DOM"="DOM", "All Macrophytes"="Macroph", "Periphyton"="Periphy", "Floating Macrophytes"="Float Mac", "Submersed Macrophytes"="Sub Mac", "All Phytoplankton"="Phyto", "Local Terrestrial"="Local Terr")
-ConsNameMedium <- c("Calanoid"="Calanoid", "Chaoborus"="Chaoborus", "Helisoma trivolvis"="Helisoma trivolvis", "FHM"="Fathead", "DAC"="Dace", "BHD1"="Sm Bullhead", "BHD2"="Lg Bullhead", "CMM"= "Mud Minn.", "PKS"="Pumpkinseed", "YWP"="Perch", "Mesocyclops"="Mesocyclops")
-for(i in 1:length(Cons)){
-	TheseGroupings <- droplevels(subset(ResourceUse, Consumer==Cons[i] & Month=="Pooled"))#[AllNamesThisuse]
-	ScoreGroupings <- aggregate(TheseGroupings[,"Deviance"], by=list("Year"=TheseGroupings[,"Year"], "Grouping"=TheseGroupings[,"Grouping"]), FUN=mean)
-	
-	Scores2010 <- subset(ScoreGroupings, Year==2010)
-	zScores2010 <- Scores2010
-	zScores2010[,"x"] <- (Scores2010[,"x"]-mean(Scores2010[,"x"]))/sd(Scores2010[,"x"])
-	
-	Scores2012 <- subset(ScoreGroupings, Year==2012)
-	zScores2012 <- Scores2012
-	zScores2012[,"x"] <- (Scores2012[,"x"]-mean(Scores2012[,"x"]))/sd(Scores2012[,"x"])
-	
-	zScores <- data.frame("Grouping"=Scores2010[,"Grouping"], "zDev"=(zScores2010[,"x"]+zScores2012[,"x"])/2)
-	GroupChoose <- zScores[which.min(zScores[,"zDev"]), "Grouping"]
-	# GroupChoose <- ScoreGroupings[which.min(ScoreGroupings[,"x"]), "Grouping"]
-	
-	NamesThisUse0 <- ConsChoices[[i]][[GroupChoose]][!is.na(ConsChoices[[i]][[GroupChoose]])]
-	NamesThisUse <- make.names(NamesThisUse0)
-	# NamesThisUse <- make.names(ConsChoices[[i]][[GroupChoose]])
-	AllNamesThisuse <- c("Year", "Month", "Consumer", "Grouping", NamesThisUse)
-	
-	ThisRU0 <- droplevels(subset(ResourceUse, Consumer==Cons[i] & Grouping==GroupChoose & Month=="Pooled"))[AllNamesThisuse] #try to subset only the sources that were part of the analysis for this consumer
-	ThisRU00 <- reshape(ThisRU0, varying=list(c(NamesThisUse)), times=NamesThisUse0, ids=1:nrow(ThisRU0), timevar="Source", v.names="Proportion", direction="long")
-	ThisRU <- ThisRU00[,c("Year", "Month", "Consumer", "Grouping", "Source", "Proportion")]
-	row.names(ThisRU) <- NULL
-	ResourceNames <- ConsChoicesShort[as.character(NamesThisUse0)]
-	
-	ThisRU[,"Source"] <- factor(ThisRU[,"Source"], levels=ConsChoices[[i]][[GroupChoose]], ordered=TRUE)
-	
-	# aggregate(ThisRU[,"Proportion"], by=list("Year"=ThisRU[,1], "Source"=ThisRU[,"Source"]), FUN=median)
-	
-	ThisAt_Axis <- c(0.5,3,5.5,8)[1:length(ResourceNames)]
-	boxplot(Proportion~Year+Source, data=ThisRU, col=c("#FA807225","#3A5FCD25"), border=c("red","blue"), at=rep(ThisAt_Axis,each=2)+c(-.5, .5), show.names=FALSE, outline=FALSE, ylim=c(0,1), lwd=1.5)
-	axis(side=1, at=ThisAt_Axis, labels=ResourceNames)
-	mtext(ConsNameMedium[Cons[i]], side=2, line=2)
-}
-dev.off()
+# 
+# pdf(file="/Users/battrd/Documents/School&Work/WiscResearch/Isotopes_2012Analysis/Figures/ConsSummary_ModelSelction.pdf", height=7, width=8.5, pointsize=8, family="Times")
+# # dev.new(width=8, height=8)
+# par(mfcol=c(3,3), mar=c(2.5,3.5,1,0.5), cex=1)
+# ConsChoicesShort <- c("All Terrestrial"="Terr", "Epi. Phytoplankton"= "Epi Phyt", "Meta. Phytoplankton"="Meta Phyt", "DOM"="DOM", "All Macrophytes"="Macroph", "Periphyton"="Periphy", "Floating Macrophytes"="Float Mac", "Submersed Macrophytes"="Sub Mac", "All Phytoplankton"="Phyto", "Local Terrestrial"="Local Terr")
+# ConsNameMedium <- c("Calanoid"="Calanoid", "Chaoborus"="Chaoborus", "Helisoma trivolvis"="Helisoma trivolvis", "FHM"="Fathead", "DAC"="Dace", "BHD1"="Sm Bullhead", "BHD2"="Lg Bullhead", "CMM"= "Mud Minn.", "PKS"="Pumpkinseed", "YWP"="Perch", "Mesocyclops"="Mesocyclops")
+# for(i in 1:length(Cons)){
+# 	TheseGroupings <- droplevels(subset(ResourceUse, Consumer==Cons[i] & Month=="Pooled"))#[AllNamesThisuse]
+# 	ScoreGroupings <- aggregate(TheseGroupings[,"Deviance"], by=list("Year"=TheseGroupings[,"Year"], "Grouping"=TheseGroupings[,"Grouping"]), FUN=mean)
+# 	
+# 	Scores2010 <- subset(ScoreGroupings, Year==2010)
+# 	zScores2010 <- Scores2010
+# 	zScores2010[,"x"] <- (Scores2010[,"x"]-mean(Scores2010[,"x"]))/sd(Scores2010[,"x"])
+# 	
+# 	Scores2012 <- subset(ScoreGroupings, Year==2012)
+# 	zScores2012 <- Scores2012
+# 	zScores2012[,"x"] <- (Scores2012[,"x"]-mean(Scores2012[,"x"]))/sd(Scores2012[,"x"])
+# 	
+# 	zScores <- data.frame("Grouping"=Scores2010[,"Grouping"], "zDev"=(zScores2010[,"x"]+zScores2012[,"x"])/2)
+# 	GroupChoose <- zScores[which.min(zScores[,"zDev"]), "Grouping"]
+# 	# GroupChoose <- ScoreGroupings[which.min(ScoreGroupings[,"x"]), "Grouping"]
+# 	
+# 	NamesThisUse0 <- ConsChoices[[i]][[GroupChoose]][!is.na(ConsChoices[[i]][[GroupChoose]])]
+# 	NamesThisUse <- make.names(NamesThisUse0)
+# 	# NamesThisUse <- make.names(ConsChoices[[i]][[GroupChoose]])
+# 	AllNamesThisuse <- c("Year", "Month", "Consumer", "Grouping", NamesThisUse)
+# 	
+# 	ThisRU0 <- droplevels(subset(ResourceUse, Consumer==Cons[i] & Grouping==GroupChoose & Month=="Pooled"))[AllNamesThisuse] #try to subset only the sources that were part of the analysis for this consumer
+# 	ThisRU00 <- reshape(ThisRU0, varying=list(c(NamesThisUse)), times=NamesThisUse0, ids=1:nrow(ThisRU0), timevar="Source", v.names="Proportion", direction="long")
+# 	ThisRU <- ThisRU00[,c("Year", "Month", "Consumer", "Grouping", "Source", "Proportion")]
+# 	row.names(ThisRU) <- NULL
+# 	ResourceNames <- ConsChoicesShort[as.character(NamesThisUse0)]
+# 	
+# 	ThisRU[,"Source"] <- factor(ThisRU[,"Source"], levels=ConsChoices[[i]][[GroupChoose]], ordered=TRUE)
+# 	
+# 	# aggregate(ThisRU[,"Proportion"], by=list("Year"=ThisRU[,1], "Source"=ThisRU[,"Source"]), FUN=median)
+# 	
+# 	ThisAt_Axis <- c(0.5,3,5.5,8)[1:length(ResourceNames)]
+# 	boxplot(Proportion~Year+Source, data=ThisRU, col=c("#FA807225","#3A5FCD25"), border=c("red","blue"), at=rep(ThisAt_Axis,each=2)+c(-.5, .5), show.names=FALSE, outline=FALSE, ylim=c(0,1), lwd=1.5)
+# 	axis(side=1, at=ThisAt_Axis, labels=ResourceNames)
+# 	mtext(ConsNameMedium[Cons[i]], side=2, line=2)
+# }
+# dev.off()
 
 
 # setwd("/Users/battrd/Documents/School&Work/WiscResearch/Isotopes_2012Analysis")
@@ -524,7 +524,7 @@ save(list=c("Data", "EndMembers"), file=paste("/Users/battrd/Documents/School&Wo
 
 save(list=c("ResourceUse", "ConsChoices"), file="/Users/battrd/Documents/School&Work/WiscResearch/Isotopes_2012Analysis/Results/ResourceUse2010&2012_ModelSelection.RData")
 
-save.image(file="Cons_Mixture_Ward2010&2012_ModelSelection.RData")
+save.image(file="/Users/battrd/Documents/School&Work/WiscResearch/Isotopes_2012Analysis/Results/Cons_Mixture_Ward2010&2012_ModelSelection.RData")
 
 
 
