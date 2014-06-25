@@ -832,9 +832,9 @@ dev.off()
 # NeatConsNames <- c("Calanoid"="Calanoid", "Mesocyclops"="Mesocyclops", "Chaoborus"="Chaoborus", "Helisoma trivolvis"="Snail (H. trivolvis)", "FHM"="Fathead", "DAC"="Dace", "BHD1"="YoY Bullhead", "BHD2"="Lg Bullhead", "CMM"= "Mud Minn.", "PKS"="Pumpkinseed", "YWP"="Perch")
 NeatConsNames <- c("Calanoid"="S. oregonensis", "Mesocyclops"="Mesocyclops", "Chaoborus"="Chaoborus spp.", "Helisoma trivolvis"="H. trivolvis", "FHM"="P. promelas", "DAC"="Phoxinus spp.", "BHD1"="A. melas", "BHD2"="A. melas", "CMM"= "U. limi", "PKS"="L. gibbosus", "YWP"="P. flavescens")
 if(Save){
-	if(SaveType==".pdf"){pdf(file="/Users/battrd/Documents/School&Work/WiscResearch/Isotopes_2012Analysis/Figures/NeatSummary.pdf", sep=""), height=7, width=6.811, pointsize=10)}
-	if(SaveType==".png"){png(file="/Users/battrd/Documents/School&Work/WiscResearch/Isotopes_2012Analysis/Figures/NeatSummary.png", sep=""), units="in", res=200, height=7, width=6.811, pointsize=10)}
-	if(SaveType==".eps"){setEPS();postscript(file="/Users/battrd/Documents/School&Work/WiscResearch/Isotopes_2012Analysis/Figures/NeatSummary.eps", sep=""), height=7, width=6.811, pointsize=10)}
+	if(SaveType==".pdf"){pdf(file="/Users/battrd/Documents/School&Work/WiscResearch/Isotopes_2012Analysis/Figures/NeatSummary.pdf", height=7, width=6.811, pointsize=10)}
+	if(SaveType==".png"){png(file="/Users/battrd/Documents/School&Work/WiscResearch/Isotopes_2012Analysis/Figures/NeatSummary.png", units="in", res=200, height=7, width=6.811, pointsize=10)}
+	if(SaveType==".eps"){setEPS();postscript(file="/Users/battrd/Documents/School&Work/WiscResearch/Isotopes_2012Analysis/Figures/NeatSummary.eps", height=7, width=6.811, pointsize=10)}
 }else{
 	dev.new(height=7, width=6.811, pointsize=10, family="Times")
 }
