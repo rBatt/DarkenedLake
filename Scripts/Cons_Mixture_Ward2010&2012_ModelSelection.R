@@ -351,11 +351,11 @@ for(YearMix in c(2010, 2012)){
 				Srcs_dX_Ward <- cbind(Srcs_dX_Ward, get(TempName_Mean))
 				Srcs_dX_Var_Ward <- cbind(Srcs_dX_Var_Ward, get(TempName_Var))
 			}
-			if(YearMix==2010 & all(SourceNames[[f_Src]]==c("All Terrestrial", "All Macrophytes", "All Phytoplankton","Periphyton"))){
+			if(YearMix==2010 & all(SourceNames[[f_Src]]%in%c("All Terrestrial", "All Macrophytes", "All Phytoplankton","Periphyton"))){
 				DOM_MeanSrcSigs2010 <- Srcs_dX_Ward
 				DOM_VarSrcSigs2010 <- Srcs_dX_Var_Ward
 			}
-			if(YearMix==2012 & all(SourceNames[[f_Src]]==c("All Terrestrial", "All Macrophytes", "All Phytoplankton","Periphyton"))){
+			if(YearMix==2012 & all(SourceNames[[f_Src]]%in%c("All Terrestrial", "All Macrophytes", "All Phytoplankton","Periphyton"))){
 				DOM_MeanSrcSigs2012 <- Srcs_dX_Ward
 				DOM_VarSrcSigs2012 <- Srcs_dX_Var_Ward
 			}
@@ -429,7 +429,7 @@ for(YearMix in c(2010, 2012)){
 	dev.off()
 	
 	#Plot METALIMNION
-	pdf(file=paste("MetaPhyto_Post_", YearMix, "_", Version, ".pdf", sep=""), width=3.5, height=3.5, family="Times", pointsize=9)
+	pdf(file=paste("/Users/battrd/Documents/School&Work/WiscResearch/Isotopes_2012Analysis/Figures/MetaPhyto_Post_", YearMix, ".pdf", sep=""), width=3.5, height=3.5, family="Times", pointsize=9)
 	par(mfrow=c(2,2), las=1, mar=c(3,2.5,0.1,1), oma=c(0,0,0.2,0), cex=PubCex)
 	
 	TerrYLim <- range(density(bugsOut_pt1$BUGSoutput$sims.matrix[,"f[3]"], from=0, to=1)$y)*c(1, 1.15)
