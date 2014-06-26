@@ -3,169 +3,329 @@
 <plist version="1.0">
 <dict>
 	<key>currentDocument</key>
-	<string>Scripts/Cons_Mixture_Ward2010&amp;2012.R</string>
+	<string>Scripts/isotope_biplots.R</string>
 	<key>documents</key>
 	<array>
 		<dict>
-			<key>filename</key>
-			<string>Scripts/plotMetabolism.R</string>
-			<key>lastUsed</key>
-			<date>2014-06-24T22:39:06Z</date>
-		</dict>
-		<dict>
-			<key>filename</key>
-			<string>Scripts/metab_volume_light.R</string>
-			<key>lastUsed</key>
-			<date>2014-06-24T22:39:15Z</date>
-		</dict>
-		<dict>
-			<key>filename</key>
-			<string>Scripts/calcMetab_W&amp;L_10&amp;12.R</string>
-			<key>lastUsed</key>
-			<date>2014-06-24T22:39:22Z</date>
-		</dict>
-		<dict>
-			<key>filename</key>
-			<string>Scripts/orgWard10_sensor.R</string>
-			<key>lastUsed</key>
-			<date>2014-06-24T22:39:35Z</date>
-		</dict>
-		<dict>
-			<key>filename</key>
-			<string>Scripts/orgPaul12_sensor.R</string>
-			<key>lastUsed</key>
-			<date>2014-06-24T22:39:52Z</date>
-		</dict>
-		<dict>
-			<key>filename</key>
-			<string>Scripts/orgPaul10_sensor.R</string>
-			<key>lastUsed</key>
-			<date>2014-06-24T22:39:59Z</date>
-		</dict>
-		<dict>
-			<key>filename</key>
-			<string>Scripts/orgWeather_2010&amp;2012.R</string>
-			<key>lastUsed</key>
-			<date>2014-06-24T22:40:04Z</date>
-		</dict>
-		<dict>
-			<key>filename</key>
-			<string>Scripts/lightFunctions.R</string>
-			<key>lastUsed</key>
-			<date>2014-06-24T22:40:08Z</date>
-		</dict>
-		<dict>
-			<key>filename</key>
-			<string>Scripts/orgWard12_sensor.R</string>
-			<key>lastUsed</key>
-			<date>2014-06-24T22:40:22Z</date>
-		</dict>
-		<dict>
-			<key>filename</key>
-			<string>Scripts/ward_plot_metabolismMethods.R</string>
-			<key>lastUsed</key>
-			<date>2014-06-24T22:42:06Z</date>
-		</dict>
-		<dict>
-			<key>filename</key>
-			<string>Scripts/ward_vol_depth_bathy.R</string>
-			<key>lastUsed</key>
-			<date>2014-06-24T22:42:15Z</date>
-		</dict>
-		<dict>
-			<key>filename</key>
-			<string>Scripts/Cons_Mixture_Ward2010&amp;2012_ModelSelection.R</string>
-			<key>lastUsed</key>
-			<date>2014-06-25T02:26:33Z</date>
-		</dict>
-		<dict>
-			<key>filename</key>
-			<string>Scripts/Cons_Mixture_Ward2010&amp;2012.R</string>
-			<key>lastUsed</key>
-			<date>2014-06-25T02:26:33Z</date>
-			<key>selected</key>
+			<key>children</key>
+			<array>
+				<dict>
+					<key>filename</key>
+					<string>Scripts/orgWeather_2010&amp;2012.R</string>
+					<key>lastUsed</key>
+					<date>2014-06-25T16:29:49Z</date>
+				</dict>
+				<dict>
+					<key>filename</key>
+					<string>Scripts/orgWard10_sensor.R</string>
+					<key>lastUsed</key>
+					<date>2014-06-25T16:59:25Z</date>
+				</dict>
+				<dict>
+					<key>filename</key>
+					<string>Scripts/orgWard12_sensor.R</string>
+					<key>lastUsed</key>
+					<date>2014-06-25T16:49:02Z</date>
+				</dict>
+				<dict>
+					<key>filename</key>
+					<string>Scripts/orgPaul10_sensor.R</string>
+					<key>lastUsed</key>
+					<date>2014-06-25T16:37:52Z</date>
+				</dict>
+				<dict>
+					<key>filename</key>
+					<string>Scripts/orgPaul12_sensor.R</string>
+					<key>lastUsed</key>
+					<date>2014-06-25T16:35:31Z</date>
+				</dict>
+				<dict>
+					<key>filename</key>
+					<string>Scripts/metab_volume_light.R</string>
+					<key>lastUsed</key>
+					<date>2014-06-25T17:59:10Z</date>
+				</dict>
+				<dict>
+					<key>filename</key>
+					<string>Scripts/make_AllDO.R</string>
+					<key>lastUsed</key>
+					<date>2014-06-25T18:36:48Z</date>
+				</dict>
+				<dict>
+					<key>filename</key>
+					<string>Scripts/calcMetab_W&amp;L_10&amp;12.R</string>
+					<key>lastUsed</key>
+					<date>2014-06-25T18:46:36Z</date>
+				</dict>
+				<dict>
+					<key>filename</key>
+					<string>Scripts/lightFunctions.R</string>
+					<key>lastUsed</key>
+					<date>2014-06-25T18:37:51Z</date>
+				</dict>
+				<dict>
+					<key>filename</key>
+					<string>Scripts/ward_vol_depth_bathy.R</string>
+					<key>lastUsed</key>
+					<date>2014-06-25T18:37:51Z</date>
+				</dict>
+			</array>
+			<key>expanded</key>
 			<true/>
+			<key>name</key>
+			<string>Metabolism</string>
 		</dict>
 		<dict>
-			<key>filename</key>
-			<string>Scripts/ConsMix.R</string>
-			<key>lastUsed</key>
-			<date>2014-06-25T02:26:04Z</date>
+			<key>children</key>
+			<array>
+				<dict>
+					<key>filename</key>
+					<string>Scripts/AssessAquashadeConcRyan.R</string>
+					<key>lastUsed</key>
+					<date>2014-06-25T23:11:50Z</date>
+				</dict>
+				<dict>
+					<key>filename</key>
+					<string>Scripts/summarize_routines_ward&amp;paul2010&amp;2012.R</string>
+					<key>lastUsed</key>
+					<date>2014-06-25T22:28:35Z</date>
+				</dict>
+			</array>
+			<key>expanded</key>
+			<true/>
+			<key>name</key>
+			<string>Routines</string>
 		</dict>
 		<dict>
-			<key>filename</key>
-			<string>Scripts/DOM_Composition.R</string>
-			<key>lastUsed</key>
-			<date>2014-06-25T02:26:06Z</date>
+			<key>children</key>
+			<array>
+				<dict>
+					<key>filename</key>
+					<string>Scripts/Organize_ConsMix_Sensitivity.R</string>
+					<key>lastUsed</key>
+					<date>2014-06-25T17:23:00Z</date>
+				</dict>
+				<dict>
+					<key>filename</key>
+					<string>Scripts/Cons_Mixture_Ward2010&amp;2012_ModelSelection.R</string>
+					<key>lastUsed</key>
+					<date>2014-06-25T18:59:05Z</date>
+				</dict>
+				<dict>
+					<key>filename</key>
+					<string>Scripts/Cons_Mixture_Ward2010&amp;2012.R</string>
+					<key>lastUsed</key>
+					<date>2014-06-25T17:02:52Z</date>
+				</dict>
+				<dict>
+					<key>filename</key>
+					<string>Scripts/ConsMix.R</string>
+					<key>lastUsed</key>
+					<date>2014-06-25T17:03:02Z</date>
+				</dict>
+				<dict>
+					<key>filename</key>
+					<string>Scripts/DOM_Composition.R</string>
+					<key>lastUsed</key>
+					<date>2014-06-25T17:03:00Z</date>
+				</dict>
+			</array>
+			<key>expanded</key>
+			<true/>
+			<key>name</key>
+			<string>Mixing</string>
+		</dict>
+		<dict>
+			<key>children</key>
+			<array>
+				<dict>
+					<key>filename</key>
+					<string>Scripts/ward_plot_metabolismMethods.R</string>
+					<key>lastUsed</key>
+					<date>2014-06-25T18:46:37Z</date>
+				</dict>
+				<dict>
+					<key>filename</key>
+					<string>Scripts/plotMetabolism.R</string>
+					<key>lastUsed</key>
+					<date>2014-06-25T18:46:38Z</date>
+				</dict>
+				<dict>
+					<key>filename</key>
+					<string>Scripts/Plot_ConsMix_Sensitivity.R</string>
+					<key>lastUsed</key>
+					<date>2014-06-25T18:46:45Z</date>
+				</dict>
+				<dict>
+					<key>filename</key>
+					<string>Scripts/myPlotViolin.default.R</string>
+					<key>lastUsed</key>
+					<date>2014-06-25T19:29:26Z</date>
+				</dict>
+				<dict>
+					<key>filename</key>
+					<string>Scripts/plot_consMix_summary_boxplot.R</string>
+					<key>lastUsed</key>
+					<date>2014-06-25T19:23:22Z</date>
+				</dict>
+			</array>
+			<key>expanded</key>
+			<true/>
+			<key>name</key>
+			<string>Figures</string>
+		</dict>
+		<dict>
+			<key>children</key>
+			<array>
+				<dict>
+					<key>filename</key>
+					<string>Scripts/figure1_photicAqua.R</string>
+					<key>lastUsed</key>
+					<date>2014-06-25T23:11:51Z</date>
+				</dict>
+				<dict>
+					<key>filename</key>
+					<string>Scripts/figure2_gas_nep_zoop.R</string>
+					<key>lastUsed</key>
+					<date>2014-06-25T23:15:08Z</date>
+				</dict>
+				<dict>
+					<key>filename</key>
+					<string>Scripts/figure3_consMix_violin.R</string>
+					<key>lastUsed</key>
+					<date>2014-06-25T23:16:23Z</date>
+				</dict>
+				<dict>
+					<key>filename</key>
+					<string>Scripts/figure4_dTerrAlgae.R</string>
+					<key>lastUsed</key>
+					<date>2014-06-25T23:17:07Z</date>
+				</dict>
+				<dict>
+					<key>filename</key>
+					<string>Scripts/figure5_deltaFishChaob.R</string>
+					<key>lastUsed</key>
+					<date>2014-06-25T23:18:15Z</date>
+				</dict>
+			</array>
+			<key>expanded</key>
+			<true/>
+			<key>name</key>
+			<string>mainText_figures</string>
+		</dict>
+		<dict>
+			<key>children</key>
+			<array>
+				<dict>
+					<key>filename</key>
+					<string>Scripts/isotope_biplots.R</string>
+					<key>lastUsed</key>
+					<date>2014-06-25T23:18:15Z</date>
+				</dict>
+			</array>
+			<key>expanded</key>
+			<true/>
+			<key>name</key>
+			<string>supplement_figures</string>
 		</dict>
 	</array>
 	<key>fileHierarchyDrawerWidth</key>
-	<integer>200</integer>
+	<integer>310</integer>
 	<key>metaData</key>
 	<dict>
-		<key>Scripts/ConsMix.R</key>
+		<key>Scripts/figure1_photicAqua.R</key>
 		<dict>
 			<key>caret</key>
 			<dict>
 				<key>column</key>
-				<integer>68</integer>
+				<integer>15</integer>
 				<key>line</key>
-				<integer>281</integer>
+				<integer>15</integer>
 			</dict>
 			<key>firstVisibleColumn</key>
 			<integer>0</integer>
 			<key>firstVisibleLine</key>
-			<integer>264</integer>
+			<integer>0</integer>
 		</dict>
-		<key>Scripts/Cons_Mixture_Ward2010&amp;2012.R</key>
+		<key>Scripts/figure2_gas_nep_zoop.R</key>
 		<dict>
 			<key>caret</key>
 			<dict>
 				<key>column</key>
-				<integer>180</integer>
+				<integer>0</integer>
+				<key>line</key>
+				<integer>50</integer>
+			</dict>
+			<key>firstVisibleColumn</key>
+			<integer>0</integer>
+			<key>firstVisibleLine</key>
+			<integer>40</integer>
+		</dict>
+		<key>Scripts/figure3_consMix_violin.R</key>
+		<dict>
+			<key>caret</key>
+			<dict>
+				<key>column</key>
+				<integer>175</integer>
 				<key>line</key>
 				<integer>46</integer>
 			</dict>
 			<key>firstVisibleColumn</key>
 			<integer>0</integer>
 			<key>firstVisibleLine</key>
-			<integer>33</integer>
+			<integer>24</integer>
 		</dict>
-		<key>Scripts/Cons_Mixture_Ward2010&amp;2012_ModelSelection.R</key>
+		<key>Scripts/figure4_dTerrAlgae.R</key>
 		<dict>
 			<key>caret</key>
 			<dict>
 				<key>column</key>
-				<integer>96</integer>
+				<integer>0</integer>
 				<key>line</key>
-				<integer>526</integer>
+				<integer>6</integer>
 			</dict>
 			<key>firstVisibleColumn</key>
 			<integer>0</integer>
 			<key>firstVisibleLine</key>
-			<integer>448</integer>
+			<integer>0</integer>
 		</dict>
-		<key>Scripts/DOM_Composition.R</key>
+		<key>Scripts/figure5_deltaFishChaob.R</key>
 		<dict>
 			<key>caret</key>
 			<dict>
 				<key>column</key>
-				<integer>394</integer>
+				<integer>0</integer>
 				<key>line</key>
-				<integer>107</integer>
+				<integer>5</integer>
 			</dict>
 			<key>firstVisibleColumn</key>
 			<integer>0</integer>
 			<key>firstVisibleLine</key>
-			<integer>94</integer>
+			<integer>0</integer>
+		</dict>
+		<key>Scripts/isotope_biplots.R</key>
+		<dict>
+			<key>caret</key>
+			<dict>
+				<key>column</key>
+				<integer>169</integer>
+				<key>line</key>
+				<integer>15</integer>
+			</dict>
+			<key>firstVisibleColumn</key>
+			<integer>0</integer>
+			<key>firstVisibleLine</key>
+			<integer>0</integer>
 		</dict>
 	</dict>
 	<key>openDocuments</key>
 	<array>
-		<string>Scripts/Cons_Mixture_Ward2010&amp;2012_ModelSelection.R</string>
-		<string>Scripts/Cons_Mixture_Ward2010&amp;2012.R</string>
-		<string>Scripts/ConsMix.R</string>
-		<string>Scripts/DOM_Composition.R</string>
+		<string>Scripts/figure1_photicAqua.R</string>
+		<string>Scripts/figure2_gas_nep_zoop.R</string>
+		<string>Scripts/figure3_consMix_violin.R</string>
+		<string>Scripts/figure4_dTerrAlgae.R</string>
+		<string>Scripts/figure5_deltaFishChaob.R</string>
+		<string>Scripts/isotope_biplots.R</string>
 	</array>
 	<key>showFileHierarchyDrawer</key>
 	<true/>
