@@ -10,11 +10,14 @@ load("/Users/Battrd/Documents/School&Work/WiscResearch/Isotopes_2012Analysis/Dat
 load("/Users/Battrd/Documents/School&Work/WiscResearch/Isotopes_2012Analysis/Data/sondes_paul2010.RData")
 load("/Users/Battrd/Documents/School&Work/WiscResearch/Isotopes_2012Analysis/Data/sondes_paul2012.RData")
 
+chooseGas <- "kgas.read"
+
 # =============
 # = Ward 2010 =
 # =============
 # Ward 2010 Epilimnion
 # Kalman
+ward10.epi[,"k.gas"] <- ward10.epi[, chooseGas]
 ward10.epi.kal <- metab(ward10.epi, "kalman")
 ward10.epi.bk <- metab(ward10.epi, "bookkeep", lake.lat=46.28)
 
@@ -31,6 +34,7 @@ ward10.meta.kal <- metab(ward10.meta, "kalman")
 # =============
 # Ward 2012 Epi Metabolism
 # Kalman
+ward12.epi[,"k.gas"] <- ward12.epi[,chooseGas]
 ward12.epi.kal <- metab(ward12.epi, "kalman")
 ward12.epi.bk <- metab(ward12.epi, "bookkeep", lake.lat=46.28)
 
@@ -47,6 +51,7 @@ ward12.meta.kal <- metab(ward12.meta, "kalman")
 # =============
 # Paul 2010 Epilimnion
 # Kalman
+paul10.epi[,"k.gas"] <- paul10.epi[,chooseGas]
 paul10.epi.kal <- metab(paul10.epi, "kalman")
 
 
@@ -56,6 +61,7 @@ paul10.epi.kal <- metab(paul10.epi, "kalman")
 # =============
 # Paul 2012 Epilimnion
 # Kalman
+paul12.epi[,"k.gas"] <- paul12.epi[,chooseGas]
 paul12.epi.kal <- metab(paul12.epi, "kalman")
 
 

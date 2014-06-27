@@ -43,7 +43,8 @@ mtext(quote(DO~("%"*saturation)), side=2, line=1)
 
 #NEP
 par(mar=c(1,2.25,0.2,0), cex=1, ps=9, family="serif", mgp=c(3,0.3,0), tcl=-0.25)
-pWardPaulMetabolism.kf <- subset(WardPaulMetabolism.kf, doy>=143)
+# pWardPaulMetabolism.kf <- subset(WardPaulMetabolism.kf, doy>=143)
+pWardPaulMetabolism.kf <- WardPaulMetabolism.kf[WardPaulMetabolism.kf[,"doy"]>=143 & WardPaulMetabolism.kf[,"GPP"]>0 & WardPaulMetabolism.kf[,"R"]<0,]
 pWardPaulMetabolism.kf[,"lake"] <- relevel(pWardPaulMetabolism.kf[,"lake"], ref="Paul")
 boxplot(NEP~year+lake, data=pWardPaulMetabolism.kf, at=c(0.5,1.5, 3.5, 4.5), col=c(NA,"lightgray"), show.names=FALSE, outline=FALSE, lwd=1.25)
 axis(side=1, at=c(1,4), labels=FALSE)

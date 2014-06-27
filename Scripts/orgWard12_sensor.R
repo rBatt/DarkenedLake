@@ -7,6 +7,15 @@ library("rLakeAnalyzer")
 # install.packages("/Users/Battrd/Documents/School&Work/WiscResearch/LakeMetabolizer", type="source", repos=NULL)
 library("LakeMetabolizer")
 
+
+source("/Users/Battrd/Documents/School&Work/WiscResearch/Isotopes_2012Analysis/Scripts/lightFunctions.R")
+
+# =====================
+# = Load Weather Data =
+# =====================
+load("/Users/Battrd/Documents/School&Work/WiscResearch/Isotopes_2012Analysis/Data/PeterWeather_2010&2012/weather.full.2012.RData")
+
+
 # ===============
 # = Manual Zmix =
 # ===============
@@ -47,6 +56,21 @@ w12.bothZ <- merge(ward12.zmix0, w12.manZ, all=TRUE)
 w12z.isNA <- is.na(w12.bothZ[,"z.mix"])
 ward12.zmix <- w12.bothZ[,c("datetime", "z.mix")]
 ward12.zmix[w12z.isNA, "z.mix"] <- w12.bothZ[w12z.isNA, "manZ"]
+
+
+# ======================
+# = Read in Light Data =
+# ======================
+# Read in light profiles
+datDir <- "/Users/Battrd/Documents/School&Work/WiscResearch/Isotopes_2012Analysis/Data/"
+light.prof00 <- read.table(paste(datDir,"PaulWard_Weekly_2010&2012/PaulWard_Light_2010&2012.csv", sep=""), sep=",", header=TRUE)
+light.prof00[,"datetime"] <- as.POSIXct(light.prof00[,"datetime"], tz="GMT")
+light.prof00 <- light.prof00[complete.cases(light.prof00),]
+light.prof  <- reshape(light.prof00, v.names=c("fracLight"), timevar="depth", idvar=c("lake","datetime"), direction="wide")
+names(light.prof) <- gsub("^fracLight\\.", "irr_", names(light.prof))
+light.prof[,"year"] <- as.integer(format.Date(light.prof[,"datetime"], format="%Y"))
+w12.light.prof <- light.prof[light.prof[,"lake"]=="Ward"&light.prof[,"year"]==2012L,]
+w12.light.prof <- w12.light.prof[,!names(w12.light.prof)%in%c("lake","year")]
 
 
 
@@ -108,22 +132,99 @@ for(i in 1:nrow(ShalKey2012)){
 # =============================
 ward12.epi0[,"datetime"] <- LakeMetabolizer:::round.time(ward12.epi0[,"datetime"], "5 minutes")
 ward12.epi.full0 <- merge(ward12.epi0, ward12.zmix, all.x=TRUE)
-ward12.epi.full <- merge(ward12.epi.full0, irr_wnd_2012, all.x=TRUE)
+# ward12.epi.full <- merge(ward12.epi.full0, irr_wnd_2012, all.x=TRUE)
+ward12.epi.full <- merge(ward12.epi.full0, weather.full.2012, all.x=TRUE)
 
+
+# ==========================================
+# = Calculate Light data for Ward Epi 2012 =
+# ==========================================
+# Calculate the average zmix for each day
+w12.light000 <- LakeMetabolizer:::addNAs(ward12.epi.full)[,c("datetime","doy","z.mix", "irr")]
+
+w12.light000[,"doy"] <- trunc(w12.light000[,"doy"])
+w12.light000[,"year"] <- format.Date(w12.light000[,"datetime"], format="%Y")
+w12.light00 <- w12.light000[complete.cases(w12.light000),]
+light0 <- merge(w12.light00, w12.light.prof, all=TRUE)
+w12.light0 <- doLight(light0)
+w12.light <- w12.light0[,c("datetime", "irr.sonde", "irr.bot", "dz.sonde", "dz.bot", "kd")]
+
+ward12.epi.full <- merge(ward12.epi.full, w12.light, all.x=TRUE)
+
+
+# ==========================================
+# = Calculate other params for Ward Epi 10 =
+# ==========================================
 # wind is already scaled above (when combining UNDERC and Peter)
 
 # ward12.epi.k.cole <- k.cole.base(ward12.epi.full[,"wnd"]) # calculate k600 using Cole & Caraco method
 ward12.epi.full[,"k600.cole"] <- k.cole.base(ward12.epi.full[,"wnd"]) # calculate k600 using Cole & Caraco method
-ward12.epi.full[,"k.gas"] <- k600.2.kGAS.base(ward12.epi.full[,"k600.cole"], ward12.epi.full[,"wtr"], gas="O2")
+ward12.epi.full[,"kgas.cole"] <- k600.2.kGAS.base(ward12.epi.full[,"k600.cole"], ward12.epi.full[,"wtr"], gas="O2")
+
+w12.baro <- ward12.epi.full[,"baro"]
+w12.baro[is.na(ward12.epi.full[,"baro"])] <- 960
+ward12.epi.full[,"do.sat"] <- o2.at.sat.base(ward12.epi.full[,"wtr"], baro=ward12.epi.full[,"baro"]) # caulate oxygen concentration at saturation
+
+
+
+# calculate k.read
+ward12.sw <- par.to.sw.base(ward12.epi.full[,"irr"])
+ward12.lw <- calc.lw.net.base(
+	dateTime=ward12.epi.full[,"datetime"], 
+	sw=ward12.sw, Ts=ward12.epi.full[,"wtr"], 
+	lat=46.28, 
+	atm.press=ward12.epi.full[,"baro"], 
+	airT=ward12.epi.full[,"airTemp"],
+	RH=ward12.epi.full[,"RH"]
+	)
+	
+miss.read <- is.na(ward12.epi.full[,"wtr"]) | is.na(ward12.epi.full[,"kd"]) | is.na(ward12.epi.full[,"baro"]) | is.na(ward12.epi.full[,"airTemp"]) | is.na(ward12.epi.full[,"RH"]) | is.na(ward12.epi.full[,"z.mix"])
+
+ward12.epi.full[!miss.read,"k600.read"] <- k.read.base(
+	wnd.z=10,
+	Kd=ward12.epi.full[!miss.read,"kd"],
+	lat=46.28,
+	lake.area=19000,
+	atm.pres=ward12.epi.full[!miss.read,"baro"],
+	dateTime=ward12.epi.full[!miss.read,"datetime"],
+	Ts=ward12.epi.full[!miss.read,"wtr"],
+	z.aml=ward12.epi.full[!miss.read,"z.mix"],
+	airT=ward12.epi.full[!miss.read,"airTemp"],
+	wnd=ward12.epi.full[!miss.read,"wnd"],
+	RH=ward12.epi.full[!miss.read,"RH"],
+	sw=ward12.sw[!miss.read],
+	lwnet=ward12.lw[!miss.read]
+	)
+	
+miss.read2 <- is.na(ward12.epi.full[,"k600.read"])
+
+# dev.new(width=3.5, height=5)
+# par(mfrow=c(2,1), mar=c(2.25, 2.25, 0.5, 0.5), mgp=c(1.25, 0.35, 0), tcl=-0.25, ps=10, family="Times")
+# plot(ward12.epi.full[!miss.read2,"datetime"], ward12.epi.full[!miss.read2,"k600.read"], type="l", xlim=range(ward12.epi.full[,"datetime"]), xlab="", ylab=bquote(k600~~(m~d^-1)))
+# lines(ward12.epi.full[,"datetime"], ward12.epi.full[,"k600.cole"], type="l", col="red")
+# legend("topright", legend=c("k.cole", "k.read"), lty=1, lwd=1.5, col=c("red","black"))
+# plot(log(ward12.epi.full[!miss.read2,"k600.cole"]), ward12.epi.full[!miss.read2,"k600.read"], xlab=bquote(log[e]~k600.cole~~(m~d^-1)), ylab=bquote(k600.read~~(m~d^-1)))
+
+ward12.log.cole <- log(ward12.epi.full[,"k600.cole"])
+ward12.lm.read.cole <- lm(ward12.epi.full[,"k600.read"]~ward12.log.cole)
+ward12.read.from.cole <- predict(ward12.lm.read.cole, newdata=data.frame(ward12.log.cole=ward12.log.cole[miss.read2]))
+ward12.epi.full[miss.read2,"k600.read"] <- ward12.read.from.cole
+ward12.epi.full[,"kgas.read"] <- LakeMetabolizer:::k600.2.kGAS.base(ward12.epi.full[,"k600.read"], ward12.epi.full[,"wtr"], gas="O2")
 w12.noK <- ward12.epi.full[,"z.mix"] < 0.7 & !is.na(ward12.epi.full[,"z.mix"])
-ward12.epi.full[w12.noK,"k.gas"] <- 0L
+ward12.epi.full[w12.noK,"kgas.cole"] <- 0L
+ward12.epi.full[w12.noK,"kgas.read"] <- 0L
 
 
-ward12.epi.full[,"do.sat"] <- o2.at.sat.base(ward12.epi.full[,"wtr"], baro=960) # caulate oxygen concentration at saturation
-w12.chl.bad <- ward12.epi.full[,"Chl_conc"] > 100
+
+
+
+
+
+
+w12.chl.bad <- ward12.epi.full[,"Chl_conc"] > 100 | is.na(ward12.epi.full[,"Chl_conc"])
 ward12.epi.full[w12.chl.bad,"Chl_conc"] <- NA
 
-ward12.epi <- ward12.epi.full[,c("datetime", "do.obs", "do.sat", "k.gas", "z.mix",  "irr", "wtr")] # subset for use with LakeMetabolizer
+ward12.epi <- ward12.epi.full[,c("datetime", "do.obs", "do.sat", "kgas.cole", "kgas.read", "z.mix",  "irr", "wtr")] # subset for use with LakeMetabolizer
 
 
 
@@ -186,12 +287,13 @@ for(i in 1:nrow(DeepKey2012)){
 # =============================
 ward12.meta0[,"datetime"] <- LakeMetabolizer:::round.time(ward12.meta0[,"datetime"], "5 minutes")
 ward12.meta.full0 <- merge(ward12.meta0, ward12.zmix, all.x=TRUE)
-ward12.meta.full <- merge(ward12.meta.full0, irr_wnd_2012, all.x=TRUE)
+# ward12.meta.full <- merge(ward12.meta.full0, irr_wnd_2012, all.x=TRUE)
+ward12.meta.full <- merge(ward12.meta.full0, weather.full.2012, all.x=TRUE)
 
 # wind is already scaled above where UNDERC and peter were being combined
 
 ward12.meta.full[,"k600.cole"] <- k.cole.base(ward12.meta.full[,"wnd"]) # calculate k600 using Cole & Caraco method
-ward12.meta.full[,"k.gas"] <- k600.2.kGAS.base(ward12.meta.full[,"k600.cole"], ward12.meta.full[,"wtr"], gas="O2")
+# ward12.meta.full[,"kgas.cole"] <- k600.2.kGAS.base(ward12.meta.full[,"k600.cole"], ward12.meta.full[,"wtr"], gas="O2")
 ward12.meta.full[,"k.gas"] <- 0L
 
 ward12.meta.full[,"doy"] <- LakeMetabolizer:::date2doy(ward12.meta0[,"datetime"])

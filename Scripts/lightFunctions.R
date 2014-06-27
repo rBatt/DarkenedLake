@@ -150,7 +150,7 @@ doLight <- function(x){
 	
 	# data.frame(x[,1:5], kd.top=kd.top, kd.sonde=kd.sonde, kd.bot=kd.bot, irr.top=irr.top, irr.sonde=irr.sonde, irr.bot=irr.bot, size.top=size.top, size.sonde=size.sonde, size.bot=size.bot)
 	# data.frame(x[,1:5], irr.top=irr.top, irr.sonde=irr.sonde, irr.bot=irr.bot, dz.top=size.top, dz.sonde=size.sonde, dz.bot=size.bot)
-	data.frame(x[,1:5], irr.sonde=irr.sonde, irr.bot=irr.bot, dz.sonde=size.sonde, dz.bot=size.bot)
+	data.frame(x[,1:5], irr.sonde=irr.sonde, irr.bot=irr.bot, dz.sonde=size.sonde, dz.bot=size.bot, kd=kd.sonde)
 	
 }
 

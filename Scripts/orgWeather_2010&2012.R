@@ -34,6 +34,7 @@ PeterWeather0[,"datetime"] <- gsub("(?<=[0-9]{2}/)([0-9])(?=/)", "0\\1", PeterWe
 PeterWeather0[,"datetime"] <- as.POSIXct(PeterWeather0[,"datetime"], format="%m/%d/%y %I:%M:%S %p", tz="GMT")
 irr_wnd_2010 <- PeterWeather0[,c("datetime", "PAR", "WindSpd")]
 names(irr_wnd_2010) <- c("datetime", "irr", "wnd")
+irr_wnd_2010[,"irr"] <- irr_wnd_2010[,"irr"] #/4.6 # convert from uE/s/m^2 to W/m^2
 
 save(irr_wnd_2010, file="/Users/Battrd/Documents/School&Work/WiscResearch/Isotopes_2012Analysis/Data/PeterWeather_2010&2012/irr_wnd_2010.RData")
 
@@ -52,6 +53,7 @@ Peter_PAR_Wind0[,"datetime"] <- as.POSIXct(paste(Peter_PAR_Wind0[,"Date"], Peter
 # Peter_PAR_Wind0[,"doy"] <- LakeMetabolizer:::date2doy(Peter_PAR_Wind0[,"datetime"])
 # Peter_PAR_Wind[,"year"] <- 2012
 Peter_PAR_Wind <- Peter_PAR_Wind0[,c("datetime", "PAR", "WindSpeed")]
+Peter_PAR_Wind[,"PAR"] <- Peter_PAR_Wind[,"PAR"] #/4.6 # convert from uE/s/m^2 to W/m^2
 # names(Peter_PAR_Wind) <- c("datetime", "irr", "wnd")
 
 # Combine Peter and UNDERC weather
@@ -89,7 +91,7 @@ save(irr_wnd_2012, file="/Users/Battrd/Documents/School&Work/WiscResearch/Isotop
 # Create the full weather data
 weather.full.2012 <- CombinePeterUNDERC[,c("datetime", "airTemp", "RH", "WindSpeed", "PAR", "baro")]
 names(weather.full.2012) <- c("datetime", "airTemp", "RH", "wnd", "irr", "baro")
-
+save(weather.full.2012, file="/Users/Battrd/Documents/School&Work/WiscResearch/Isotopes_2012Analysis/Data/PeterWeather_2010&2012/weather.full.2012.RData")
 
 
 

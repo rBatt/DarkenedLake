@@ -50,7 +50,7 @@ allDO.time <- LakeMetabolizer:::date2doy(allDO[,"datetime"])
 allDO[,"time"] <- factor(allDO.time - trunc(allDO.time))
 plot(allDO[allDO[,"lake"]=="ward"&allDO[,"year"]==2010,"time"],allDO[allDO[,"lake"]=="ward"&allDO[,"year"]==2010,"DOsat"])
 
-allDOsum0 <- ddply(allDO, c("lake","year", "time"), function(x)data.frame("muDO"=mean(x[,"DOsat"], na.rm=TRUE), "sdDO"=sd(x[,"DOsat"], na.rm=TRUE)))
+allDOsum0 <- ddply(allDO, c("lake","year", "time"), function(x)data.frame("muDO"=mean(x[,"DOsat"], na.rm=TRUE), "sdDO"=sd(x[,"DOsat"], na.rm=TRUE), "medDO"=median(x[,"DOsat"], na.rm=TRUE), "iqrDO"=IQR(x[,"DOsat"], na.rm=TRUE)))
 
 
 XY_ErrorBars <- function(X, Y, sdX, sdY, Plot=FALSE){#This is a function that creates error bars given means and sd's
@@ -77,6 +77,26 @@ for(l in 1:2){
 		XY_ErrorBars(X=as.numeric(as.character(t.dat[,"time"])), Y=t.dat[,"muDO"], sdX=0, sdY=t.dat[,"sdDO"], Plot=TRUE)
 		
 		points(as.numeric(as.character(t.dat[,"time"])), t.dat[,"muDO"], pch=20)
+		
+	}
+}
+
+
+
+dev.new()
+par(mfrow=c(2,2))
+do.lims <- c(min(allDOsum0[,"medDO"]-allDOsum0[,"iqrDO"]), max(allDOsum0[,"medDO"]+allDOsum0[,"iqrDO"]))
+for(l in 1:2){
+	for(y in 1:2){
+		t.dat <- allDOsum0[allDOsum0[,"lake"]==c("paul","ward")[l]&allDOsum0[,"year"]==c(2010,2012)[y],]
+		
+		t.lims <- XY_ErrorBars(X=as.numeric(as.character(t.dat[,"time"])), Y=t.dat[,"medDO"], sdX=0, sdY=t.dat[,"iqrDO"])
+		
+		plot(as.numeric(as.character(t.dat[,"time"])), t.dat[,"medDO"], type="n", ylim=do.lims)
+		
+		XY_ErrorBars(X=as.numeric(as.character(t.dat[,"time"])), Y=t.dat[,"medDO"], sdX=0, sdY=t.dat[,"iqrDO"], Plot=TRUE)
+		
+		points(as.numeric(as.character(t.dat[,"time"])), t.dat[,"medDO"], pch=20)
 		
 	}
 }
