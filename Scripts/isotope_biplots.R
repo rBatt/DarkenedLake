@@ -157,10 +157,10 @@ for(i in 1:length(GraphLayers)){
 						"\\usepackage{tensor}")
 		)
 	}else if(i==1){
-		dev.new(width=6.1, height=5.25)
+		dev.new(width=6.1, height=4.25)
 	}
 	if(i==1){
-		par(family="Times", las=0, mfcol=c(2,3), mar=c(1.5, 1.75, 0.1, 0.1), oma=c(0.75,0,0,0), cex=PubCex, ps=8, mgp=c(1.5, 0.15, 0), tcl=-0.15)
+		par(family="Times", las=0, mfcol=c(2,3), mar=c(1.5, 1.75, 0.1, 0.1), oma=c(0.5,0,0,0), cex=PubCex, ps=8, mgp=c(1.5, 0.15, 0), tcl=-0.15)
 	}else{
 		par(mar=c(1.5, 0.85, 0.1, 0.1))
 	}
@@ -210,15 +210,15 @@ for(i in 1:length(GraphLayers)){
 		# TXTmuDataGroup[Move12_Index,c("d13C","d15N","dD")] <- TXTmuDataGroup[Move12_Index,c("d13C","d15N","dD")] + Move12_d_CND
 		
 		Move15_Index <- TXTmuDataGroup[,"TaxID"]==15
-		Move15_d_CND <- c(0,0,9)
+		Move15_d_CND <- c(0,0,10)
 		TXTmuDataGroup[Move15_Index,c("d13C","d15N","dD")] <- TXTmuDataGroup[Move15_Index,c("d13C","d15N","dD")] + Move15_d_CND
 
 		Move19_Index <- TXTmuDataGroup[,"TaxID"]==19
-		Move19_d_CND <- c(0,-1.5,-0.0)
+		Move19_d_CND <- c(0,-1.95,-0.0)
 		TXTmuDataGroup[Move19_Index,c("d13C","d15N","dD")] <- TXTmuDataGroup[Move19_Index,c("d13C","d15N","dD")] + Move19_d_CND
 		
 		Move2112_Index <- TXTmuDataGroup[,"TaxID"]==21 & TXTmuDataGroup[,"Year"]==2012
-		Move2112_d_CND <- c(3, 0, 0)
+		Move2112_d_CND <- c(2.9, -0.6, 6)
 		TXTmuDataGroup[Move2112_Index,c("d13C","d15N","dD")] <- TXTmuDataGroup[Move2112_Index,c("d13C","d15N","dD")] + Move2112_d_CND
 		
 		txtGrps <- colGroups
@@ -229,15 +229,15 @@ for(i in 1:length(GraphLayers)){
 		
 		
 		Move710_Index <- TXTmuDataGroup[,"TaxID"]==7 & TXTmuDataGroup[,"Year"]==2010
-		Move710_d_CND <- c(2, 0.1, -0.0)
+		Move710_d_CND <- c(2.1, 0.5, 5.0)
 		TXTmuDataGroup[Move710_Index,c("d13C","d15N","dD")] <- TXTmuDataGroup[Move710_Index,c("d13C","d15N","dD")] + Move710_d_CND
 		
 		Move712_Index <- TXTmuDataGroup[,"TaxID"]==7 & TXTmuDataGroup[,"Year"]==2012
-		Move712_d_CND <- c(-2, 0, -0.0)
+		Move712_d_CND <- c(-2, 0.2, 0.0)
 		TXTmuDataGroup[Move712_Index,c("d13C","d15N","dD")] <- TXTmuDataGroup[Move712_Index,c("d13C","d15N","dD")] + Move712_d_CND
 		
 		Move910_Index <- TXTmuDataGroup[,"TaxID"]==9 & TXTmuDataGroup[,"Year"]==2010
-		Move910_d_CND <- c(0.45, -1.4, -0.0)
+		Move910_d_CND <- c(0.45, -1.75, -0.0)
 		TXTmuDataGroup[Move910_Index,c("d13C","d15N","dD")] <- TXTmuDataGroup[Move910_Index,c("d13C","d15N","dD")] + Move910_d_CND
 		
 		txtGrps <- colGroups
