@@ -1,5 +1,5 @@
 
-Save <- FALSE
+Save <- TRUE
 library("cluster")
 library("tikzDevice")
 
@@ -148,28 +148,30 @@ for(i in 1:length(GraphLayers)){
 		options(tikzMetricPackages = c("\\usepackage[utf8]{inputenc}",
 		    "\\usepackage[T1]{fontenc}", "\\usetikzlibrary{calc}",
 		    "\\usepackage{amssymb}","\\usepackage{tensor}"))
-		tikz(file="/Users/battrd/Documents/School&Work/WiscResearch/Isotopes_2012Analysis/Figures/BiPlots/Ward2010&2012_Full_IsoBiPlots.tex", width=6.1, height=5.25, standAlone=TRUE, 
+		tikz(file="/Users/battrd/Documents/School&Work/WiscResearch/Isotopes_2012Analysis/Figures/Ward2010&2012_Full_IsoBiPlots.tex", width=6.1, height=4.25, standAlone=TRUE, 
 		packages = c("\\usepackage{tikz}",
 		                 "\\usepackage[active,tightpage,psfixbb]{preview}",
 		                 "\\PreviewEnvironment{pgfpicture}",
 		                 "\\setlength\\PreviewBorder{0pt}",
 		                 "\\usepackage{amssymb}",
+						"\\usepackage{wasysym}",
 						"\\usepackage{tensor}")
 		)
-	}else if(i==1){
-		dev.new(width=6.1, height=4.25)
-	}
+	}# else if(i==1){
+	# 		dev.new(width=6.1, height=4.25)
+	# 	}
 	if(i==1){
-		par(family="Times", las=0, mfcol=c(2,3), mar=c(1.5, 1.75, 0.1, 0.1), oma=c(0.5,0,0,0), cex=PubCex, ps=8, mgp=c(1.5, 0.15, 0), tcl=-0.15)
-	}else{
-		par(mar=c(1.5, 0.85, 0.1, 0.1))
+		par(family="Times", las=0, mfcol=c(2,3), mar=c(1.5, 0.85, 0.1, 0.1), oma=c(0.5, 1.1, 0, 0), cex=PubCex, ps=8, mgp=c(1.5, 0.15, 0), tcl=-0.15)
 	}
-	
+	# }else{
+	# 	par(mar=c(1.5, 0.85, 0.1, 0.1))
+	# }
+	# 
 	# Create first plot
 	plot(muDataGroup[,IsoNames[nPlots[1:2,1]]], pch="", cex=1.2, xlab="", ylab="", xlim=Lims1[[1]], ylim=Lims1[[2]], bty="l", xaxt="s", cex.axis=1)
 	# axis(side=1, labels=FALSE)
 	if(i == 1){
-		mtext("$\\delta^2\\mathrm{H}$", side=2, line=1.1, las=0, cex=PubCex)
+		mtext("$\\delta^2\\mathrm{H}(\\permil)$", side=2, line=1.1, las=0, cex=PubCex)
 	}
 	
 	
@@ -202,7 +204,7 @@ for(i in 1:length(GraphLayers)){
 	
 	if(GraphLayers[i]=="EndMembers"){
 		Move3_Index <- TXTmuDataGroup[,"TaxID"]==3
-		Move3_d_CND <- c(2.5, 0, 0)
+		Move3_d_CND <- c(2.2, 0, 0)
 		TXTmuDataGroup[Move3_Index,c("d13C","d15N","dD")] <- TXTmuDataGroup[Move3_Index,c("d13C","d15N","dD")] + Move3_d_CND
 		
 		# Move12_Index <- TXTmuDataGroup[,"TaxID"]==12
@@ -214,22 +216,26 @@ for(i in 1:length(GraphLayers)){
 		TXTmuDataGroup[Move15_Index,c("d13C","d15N","dD")] <- TXTmuDataGroup[Move15_Index,c("d13C","d15N","dD")] + Move15_d_CND
 
 		Move19_Index <- TXTmuDataGroup[,"TaxID"]==19
-		Move19_d_CND <- c(0,-1.95,-0.0)
+		Move19_d_CND <- c(0,-1.75,-0.0)
 		TXTmuDataGroup[Move19_Index,c("d13C","d15N","dD")] <- TXTmuDataGroup[Move19_Index,c("d13C","d15N","dD")] + Move19_d_CND
 		
 		Move2112_Index <- TXTmuDataGroup[,"TaxID"]==21 & TXTmuDataGroup[,"Year"]==2012
-		Move2112_d_CND <- c(2.9, -0.6, 6)
+		Move2112_d_CND <- c(2.3, -0.75, 7)
 		TXTmuDataGroup[Move2112_Index,c("d13C","d15N","dD")] <- TXTmuDataGroup[Move2112_Index,c("d13C","d15N","dD")] + Move2112_d_CND
 		
 		txtGrps <- colGroups
 		txtGrps[Move3_Index | Move15_Index | Move19_Index | Move2112_Index] <- 1
 		txtGrps2 <- txtGrps
 		
+		TXTmuDataGroup2 <- TXTmuDataGroup
+		
 	}else if(GraphLayers[i]=="Fish2010&2012"){
 		
+		Move210_Index <- TXTmuDataGroup[,"TaxID"]==2 & TXTmuDataGroup[,"Year"]==2010
+		Move210_d_CND <- c(0.5, 0.0, 0.0)
 		
 		Move710_Index <- TXTmuDataGroup[,"TaxID"]==7 & TXTmuDataGroup[,"Year"]==2010
-		Move710_d_CND <- c(2.1, 0.5, 5.0)
+		Move710_d_CND <- c(2.0, 0.5, 5.0)
 		TXTmuDataGroup[Move710_Index,c("d13C","d15N","dD")] <- TXTmuDataGroup[Move710_Index,c("d13C","d15N","dD")] + Move710_d_CND
 		
 		Move712_Index <- TXTmuDataGroup[,"TaxID"]==7 & TXTmuDataGroup[,"Year"]==2012
@@ -237,17 +243,23 @@ for(i in 1:length(GraphLayers)){
 		TXTmuDataGroup[Move712_Index,c("d13C","d15N","dD")] <- TXTmuDataGroup[Move712_Index,c("d13C","d15N","dD")] + Move712_d_CND
 		
 		Move910_Index <- TXTmuDataGroup[,"TaxID"]==9 & TXTmuDataGroup[,"Year"]==2010
-		Move910_d_CND <- c(0.45, -1.75, -0.0)
-		TXTmuDataGroup[Move910_Index,c("d13C","d15N","dD")] <- TXTmuDataGroup[Move910_Index,c("d13C","d15N","dD")] + Move910_d_CND
+		Move910_d_CND <- c(0.45, -1.55, -0.0)
+		
 		
 		txtGrps <- colGroups
 		txtGrps[Move710_Index | Move712_Index] <- 1
 		txtGrps2 <- txtGrps + Move910_Index*2
+		
+		TXTmuDataGroup2 <- TXTmuDataGroup
+		TXTmuDataGroup2[Move210_Index,c("d13C","d15N","dD")] <- TXTmuDataGroup2[Move210_Index,c("d13C","d15N","dD")] + Move210_d_CND
+		TXTmuDataGroup2[Move910_Index,c("d13C","d15N","dD")] <- TXTmuDataGroup2[Move910_Index,c("d13C","d15N","dD")] + Move910_d_CND
+		
 	}else if(GraphLayers[i] == "Inverts2010&2012"){
 		
 		txtGrps <- colGroups
 		txtGrps2 <- txtGrps
 		
+		TXTmuDataGroup2 <- TXTmuDataGroup
 	}
 	
 
@@ -258,10 +270,10 @@ for(i in 1:length(GraphLayers)){
 	# Create 2nd plot
 	plot(muDataGroup[,IsoNames[nPlots[1:2,2]]], pch="", cex=1.2, xlab="", ylab="", xlim=Lims2[[1]], ylim=Lims2[[2]], bty="l", xaxt=ifelse(2==1, "n", "s"), cex.axis=1)
 	if(i == 1){
-		mtext("$\\delta^{15}\\mathrm{N}$", side=2, line=1, las=0, cex=PubCex)	
+		mtext("$\\delta^{15}\\mathrm{N}(\\permil)$", side=2, line=1, las=0, cex=PubCex)	
 	}
 	if(i ==2){
-		mtext("$\\delta^{13}\\mathrm{C}$", side=1, line=1, outer=FALSE, cex=PubCex)
+		mtext("$\\delta^{13}\\mathrm{C}(\\permil)$", side=1, line=1, outer=FALSE, cex=PubCex)
 	}
 	
 	
@@ -278,11 +290,11 @@ for(i in 1:length(GraphLayers)){
 
 	# Add points
 	points(muDataGroup[,IsoNames[nPlots[1:2,2]]], pch=ifelse(muDataGroup[,"Trophic"]==0, 21, 22), bg=c(col2010, col2012)[colGroups], cex=2.7, xlab="", ylab="", xlim=Lims2[[1]], ylim=Lims2[[2]])
-	text(TXTmuDataGroup[,IsoNames[nPlots[1:2,2]]], labels=as.character(TaxID), cex=PubCex, col=c("black", "white", "white")[txtGrps2], font=2)
+	text(TXTmuDataGroup2[,IsoNames[nPlots[1:2,2]]], labels=as.character(TaxID), cex=PubCex, col=c("black", "white", "white")[txtGrps2], font=2)
 	#}
 
 	title(main=LegendTitle[2], adj=0.025, line=-1.5, cex.main=PubCex*1.25, font.main=1)
 	
 	
-	if(Save){dev.off()}
+	if(Save & i==3){dev.off()}
 }
