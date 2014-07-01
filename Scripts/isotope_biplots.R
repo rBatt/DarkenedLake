@@ -9,6 +9,11 @@ library("tikzDevice")
 load("/Users/battrd/Documents/School&Work/WiscResearch/Isotopes_2012Analysis/Results/Data+Phyto.RData")
 CexScale <- 0.8
 
+col2012 <- rgb(t(col2rgb("blue")), alpha=200, maxColorValue=256)
+col2010 <- c(
+				rgb(t(col2rgb("white")), alpha=200, maxColorValue=256), 
+				rgb(t(col2rgb("red")), alpha=200, maxColorValue=256)
+				)
 
 CombYears <- which(is.element(Data[,"Type"], c("Macrophyte", "Terrestrial"))) #I don't want to make separate points for samples types that I don't really expect to change between years, such as the macrophytes or the terrestrial samples.  I just want to assume that these were the same in the different years, while the consumers, DOM, POM etc. may have changed.
 Data[CombYears,"Year"] <- 2010
@@ -25,13 +30,13 @@ XY_ErrorBars <- function(X, Y, sdX, sdY, Plot=FALSE){#This is a function that cr
 	XoneH <- X+sdX
 	YnaughtH <- Y
 	YoneH <- Y
-	if(Plot==TRUE){segments(XnaughtH, YnaughtH, XoneH, YoneH, col="gray")}
+	if(Plot==TRUE){segments(XnaughtH, YnaughtH, XoneH, YoneH, col="black")}
 	#Vertical Error Bars
 	XnaughtV <- X
 	XoneV <- X
 	YnaughtV <- Y-sdY
 	YoneV <- Y+sdY
-	if(Plot==TRUE){segments(XnaughtV,YnaughtV,XoneV,YoneV, col="gray")}
+	if(Plot==TRUE){segments(XnaughtV,YnaughtV,XoneV,YoneV, col="black")}
 
 	ErrorXlim <- c(min(XnaughtH), max(XoneH))
 	ErrorYlim <- c(min(YnaughtV), max(YoneV))
@@ -137,13 +142,13 @@ for(i in 1:length(GraphLayers)){
 
 	nPlots <- nPlots[,c(2,1)]
 
-	LegendTitle <- c("A", "B")
-	if(Save){
+	LegendTitle <- list(c("A", "B"), c("C", "D"), c("E", "F"))[[i]]
+	if(Save & i==1){
 		
 		options(tikzMetricPackages = c("\\usepackage[utf8]{inputenc}",
 		    "\\usepackage[T1]{fontenc}", "\\usetikzlibrary{calc}",
 		    "\\usepackage{amssymb}","\\usepackage{tensor}"))
-		tikz(file=paste("/Users/battrd/Documents/School&Work/WiscResearch/Isotopes_2012Analysis/Figures/BiPlots/Ward2010&2012_IsoBiPlot_", GraphLayers[i], ".tex", sep=""), width=3.23, height=5.25, standAlone=TRUE, 
+		tikz(file="/Users/battrd/Documents/School&Work/WiscResearch/Isotopes_2012Analysis/Figures/BiPlots/Ward2010&2012_Full_IsoBiPlots.tex", width=6.1, height=5.25, standAlone=TRUE, 
 		packages = c("\\usepackage{tikz}",
 		                 "\\usepackage[active,tightpage,psfixbb]{preview}",
 		                 "\\PreviewEnvironment{pgfpicture}",
@@ -151,13 +156,22 @@ for(i in 1:length(GraphLayers)){
 		                 "\\usepackage{amssymb}",
 						"\\usepackage{tensor}")
 		)
-	}else{
-		dev.new(width=3.5, height=5.25)
+	}else if(i==1){
+		dev.new(width=6.1, height=5.25)
 	}
-	par(family="Times", las=1, mfrow=c(2,1), mar=c(2.1,3.1,0.1,0.1), oma=c(1,0,0,0), cex=PubCex, ps=9, mgp=c(2, 0.5, 0), tcl=-0.4)
-
-	plot(muDataGroup[,IsoNames[nPlots[1:2,1]]], pch="", cex=1.2, xlab="", ylab="", xlim=Lims1[[1]], ylim=Lims1[[2]], bty="l", xaxt=ifelse(1==1, "n", "s"), cex.axis=PubCex)#
-	mtext("$\\delta^2\\mathrm{H}$", side=2, line=2, las=0, cex=PubCex)
+	if(i==1){
+		par(family="Times", las=0, mfcol=c(2,3), mar=c(1.5, 1.75, 0.1, 0.1), oma=c(0.75,0,0,0), cex=PubCex, ps=8, mgp=c(1.5, 0.15, 0), tcl=-0.15)
+	}else{
+		par(mar=c(1.5, 0.85, 0.1, 0.1))
+	}
+	
+	# Create first plot
+	plot(muDataGroup[,IsoNames[nPlots[1:2,1]]], pch="", cex=1.2, xlab="", ylab="", xlim=Lims1[[1]], ylim=Lims1[[2]], bty="l", xaxt="s", cex.axis=1)
+	# axis(side=1, labels=FALSE)
+	if(i == 1){
+		mtext("$\\delta^2\\mathrm{H}$", side=2, line=1.1, las=0, cex=PubCex)
+	}
+	
 	
 	# Add Circles
 	if(GraphLayers[i]=="EndMembers"){
@@ -179,29 +193,78 @@ for(i in 1:length(GraphLayers)){
 	XY_ErrorBars(muDataGroup[,IsoNames[nPlots[1,1]]], muDataGroup[,IsoNames[nPlots[2,1]]], sdDataGroup[,IsoNames[nPlots[1,1]]], sdDataGroup[,IsoNames[nPlots[2,1]]], Plot=T)
 	
 	# Add points
-	# points(muDataGroup[,IsoNames[nPlots[1:2,1]]], pch=ifelse(muDataGroup[,"Trophic"]==0, 21, 22), bg=ifelse(muDataGroup[,"Year"]==2010, "white", "gray85"), cex=2.7*CexScale, xlab=LabelIso[nPlots[1,1]], ylab=LabelIso[nPlots[2,1]], xlim=Lims1[[1]], ylim=Lims1[[2]])
-	points(muDataGroup[,IsoNames[nPlots[1:2,1]]], pch=ifelse(muDataGroup[,"Trophic"]==0, 21, 22), bg=ifelse(muDataGroup[,"Year"]==2010, "white", "gray85"), cex=2.7*CexScale, xlab="", ylab="", xlim=Lims1[[1]], ylim=Lims1[[2]])
+	colGroups <- 1L + (muDataGroup[,"Year"]==2012)*2L + (muDataGroup[,"Year"]==2010 & (muDataGroup[,"Taxon"]%in%c("EpiPhyto", "MetaPhyto", "Periphyton")|(GraphLayers[i]!="EndMembers")))
+	points(muDataGroup[,IsoNames[nPlots[1:2,1]]], pch=ifelse(muDataGroup[,"Trophic"]==0, 21, 22), bg=c(col2010, col2012)[colGroups], cex=2.7, xlab="", ylab="", xlim=Lims1[[1]], ylim=Lims1[[2]])
+	
+	# Get Ready to add #'s inside points, need to adjust overlapping
 	TaxID <- as.numeric(muDataGroup[,"TaxID"])
-	Move17_Index <- which(muDataGroup[,"TaxID"]==17)
-	Move17_d_CND <- c(-0.5,0,8)
 	TXTmuDataGroup <- muDataGroup
-	if(is.element(15, muDataGroup[,"TaxID"])){
-		Move15_Index <- which(TXTmuDataGroup[,"TaxID"]==15)
-		Move15_d_CND <- c(0,0,10) #c(0,0,5)
-		TXTmuDataGroup[Move15_Index,c("d13C","d15N","dD")] <- TXTmuDataGroup[Move15_Index,c("d13C","d15N","dD")] + Move15_d_CND
+	
+	if(GraphLayers[i]=="EndMembers"){
+		Move3_Index <- TXTmuDataGroup[,"TaxID"]==3
+		Move3_d_CND <- c(2.5, 0, 0)
+		TXTmuDataGroup[Move3_Index,c("d13C","d15N","dD")] <- TXTmuDataGroup[Move3_Index,c("d13C","d15N","dD")] + Move3_d_CND
 		
-		Move12_Index <- which(TXTmuDataGroup[,"TaxID"]==12)
-		Move12_d_CND <- c(0,0,-0.0)
-		TXTmuDataGroup[Move12_Index,c("d13C","d15N","dD")] <- TXTmuDataGroup[Move12_Index,c("d13C","d15N","dD")] + Move12_d_CND
+		# Move12_Index <- TXTmuDataGroup[,"TaxID"]==12
+		# Move12_d_CND <- c(0,0,-0.0)
+		# TXTmuDataGroup[Move12_Index,c("d13C","d15N","dD")] <- TXTmuDataGroup[Move12_Index,c("d13C","d15N","dD")] + Move12_d_CND
+		
+		Move15_Index <- TXTmuDataGroup[,"TaxID"]==15
+		Move15_d_CND <- c(0,0,9)
+		TXTmuDataGroup[Move15_Index,c("d13C","d15N","dD")] <- TXTmuDataGroup[Move15_Index,c("d13C","d15N","dD")] + Move15_d_CND
+
+		Move19_Index <- TXTmuDataGroup[,"TaxID"]==19
+		Move19_d_CND <- c(0,-1.5,-0.0)
+		TXTmuDataGroup[Move19_Index,c("d13C","d15N","dD")] <- TXTmuDataGroup[Move19_Index,c("d13C","d15N","dD")] + Move19_d_CND
+		
+		Move2112_Index <- TXTmuDataGroup[,"TaxID"]==21 & TXTmuDataGroup[,"Year"]==2012
+		Move2112_d_CND <- c(3, 0, 0)
+		TXTmuDataGroup[Move2112_Index,c("d13C","d15N","dD")] <- TXTmuDataGroup[Move2112_Index,c("d13C","d15N","dD")] + Move2112_d_CND
+		
+		txtGrps <- colGroups
+		txtGrps[Move3_Index | Move15_Index | Move19_Index | Move2112_Index] <- 1
+		txtGrps2 <- txtGrps
+		
+	}else if(GraphLayers[i]=="Fish2010&2012"){
+		
+		
+		Move710_Index <- TXTmuDataGroup[,"TaxID"]==7 & TXTmuDataGroup[,"Year"]==2010
+		Move710_d_CND <- c(2, 0.1, -0.0)
+		TXTmuDataGroup[Move710_Index,c("d13C","d15N","dD")] <- TXTmuDataGroup[Move710_Index,c("d13C","d15N","dD")] + Move710_d_CND
+		
+		Move712_Index <- TXTmuDataGroup[,"TaxID"]==7 & TXTmuDataGroup[,"Year"]==2012
+		Move712_d_CND <- c(-2, 0, -0.0)
+		TXTmuDataGroup[Move712_Index,c("d13C","d15N","dD")] <- TXTmuDataGroup[Move712_Index,c("d13C","d15N","dD")] + Move712_d_CND
+		
+		Move910_Index <- TXTmuDataGroup[,"TaxID"]==9 & TXTmuDataGroup[,"Year"]==2010
+		Move910_d_CND <- c(0.45, -1.4, -0.0)
+		TXTmuDataGroup[Move910_Index,c("d13C","d15N","dD")] <- TXTmuDataGroup[Move910_Index,c("d13C","d15N","dD")] + Move910_d_CND
+		
+		txtGrps <- colGroups
+		txtGrps[Move710_Index | Move712_Index] <- 1
+		txtGrps2 <- txtGrps + Move910_Index*2
+	}else if(GraphLayers[i] == "Inverts2010&2012"){
+		
+		txtGrps <- colGroups
+		txtGrps2 <- txtGrps
+		
 	}
-	text(TXTmuDataGroup[,IsoNames[nPlots[1:2,1]]], labels=as.character(TaxID), cex=PubCex*CexScale)
+	
+
+	
+	text(TXTmuDataGroup[,IsoNames[nPlots[1:2,1]]], labels=as.character(TaxID), cex=PubCex, col=c("black", "white", "white")[txtGrps], font=2)
 	title(main=LegendTitle[1], adj=0.025, line=-1.5, cex.main=PubCex*1.25, font.main=1)
 
-
 	# Create 2nd plot
-	plot(muDataGroup[,IsoNames[nPlots[1:2,2]]], pch="", cex=1.2, xlab="", ylab="", xlim=Lims2[[1]], ylim=Lims2[[2]], bty="l", xaxt=ifelse(2==1, "n", "s"), cex.axis=PubCex)#
-	mtext("$\\delta^{15}\\mathrm{N}$", side=2, line=2, las=0, cex=PubCex)
-	if(2==2){mtext("$\\delta^{13}\\mathrm{C}$", side=1, line=2, outer=FALSE, cex=PubCex)}
+	plot(muDataGroup[,IsoNames[nPlots[1:2,2]]], pch="", cex=1.2, xlab="", ylab="", xlim=Lims2[[1]], ylim=Lims2[[2]], bty="l", xaxt=ifelse(2==1, "n", "s"), cex.axis=1)
+	if(i == 1){
+		mtext("$\\delta^{15}\\mathrm{N}$", side=2, line=1, las=0, cex=PubCex)	
+	}
+	if(i ==2){
+		mtext("$\\delta^{13}\\mathrm{C}$", side=1, line=1, outer=FALSE, cex=PubCex)
+	}
+	
+	
 	
 	# Add circles
 	encircle(floatI, cy="d15N", col="springgreen4", lty="dashed", lwd=2)
@@ -214,13 +277,12 @@ for(i in 1:length(GraphLayers)){
 	XY_ErrorBars(muDataGroup[,IsoNames[nPlots[1,2]]], muDataGroup[,IsoNames[nPlots[2,2]]], sdDataGroup[,IsoNames[nPlots[1,2]]], sdDataGroup[,IsoNames[nPlots[2,2]]], Plot=T)
 
 	# Add points
-	points(muDataGroup[,IsoNames[nPlots[1:2,2]]], pch=ifelse(muDataGroup[,"Trophic"]==0, 21, 22), bg=ifelse(muDataGroup[,"Year"]==2010, "white", "gray85"), cex=2.7*CexScale, xlab="", ylab="", xlim=Lims2[[1]], ylim=Lims2[[2]])
-	text(TXTmuDataGroup[,IsoNames[nPlots[1:2,2]]], labels=as.character(TaxID), cex=PubCex*CexScale)
+	points(muDataGroup[,IsoNames[nPlots[1:2,2]]], pch=ifelse(muDataGroup[,"Trophic"]==0, 21, 22), bg=c(col2010, col2012)[colGroups], cex=2.7, xlab="", ylab="", xlim=Lims2[[1]], ylim=Lims2[[2]])
+	text(TXTmuDataGroup[,IsoNames[nPlots[1:2,2]]], labels=as.character(TaxID), cex=PubCex, col=c("black", "white", "white")[txtGrps2], font=2)
 	#}
 
 	title(main=LegendTitle[2], adj=0.025, line=-1.5, cex.main=PubCex*1.25, font.main=1)
 	
 	
 	if(Save){dev.off()}
-	print(cbind(muDataGroup, "ID"=TaxID)[order(TaxID),])
 }

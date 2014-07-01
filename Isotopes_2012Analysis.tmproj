@@ -3,7 +3,7 @@
 <plist version="1.0">
 <dict>
 	<key>currentDocument</key>
-	<string>Scripts/isotope_biplots.R</string>
+	<string>Scripts/make_AllDO.R</string>
 	<key>documents</key>
 	<array>
 		<dict>
@@ -13,61 +13,69 @@
 					<key>filename</key>
 					<string>Scripts/orgWeather_2010&amp;2012.R</string>
 					<key>lastUsed</key>
-					<date>2014-06-25T16:29:49Z</date>
+					<date>2014-06-26T20:07:17Z</date>
 				</dict>
 				<dict>
 					<key>filename</key>
 					<string>Scripts/orgWard10_sensor.R</string>
 					<key>lastUsed</key>
-					<date>2014-06-25T16:59:25Z</date>
+					<date>2014-06-26T23:04:13Z</date>
 				</dict>
 				<dict>
 					<key>filename</key>
 					<string>Scripts/orgWard12_sensor.R</string>
 					<key>lastUsed</key>
-					<date>2014-06-25T16:49:02Z</date>
+					<date>2014-06-26T23:04:27Z</date>
 				</dict>
 				<dict>
 					<key>filename</key>
 					<string>Scripts/orgPaul10_sensor.R</string>
 					<key>lastUsed</key>
-					<date>2014-06-25T16:37:52Z</date>
+					<date>2014-06-26T23:14:02Z</date>
 				</dict>
 				<dict>
 					<key>filename</key>
 					<string>Scripts/orgPaul12_sensor.R</string>
 					<key>lastUsed</key>
-					<date>2014-06-25T16:35:31Z</date>
+					<date>2014-06-26T23:12:36Z</date>
+				</dict>
+				<dict>
+					<key>filename</key>
+					<string>Scripts/completeSensors_L&amp;W_10&amp;12.R</string>
+					<key>lastUsed</key>
+					<date>2014-06-26T20:04:54Z</date>
 				</dict>
 				<dict>
 					<key>filename</key>
 					<string>Scripts/metab_volume_light.R</string>
 					<key>lastUsed</key>
-					<date>2014-06-25T17:59:10Z</date>
+					<date>2014-06-26T20:04:50Z</date>
 				</dict>
 				<dict>
 					<key>filename</key>
 					<string>Scripts/make_AllDO.R</string>
 					<key>lastUsed</key>
-					<date>2014-06-25T18:36:48Z</date>
+					<date>2014-06-27T00:18:41Z</date>
+					<key>selected</key>
+					<true/>
 				</dict>
 				<dict>
 					<key>filename</key>
 					<string>Scripts/calcMetab_W&amp;L_10&amp;12.R</string>
 					<key>lastUsed</key>
-					<date>2014-06-25T18:46:36Z</date>
+					<date>2014-06-27T00:07:41Z</date>
 				</dict>
 				<dict>
 					<key>filename</key>
 					<string>Scripts/lightFunctions.R</string>
 					<key>lastUsed</key>
-					<date>2014-06-25T18:37:51Z</date>
+					<date>2014-06-26T20:28:04Z</date>
 				</dict>
 				<dict>
 					<key>filename</key>
 					<string>Scripts/ward_vol_depth_bathy.R</string>
 					<key>lastUsed</key>
-					<date>2014-06-25T18:37:51Z</date>
+					<date>2014-06-26T20:04:56Z</date>
 				</dict>
 			</array>
 			<key>expanded</key>
@@ -121,7 +129,7 @@
 					<key>filename</key>
 					<string>Scripts/ConsMix.R</string>
 					<key>lastUsed</key>
-					<date>2014-06-25T17:03:02Z</date>
+					<date>2014-06-26T23:32:08Z</date>
 				</dict>
 				<dict>
 					<key>filename</key>
@@ -142,13 +150,19 @@
 					<key>filename</key>
 					<string>Scripts/ward_plot_metabolismMethods.R</string>
 					<key>lastUsed</key>
-					<date>2014-06-25T18:46:37Z</date>
+					<date>2014-06-26T20:47:50Z</date>
 				</dict>
 				<dict>
 					<key>filename</key>
-					<string>Scripts/plotMetabolism.R</string>
+					<string>Scripts/plotMetabolism_L&amp;R_10&amp;12.R</string>
 					<key>lastUsed</key>
-					<date>2014-06-25T18:46:38Z</date>
+					<date>2014-06-27T00:07:50Z</date>
+				</dict>
+				<dict>
+					<key>filename</key>
+					<string>Scripts/plotMetabolism_light.R</string>
+					<key>lastUsed</key>
+					<date>2014-06-26T20:47:55Z</date>
 				</dict>
 				<dict>
 					<key>filename</key>
@@ -187,7 +201,7 @@
 					<key>filename</key>
 					<string>Scripts/figure2_gas_nep_zoop.R</string>
 					<key>lastUsed</key>
-					<date>2014-06-25T23:15:08Z</date>
+					<date>2014-06-27T00:18:41Z</date>
 				</dict>
 				<dict>
 					<key>filename</key>
@@ -220,7 +234,7 @@
 					<key>filename</key>
 					<string>Scripts/isotope_biplots.R</string>
 					<key>lastUsed</key>
-					<date>2014-06-25T23:18:15Z</date>
+					<date>2014-06-26T13:53:22Z</date>
 				</dict>
 			</array>
 			<key>expanded</key>
@@ -230,9 +244,37 @@
 		</dict>
 	</array>
 	<key>fileHierarchyDrawerWidth</key>
-	<integer>310</integer>
+	<integer>249</integer>
 	<key>metaData</key>
 	<dict>
+		<key>Scripts/ConsMix.R</key>
+		<dict>
+			<key>caret</key>
+			<dict>
+				<key>column</key>
+				<integer>68</integer>
+				<key>line</key>
+				<integer>281</integer>
+			</dict>
+			<key>firstVisibleColumn</key>
+			<integer>0</integer>
+			<key>firstVisibleLine</key>
+			<integer>50</integer>
+		</dict>
+		<key>Scripts/calcMetab_W&amp;L_10&amp;12.R</key>
+		<dict>
+			<key>caret</key>
+			<dict>
+				<key>column</key>
+				<integer>101</integer>
+				<key>line</key>
+				<integer>73</integer>
+			</dict>
+			<key>firstVisibleColumn</key>
+			<integer>0</integer>
+			<key>firstVisibleLine</key>
+			<integer>53</integer>
+		</dict>
 		<key>Scripts/figure1_photicAqua.R</key>
 		<dict>
 			<key>caret</key>
@@ -252,14 +294,14 @@
 			<key>caret</key>
 			<dict>
 				<key>column</key>
-				<integer>0</integer>
+				<integer>148</integer>
 				<key>line</key>
-				<integer>50</integer>
+				<integer>16</integer>
 			</dict>
 			<key>firstVisibleColumn</key>
 			<integer>0</integer>
 			<key>firstVisibleLine</key>
-			<integer>40</integer>
+			<integer>0</integer>
 		</dict>
 		<key>Scripts/figure3_consMix_violin.R</key>
 		<dict>
@@ -303,29 +345,133 @@
 			<key>firstVisibleLine</key>
 			<integer>0</integer>
 		</dict>
-		<key>Scripts/isotope_biplots.R</key>
+		<key>Scripts/make_AllDO.R</key>
 		<dict>
 			<key>caret</key>
 			<dict>
 				<key>column</key>
-				<integer>169</integer>
+				<integer>17</integer>
 				<key>line</key>
-				<integer>15</integer>
+				<integer>86</integer>
 			</dict>
 			<key>firstVisibleColumn</key>
 			<integer>0</integer>
 			<key>firstVisibleLine</key>
+			<integer>73</integer>
+		</dict>
+		<key>Scripts/orgPaul10_sensor.R</key>
+		<dict>
+			<key>caret</key>
+			<dict>
+				<key>column</key>
+				<integer>25</integer>
+				<key>line</key>
+				<integer>170</integer>
+			</dict>
+			<key>firstVisibleColumn</key>
 			<integer>0</integer>
+			<key>firstVisibleLine</key>
+			<integer>149</integer>
+		</dict>
+		<key>Scripts/orgPaul12_sensor.R</key>
+		<dict>
+			<key>caret</key>
+			<dict>
+				<key>column</key>
+				<integer>108</integer>
+				<key>line</key>
+				<integer>224</integer>
+			</dict>
+			<key>columnSelection</key>
+			<false/>
+			<key>firstVisibleColumn</key>
+			<integer>0</integer>
+			<key>firstVisibleLine</key>
+			<integer>200</integer>
+			<key>selectFrom</key>
+			<dict>
+				<key>column</key>
+				<integer>32</integer>
+				<key>line</key>
+				<integer>224</integer>
+			</dict>
+			<key>selectTo</key>
+			<dict>
+				<key>column</key>
+				<integer>108</integer>
+				<key>line</key>
+				<integer>224</integer>
+			</dict>
+		</dict>
+		<key>Scripts/orgWard10_sensor.R</key>
+		<dict>
+			<key>caret</key>
+			<dict>
+				<key>column</key>
+				<integer>34</integer>
+				<key>line</key>
+				<integer>281</integer>
+			</dict>
+			<key>firstVisibleColumn</key>
+			<integer>0</integer>
+			<key>firstVisibleLine</key>
+			<integer>263</integer>
+		</dict>
+		<key>Scripts/orgWard12_sensor.R</key>
+		<dict>
+			<key>caret</key>
+			<dict>
+				<key>column</key>
+				<integer>0</integer>
+				<key>line</key>
+				<integer>333</integer>
+			</dict>
+			<key>firstVisibleColumn</key>
+			<integer>0</integer>
+			<key>firstVisibleLine</key>
+			<integer>190</integer>
+		</dict>
+		<key>Scripts/orgWeather_2010&amp;2012.R</key>
+		<dict>
+			<key>caret</key>
+			<dict>
+				<key>column</key>
+				<integer>0</integer>
+				<key>line</key>
+				<integer>37</integer>
+			</dict>
+			<key>firstVisibleColumn</key>
+			<integer>0</integer>
+			<key>firstVisibleLine</key>
+			<integer>67</integer>
+		</dict>
+		<key>Scripts/plotMetabolism_L&amp;R_10&amp;12.R</key>
+		<dict>
+			<key>caret</key>
+			<dict>
+				<key>column</key>
+				<integer>0</integer>
+				<key>line</key>
+				<integer>21</integer>
+			</dict>
+			<key>firstVisibleColumn</key>
+			<integer>0</integer>
+			<key>firstVisibleLine</key>
+			<integer>3</integer>
 		</dict>
 	</dict>
 	<key>openDocuments</key>
 	<array>
-		<string>Scripts/figure1_photicAqua.R</string>
+		<string>Scripts/orgWeather_2010&amp;2012.R</string>
+		<string>Scripts/orgWard10_sensor.R</string>
+		<string>Scripts/orgWard12_sensor.R</string>
+		<string>Scripts/orgPaul10_sensor.R</string>
+		<string>Scripts/ConsMix.R</string>
+		<string>Scripts/orgPaul12_sensor.R</string>
+		<string>Scripts/calcMetab_W&amp;L_10&amp;12.R</string>
+		<string>Scripts/plotMetabolism_L&amp;R_10&amp;12.R</string>
 		<string>Scripts/figure2_gas_nep_zoop.R</string>
-		<string>Scripts/figure3_consMix_violin.R</string>
-		<string>Scripts/figure4_dTerrAlgae.R</string>
-		<string>Scripts/figure5_deltaFishChaob.R</string>
-		<string>Scripts/isotope_biplots.R</string>
+		<string>Scripts/make_AllDO.R</string>
 	</array>
 	<key>showFileHierarchyDrawer</key>
 	<true/>
