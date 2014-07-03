@@ -111,5 +111,27 @@ axis(side=1, at=ThisAt_Axis, labels=ResourceNames)
 }
 if(Save){dev.off()}
 
+# ===============
+# = Print Means =
+# ===============
+for(i in 1:length(Cons)){
+	NamesThisUse <- make.names(ConsChoices[[Cons[i]]][[GroupChoose]])
+	AllNamesThisuse <- c("Year", "Month", "Consumer", "Grouping", NamesThisUse)
+	myRU <- droplevels(subset(ResourceUse, Consumer==Cons[i] & Grouping==GroupChoose & Month=="Pooled"))[AllNamesThisuse] #try to subset only the sources that were part of the analysis for this consumer
+	myRU <- reshape(myRU, varying=list(c(NamesThisUse)), times=ConsChoices[[Cons[i]]][[GroupChoose]], ids=1:nrow(ThisRU0), timevar="Source", v.names="Proportion", direction="long")
+	print(ddply(myRU, c("Year", "Consumer", "Grouping", "Source"), function(x)data.frame("Proportion"=mean(x[,"Proportion"]))))
+}
+
+# ==============
+# = Print SD's =
+# ==============
+for(i in 1:length(Cons)){
+	NamesThisUse <- make.names(ConsChoices[[Cons[i]]][[GroupChoose]])
+	AllNamesThisuse <- c("Year", "Month", "Consumer", "Grouping", NamesThisUse)
+	myRU <- droplevels(subset(ResourceUse, Consumer==Cons[i] & Grouping==GroupChoose & Month=="Pooled"))[AllNamesThisuse] #try to subset only the sources that were part of the analysis for this consumer
+	myRU <- reshape(myRU, varying=list(c(NamesThisUse)), times=ConsChoices[[Cons[i]]][[GroupChoose]], ids=1:nrow(ThisRU0), timevar="Source", v.names="Proportion", direction="long")
+	print(ddply(myRU, c("Year", "Consumer", "Grouping", "Source"), function(x)data.frame("Proportion"=sd(x[,"Proportion"]))))
+}
+
 
 

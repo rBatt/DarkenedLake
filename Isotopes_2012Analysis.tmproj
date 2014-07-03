@@ -3,7 +3,7 @@
 <plist version="1.0">
 <dict>
 	<key>currentDocument</key>
-	<string>Scripts/make_AllDO.R</string>
+	<string>Scripts/calcMetab_W&amp;L_10&amp;12.R</string>
 	<key>documents</key>
 	<array>
 		<dict>
@@ -55,15 +55,15 @@
 					<key>filename</key>
 					<string>Scripts/make_AllDO.R</string>
 					<key>lastUsed</key>
-					<date>2014-06-27T00:18:41Z</date>
-					<key>selected</key>
-					<true/>
+					<date>2014-07-01T02:15:43Z</date>
 				</dict>
 				<dict>
 					<key>filename</key>
 					<string>Scripts/calcMetab_W&amp;L_10&amp;12.R</string>
 					<key>lastUsed</key>
-					<date>2014-06-27T00:07:41Z</date>
+					<date>2014-07-01T18:43:46Z</date>
+					<key>selected</key>
+					<true/>
 				</dict>
 				<dict>
 					<key>filename</key>
@@ -156,13 +156,13 @@
 					<key>filename</key>
 					<string>Scripts/plotMetabolism_L&amp;R_10&amp;12.R</string>
 					<key>lastUsed</key>
-					<date>2014-06-27T00:07:50Z</date>
+					<date>2014-07-01T18:43:46Z</date>
 				</dict>
 				<dict>
 					<key>filename</key>
 					<string>Scripts/plotMetabolism_light.R</string>
 					<key>lastUsed</key>
-					<date>2014-06-26T20:47:55Z</date>
+					<date>2014-07-01T18:43:37Z</date>
 				</dict>
 				<dict>
 					<key>filename</key>
@@ -234,7 +234,7 @@
 					<key>filename</key>
 					<string>Scripts/isotope_biplots.R</string>
 					<key>lastUsed</key>
-					<date>2014-06-26T13:53:22Z</date>
+					<date>2014-07-01T18:43:23Z</date>
 				</dict>
 			</array>
 			<key>expanded</key>
@@ -273,7 +273,7 @@
 			<key>firstVisibleColumn</key>
 			<integer>0</integer>
 			<key>firstVisibleLine</key>
-			<integer>53</integer>
+			<integer>100</integer>
 		</dict>
 		<key>Scripts/figure1_photicAqua.R</key>
 		<dict>
@@ -345,6 +345,20 @@
 			<key>firstVisibleLine</key>
 			<integer>0</integer>
 		</dict>
+		<key>Scripts/isotope_biplots.R</key>
+		<dict>
+			<key>caret</key>
+			<dict>
+				<key>column</key>
+				<integer>2</integer>
+				<key>line</key>
+				<integer>164</integer>
+			</dict>
+			<key>firstVisibleColumn</key>
+			<integer>0</integer>
+			<key>firstVisibleLine</key>
+			<integer>151</integer>
+		</dict>
 		<key>Scripts/make_AllDO.R</key>
 		<dict>
 			<key>caret</key>
@@ -357,7 +371,7 @@
 			<key>firstVisibleColumn</key>
 			<integer>0</integer>
 			<key>firstVisibleLine</key>
-			<integer>73</integer>
+			<integer>69</integer>
 		</dict>
 		<key>Scripts/orgPaul10_sensor.R</key>
 		<dict>
@@ -450,14 +464,28 @@
 			<key>caret</key>
 			<dict>
 				<key>column</key>
-				<integer>0</integer>
+				<integer>114</integer>
 				<key>line</key>
-				<integer>21</integer>
+				<integer>4</integer>
 			</dict>
 			<key>firstVisibleColumn</key>
 			<integer>0</integer>
 			<key>firstVisibleLine</key>
-			<integer>3</integer>
+			<integer>0</integer>
+		</dict>
+		<key>Scripts/plotMetabolism_light.R</key>
+		<dict>
+			<key>caret</key>
+			<dict>
+				<key>column</key>
+				<integer>0</integer>
+				<key>line</key>
+				<integer>0</integer>
+			</dict>
+			<key>firstVisibleColumn</key>
+			<integer>0</integer>
+			<key>firstVisibleLine</key>
+			<integer>0</integer>
 		</dict>
 	</dict>
 	<key>openDocuments</key>
@@ -470,12 +498,14 @@
 		<string>Scripts/orgPaul12_sensor.R</string>
 		<string>Scripts/calcMetab_W&amp;L_10&amp;12.R</string>
 		<string>Scripts/plotMetabolism_L&amp;R_10&amp;12.R</string>
+		<string>Scripts/plotMetabolism_light.R</string>
 		<string>Scripts/figure2_gas_nep_zoop.R</string>
 		<string>Scripts/make_AllDO.R</string>
+		<string>Scripts/isotope_biplots.R</string>
 	</array>
 	<key>showFileHierarchyDrawer</key>
 	<true/>
 	<key>windowFrame</key>
-	<string>{{2, 638}, {1629, 780}}</string>
+	<string>{{10, 98}, {1178, 780}}</string>
 </dict>
 </plist>

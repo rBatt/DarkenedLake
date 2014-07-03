@@ -91,6 +91,47 @@ CorrectDOM <- function(dTot, dAqua=c("dC"=-26.82, "dN"=-0.02, "dD"=-65.4), fAqua
 }
 
 
+# ===================================================================
+# = Correct for DOM, but assuming that DOM should be 50% C, not 10% =
+# ===================================================================
+#For 2012, CPSIL is saying that the DOM had ~10% C weight, 0.4% N weight, and 2.3% H weight.
+corr.fact <- 1 # correction factor – if DOM is measured as 10%, but you think should be 50%, corr.fact is 5
+d.perc.C <- 0.1 * corr.fact # dom percent C
+d.perc.N <- 0.004 * corr.fact # dom percent N
+d.perc.H <- 0.023 * corr.fact # dom percent H # **NOTE**: here multiply by corr.fact
+
+doc.mass <- 10.65 # DOC mg/L # Note that DOC is not affected by corr.fact, because we measured it.
+
+dom.mass <- doc.mass/d.perc.C # DOM mg/L # **NOTE**: here you divide by d.perc.C, which is same as /(0.1*corr.fact)
+
+don.mass <- dom.mass*d.perc.N # DON mg/L
+doh.mass <- dom.mass*d.perc.H # DOH mg/L # **NOTE**: here you do (dom.mass)*(d.perc.H), which is same as (doc.mass/(0.1*corr.fact))*(0.023*corr.fact) ... corr.fact cancels out
+
+
+a.perc.C <- 0.4931 # aquashade percent C
+a.perc.N <- 0.0439 # aquashade percent N
+a.perc.H <- 0.042 # aquashade percent H
+
+a.mass <- 1.5 # aquashade mass mg/L
+
+aoc.mass <- a.mass*a.perc.C # mass of aquashade C, mg/L
+aon.mass <- a.mass*a.perc.N # mass of aquashade N, mg/L
+aoh.mass <- a.mass*a.perc.H # mass of aquashade H, mg/L
+
+a.fC <- aoc.mass/doc.mass # percent of DOC that is aquashade
+a.fN <- aon.mass/don.mass # percent of DON that is aquashade
+a.fH <- aoh.mass/doh.mass # percent of DOH that is aquashade # **NOTE**: here you divide by (doh.mass), wich is same as (dom.mass*d.perc.H)
+
+# CorrectDOM <- function(dTot, dAqua=c("dC"=-26.82, "dN"=-0.02, "dD"=-65.4), fAqua=c("fC"=0.0694507, "fN"=0.1545775, "fD"=0.02571953)){
+# 	fNorm <- 1- fAqua
+# 	dNorm <- matrix(data=rep(NA, 3*nrow(dTot)), nrow=nrow(dTot))
+# 	for(i in 1:nrow(dTot)){
+# 		dNorm[i,] <- (dTot[i,]-fAqua*dAqua)/fNorm
+# 	}
+# 	return(dNorm)
+# }
+
+
 
 #Select the top 2 if on Snow Leopard, the bottom 2 if on Leopard, and the selection doesn't matter if on a PC
 # WINE="/Applications/Darwine/Wine.bundle/Contents/bin/wine"
@@ -104,10 +145,10 @@ DOM2012_0 <- as.matrix(subset(Data, Taxon=="DOM" & Year==2012, select=c("d13C", 
 dimnames(DOM2012_0) <- NULL
 DOM2012 <- CorrectDOM(dTot=DOM2012_0)
 
-domOut2010 <- ConsMix(Cons_dX_Obs=DOM2010, TL=0, Srcs_dX=DOM_MeanSrcSigs2010, Srcs_dX_Var=DOM_VarSrcSigs2010, Water_dD_Mu=0, Water_dD_Var=0, FractModel=FALSE, SrcNames=c("All Terr.", "Macroph.", "Phytos.", "Periphyton"), ConsName=NULL, Omega_Info=c(0,0), TL_Var=0, Plot=FALSE, NewPlot=TRUE, DispMu=FALSE, GraphTitle=NULL, nChains=5, ChainLength=1000, debug=FALSE, WINE=WINE, WINEPATH= WINEPATH)
-domOut2012 <- ConsMix(Cons_dX_Obs=DOM2012, TL=0, Srcs_dX=DOM_MeanSrcSigs2012, Srcs_dX_Var=DOM_VarSrcSigs2012, Water_dD_Mu=0, Water_dD_Var=0, FractModel=FALSE, SrcNames=c("All Terr.", "Macroph.", "Phytos.", "Periphyton"), ConsName=NULL, Omega_Info=c(0,0), TL_Var=0, Plot=FALSE, NewPlot=TRUE, DispMu=FALSE, GraphTitle=NULL, nChains=5, ChainLength=1000, debug=FALSE, WINE=WINE, WINEPATH= WINEPATH)
+domOut2010 <- ConsMix(Cons_dX_Obs=DOM2010, TL=0, Srcs_dX=DOM_MeanSrcSigs2010, Srcs_dX_Var=DOM_VarSrcSigs2010, Water_dD_Mu=0, Water_dD_Var=0, FractModel=FALSE, SrcNames=c("All Terr.", "Macroph.", "Phytos.", "Periphyton"), ConsName=NULL, Omega_Info=c(0,0), TL_Var=0, Plot=FALSE, NewPlot=TRUE, DispMu=FALSE, GraphTitle=NULL, nChains=5, ChainLength=1000)
+domOut2012 <- ConsMix(Cons_dX_Obs=DOM2012, TL=0, Srcs_dX=DOM_MeanSrcSigs2012, Srcs_dX_Var=DOM_VarSrcSigs2012, Water_dD_Mu=0, Water_dD_Var=0, FractModel=FALSE, SrcNames=c("All Terr.", "Macroph.", "Phytos.", "Periphyton"), ConsName=NULL, Omega_Info=c(0,0), TL_Var=0, Plot=FALSE, NewPlot=TRUE, DispMu=FALSE, GraphTitle=NULL, nChains=5, ChainLength=1000)
 
-DOM_Comp00 <- rbind(data.frame("Year"=2010, domOut2010$sims.matrix[,1:4]), data.frame("Year"=2012, domOut2012$sims.matrix[,1:4]))
+DOM_Comp00 <- rbind(data.frame("Year"=2010, domOut2010$BUGSoutput$sims.matrix[,1:4]), data.frame("Year"=2012, domOut2012$BUGSoutput$sims.matrix[,1:4]))
 DOM_Comp0 <- reshape(DOM_Comp00, varying=list(c("DietF.1.", "DietF.2.", "DietF.3.", "DietF.4.")), times=1:4, ids=1:nrow(DOM_Comp00), timevar="Source", v.names="Proportion", direction="long")
 DOM_Comp <- DOM_Comp0[,c("Year","Source", "Proportion")]
 row.names(DOM_Comp) <- NULL
@@ -128,3 +169,7 @@ mtext("DOM", side=2, line=2, cex=1)
 dev.off()
 
 setwd(OrigWD)
+
+
+# Manuscript DOM composition:
+aggregate(DOM_Comp[,"Proportion"], as.list(DOM_Comp[,c("Year", "Source")]), mean)

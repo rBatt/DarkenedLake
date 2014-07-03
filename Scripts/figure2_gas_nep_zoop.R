@@ -7,7 +7,7 @@ load("/Users/Battrd/Documents/School&Work/WiscResearch/Isotopes_2012Analysis/Res
 load("/Users/Battrd/Documents/School&Work/WiscResearch/Isotopes_2012Analysis/Data/routine.smry.RData")
 
 Save <- TRUE
-SaveType <- ".png"
+SaveType <- ".pdf"
 
 # =============================================
 # = 4-panel, areal chlorophyll, pCO2, DO, NEP =
@@ -23,7 +23,7 @@ if(Save){
 par(mfrow=c(3,2), mar=c(1,2,0.2,0.25), oma=c(0.2, 0, 0.2, 0.2), cex=1, ps=9, family="serif", mgp=c(3,0.3,0), tcl=-0.25)
 
 #Chlorophyll
-boxplot(aChla~Year+Lake, data=aChl0, at=c(0.5,1.5, 3.5, 4.5), col=c(NA,"lightgray"), show.names=FALSE, outline=FALSE, lwd=1.25)
+boxplot(aChla~Year+Lake, data=aChl0, at=c(0.5,1.5, 3.5, 4.5), col=c(NA,NA), border=c("red", "blue"), show.names=FALSE, outline=FALSE, lwd=1.25)
 axis(side=1, at=c(1,4), labels=FALSE)
 mtext(quote(Chlorophyll~(mg/m^2)), side=2, line=1)
 
@@ -31,13 +31,13 @@ mtext(quote(Chlorophyll~(mg/m^2)), side=2, line=1)
 #pCO2
 par(mar=c(1,2.25,0.2,0), cex=1, ps=9, family="serif", mgp=c(3,0.3,0), tcl=-0.25)
 ppCO2 <- subset(routineData0, Layer=="PML", select=c("Lake","Year","pCO2_water"))
-boxplot(pCO2_water~Year+Lake, data=ppCO2, at=c(0.5,1.5, 3.5, 4.5), col=c(NA,"lightgray"), show.names=FALSE, outline=FALSE, lwd=1.25)
+boxplot(pCO2_water~Year+Lake, data=ppCO2, at=c(0.5,1.5, 3.5, 4.5), col=c(NA,NA), border=c("red", "blue"), show.names=FALSE, outline=FALSE, lwd=1.25)
 axis(side=1, at=c(1,4), labels=FALSE)
 mtext(quote(italic(p)*CO[2]~(mu*atm)), side=2, line=1)
 
 #DO
 par(mar=c(1,2,0.2,0.25), cex=1, ps=9, family="serif", mgp=c(3,0.3,0), tcl=-0.25)
-boxplot(MeanDO~year+lake, data=AllDO, at=c(0.5,1.5, 3.5, 4.5), col=c(NA,"lightgray"), show.names=FALSE, outline=FALSE, lwd=1.25)
+boxplot(MeanDO~year+lake, data=AllDO, at=c(0.5,1.5, 3.5, 4.5), col=c(NA,NA), border=c("red", "blue"), show.names=FALSE, outline=FALSE, lwd=1.25)
 axis(side=1, at=c(1,4), labels=FALSE)
 mtext(quote(DO~("%"*saturation)), side=2, line=1)
 
@@ -45,20 +45,22 @@ mtext(quote(DO~("%"*saturation)), side=2, line=1)
 par(mar=c(1,2.25,0.2,0), cex=1, ps=9, family="serif", mgp=c(3,0.3,0), tcl=-0.25)
 # pWardPaulMetabolism.kf <- subset(WardPaulMetabolism.kf, doy>=143)
 pWardPaulMetabolism.kf <- WardPaulMetabolism.kf[WardPaulMetabolism.kf[,"doy"]>=143 & WardPaulMetabolism.kf[,"GPP"]>0 & WardPaulMetabolism.kf[,"R"]<0,]
+pWardPaulMetabolism.kf[,"NEP"] <- pWardPaulMetabolism.kf[,"NEP"]/(15.999*2)*1000
 pWardPaulMetabolism.kf[,"lake"] <- relevel(pWardPaulMetabolism.kf[,"lake"], ref="Paul")
-boxplot(NEP~year+lake, data=pWardPaulMetabolism.kf, at=c(0.5,1.5, 3.5, 4.5), col=c(NA,"lightgray"), show.names=FALSE, outline=FALSE, lwd=1.25)
+boxplot(NEP~year+lake, data=pWardPaulMetabolism.kf, at=c(0.5,1.5, 3.5, 4.5), col=c(NA,NA), border=c("red", "blue"), show.names=FALSE, outline=FALSE, lwd=1.25)
 axis(side=1, at=c(1,4), labels=FALSE)
-mtext(quote(NEP~(mg~O[2]~L^-1~d^-1)), side=2, line=1)
+# mtext(quote(NEP~(mg~O[2]~L^-1~d^-1)), side=2, line=1)
+mtext(quote(NEP~(mmol~O[2]~m^-3~d^-1)), side=2, line=1)
 
 # Zoop biomass
 par(mar=c(1,2.25,0,0), cex=1, ps=9, family="serif", mgp=c(3,0.3,0), tcl=-0.25)
-boxplot(Mass~Year+Lake, data=sumzData, at=c(0.5,1.5, 3.5, 4.5), col=c(NA,"lightgray"), show.names=FALSE, outline=FALSE, lwd=1.25)
+boxplot(Mass~Year+Lake, data=sumzData, at=c(0.5,1.5, 3.5, 4.5), col=c(NA,NA), border=c("red", "blue"), show.names=FALSE, outline=FALSE, lwd=1.25)
 axis(side=1, at=c(1,4), labels=c("Paul", "Ward"))
 mtext(quote(Zooplankton~(g/m^2)), side=2, line=1)
 
 # Chaob biomass
 par(mar=c(1,2.25,0,0), cex=1, ps=9, family="serif", mgp=c(3,0.3,0), tcl=-0.25)
-boxplot(Mass~Year+Lake, data=sumcData, at=c(0.5,1.5, 3.5, 4.5), col=c(NA,"lightgray"), show.names=FALSE, outline=FALSE, lwd=1.25)
+boxplot(Mass~Year+Lake, data=sumcData, at=c(0.5,1.5, 3.5, 4.5), col=c(NA,NA), border=c("red", "blue"), show.names=FALSE, outline=FALSE, lwd=1.25)
 axis(side=1, at=c(1,4), labels=c("Paul", "Ward"))
 mtext(quote(italic(Chaoborus)~spp.~(g/m^2)), side=2, line=1)
 if(Save){dev.off()}
@@ -79,7 +81,7 @@ if(Save){
 par(mfrow=c(2,2), mar=c(1.5,1.5,0.25,0), cex=1, ps=9, family="serif", mgp=c(3,0.3,0), tcl=-0.25, oma=c(0,0.5, 0, 0))
 tt <- c("Cyclopoid", "Mesocyclops","Calanoid","Nauplii")
 for(i in 1:4){
-	boxplot(Mass~Year+Lake, data=zData2[zData2[,"Taxon"]==tt[i],], outline=FALSE, col=c(NA, "lightgray"), show.names=FALSE)
+	boxplot(Mass~Year+Lake, data=zData2[zData2[,"Taxon"]==tt[i],], outline=FALSE, col=c(NA,NA), border=c("red", "blue"), show.names=FALSE)
 	if(i > 2){
 		axis(side=1, at=c(1.5,3.5), labels=c("Paul", "Ward"))
 	}

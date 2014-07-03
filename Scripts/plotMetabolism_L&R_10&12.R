@@ -4,6 +4,8 @@
 load("/Users/Battrd/Documents/School&Work/WiscResearch/Isotopes_2012Analysis/Results/kf.epi.good.RData")
 load("/Users/Battrd/Documents/School&Work/WiscResearch/Isotopes_2012Analysis/Results/WardPaulMetabolism.kf.RData")
 
+ddply(kf.epi.good, c("lake","year"), function(x)colMeans(x[,c("GPP","R","NEP")])/(15.99*2)*1000)
+
 # kf.epi.good <- WardPaulMetabolism.kf
 
 addBlankMetab <- function(kf.epi.good){
