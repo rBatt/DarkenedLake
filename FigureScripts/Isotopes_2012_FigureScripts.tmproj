@@ -3,7 +3,7 @@
 <plist version="1.0">
 <dict>
 	<key>currentDocument</key>
-	<string>PhoticDepthAquaConc_Graph.R</string>
+	<string>WardIso_Sensitivity_v0.5.0.R</string>
 	<key>documents</key>
 	<array>
 		<dict>
@@ -16,9 +16,7 @@
 			<key>filename</key>
 			<string>PhoticDepthAquaConc_Graph.R</string>
 			<key>lastUsed</key>
-			<date>2014-06-25T22:10:13Z</date>
-			<key>selected</key>
-			<true/>
+			<date>2014-07-03T10:34:00Z</date>
 		</dict>
 		<dict>
 			<key>filename</key>
@@ -54,13 +52,15 @@
 			<key>filename</key>
 			<string>WardIso_Sensitivity_v0.5.0.R</string>
 			<key>lastUsed</key>
-			<date>2014-06-25T17:16:14Z</date>
+			<date>2014-07-03T10:44:07Z</date>
+			<key>selected</key>
+			<true/>
 		</dict>
 		<dict>
 			<key>filename</key>
 			<string>Cons_Mixture_Ward2010&amp;2012_Figures_v0.5.2.R</string>
 			<key>lastUsed</key>
-			<date>2014-06-25T22:10:13Z</date>
+			<date>2014-07-03T10:44:07Z</date>
 		</dict>
 		<dict>
 			<key>filename</key>
@@ -78,30 +78,14 @@
 			<key>caret</key>
 			<dict>
 				<key>column</key>
-				<integer>30</integer>
+				<integer>19</integer>
 				<key>line</key>
-				<integer>261</integer>
+				<integer>782</integer>
 			</dict>
-			<key>columnSelection</key>
-			<false/>
 			<key>firstVisibleColumn</key>
 			<integer>0</integer>
 			<key>firstVisibleLine</key>
-			<integer>0</integer>
-			<key>selectFrom</key>
-			<dict>
-				<key>column</key>
-				<integer>0</integer>
-				<key>line</key>
-				<integer>202</integer>
-			</dict>
-			<key>selectTo</key>
-			<dict>
-				<key>column</key>
-				<integer>30</integer>
-				<key>line</key>
-				<integer>261</integer>
-			</dict>
+			<integer>678</integer>
 		</dict>
 		<key>IsotopeBiPlots_Ward2010&amp;2012_v0.3.0.R</key>
 		<dict>
@@ -171,21 +155,21 @@
 			<key>firstVisibleColumn</key>
 			<integer>0</integer>
 			<key>firstVisibleLine</key>
-			<integer>74</integer>
+			<integer>71</integer>
 		</dict>
 		<key>WardIso_Sensitivity_v0.5.0.R</key>
 		<dict>
 			<key>caret</key>
 			<dict>
 				<key>column</key>
-				<integer>16</integer>
+				<integer>83</integer>
 				<key>line</key>
-				<integer>7</integer>
+				<integer>6</integer>
 			</dict>
 			<key>firstVisibleColumn</key>
 			<integer>0</integer>
 			<key>firstVisibleLine</key>
-			<integer>2</integer>
+			<integer>0</integer>
 		</dict>
 		<key>ZoopMassGraph_Ward&amp;Paul2010&amp;2012.R</key>
 		<dict>
@@ -231,6 +215,6 @@
 	<key>showFileHierarchyDrawer</key>
 	<true/>
 	<key>windowFrame</key>
-	<string>{{-1924, 781}, {1665, 637}}</string>
+	<string>{{-1920, 781}, {1665, 637}}</string>
 </dict>
 </plist>
