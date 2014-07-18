@@ -6,8 +6,9 @@
 	#Intended to be source()'d within the parent script.
 #_v0.4.0 (31-Oct-2013) I've realized that the mass of aquashade per liter is about 1/12 of what I thought it was ... so I'm seeing how/ if this changes anything at all
 
-OrigWD <- getwd()
-source("/Users/Battrd/Documents/School&Work/WiscResearch/Isotopes_2012Analysis/Scripts/ConsMix_v6.DOM.Median.R")
+# OrigWD <- getwd()
+load("/Users/battrd/Documents/School&Work/WiscResearch/Isotopes_2012Analysis/Results/Cons_Mixture_Ward2010&2012.RData")
+source("/Users/Battrd/Documents/School&Work/WiscResearch/Isotopes_2012Analysis/Scripts/ConsMix_DOM_Median.R")
 
 
 #Aquashade dN = -0.02,	dC= -26.82,	 dD = -65.4
@@ -159,8 +160,8 @@ DOM_Comp2 <- aggregate(DOM_Comp[,"Proportion"], by=list("Year"=DOM_Comp[,"Year"]
 DOM_Comp2[,"Source"] <- factor(DOM_Comp2[,"Source"], labels=c("Terr", "Macroph", "Phyto", "Periphy"))
 
 
-png(file="/Users/battrd/Documents/School&Work/WiscResearch/Isotopes_2012Analysis/Figures/DOM_Comp.png", units="in", res=300, height=3.5, width=3.5, pointsize=10)
-par(mar=c(2.5,3.5,1,0.5), cex=1, ps=10)
+png(file="/Users/battrd/Documents/School&Work/WiscResearch/Isotopes_2012Analysis/Figures/Supplement/DOM_Comp.png", units="in", res=200, height=2.9, width=2.9, pointsize=8)
+par(mar=c(2.5,3.5,1,0.5), cex=1, ps=8)
 
 boxplot(Proportion~Year+Source, data=DOM_Comp, col=c("#FA807225","#3A5FCD25"), border=c("red","blue"), at=rep(c(0.5,3,5.5,8),each=2)+c(-.5, .5), show.names=FALSE, outline=FALSE, ylim=c(0,1), lwd=1.5, cex=1)
 axis(side=1, at=c(0.5,3,5.5,8), labels=domResourceNames, cex.axis=1)
@@ -168,8 +169,7 @@ mtext("DOM", side=2, line=2, cex=1)
 
 dev.off()
 
-setwd(OrigWD)
+# setwd(OrigWD)
 
+save(domOut2010, domOut2010, file="/Users/battrd/Documents/School&Work/WiscResearch/Isotopes_2012Analysis/Results/DOM_Comp_Ward2010&2012.RData")
 
-# Manuscript DOM composition:
-aggregate(DOM_Comp[,"Proportion"], as.list(DOM_Comp[,c("Year", "Source")]), mean)

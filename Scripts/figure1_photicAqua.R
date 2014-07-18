@@ -64,14 +64,14 @@ pXlim10 <- c(0,max(p10[,c("Temp","DO")]))
 pXlim12 <- c(0,max(p12[,c("Temp","DO")]))
 
 if(Save){
-	if(SaveType==".pdf"){pdf(file="/Users/battrd/Documents/School&Work/WiscResearch/Isotopes_2012Analysis/Figures/fig1_PhoticAquaProfiles.pdf", height=4.5, width=3.23)}
-	if(SaveType==".png"){png(file="/Users/battrd/Documents/School&Work/WiscResearch/Isotopes_2012Analysis/Figures/fig1_PhoticAquaProfiles.png", units="in", res=600, height=4.5, width=3.23, type="cairo")}
-	if(SaveType==".eps"){setEPS();postscript("/Users/battrd/Documents/School&Work/WiscResearch/Isotopes_2012Analysis/Figures/fig1_PhoticAquaProfiles.eps", width=3.23, height=4.5)}
+	if(SaveType==".pdf"){pdf(file="/Users/battrd/Documents/School&Work/WiscResearch/Isotopes_2012Analysis/Figures/fig1_PhoticAquaProfiles.pdf", height=4.040248, width=2.9)}
+	if(SaveType==".png"){png(file="/Users/battrd/Documents/School&Work/WiscResearch/Isotopes_2012Analysis/Figures/fig1_PhoticAquaProfiles.png", units="in", res=200, height=4.040248, width=2.9, type="quartz")}
+	if(SaveType==".eps"){setEPS();postscript("/Users/battrd/Documents/School&Work/WiscResearch/Isotopes_2012Analysis/Figures/fig1_PhoticAquaProfiles.eps", width=2.9, height=4.040248)}
 }else{
 	dev.new(width=3.23, height=4.5)
 }
 layout(mat=matrix(c(1,1,1,2,2,  1,1,1,2,2, 1,1,1,3,3, 1,1,1,3,3), ncol=4))
-par(mar=c(3,2,0.2,2), ps=9, cex=1, mgp=c(3,0.3,0), tcl=-0.25, family="serif")
+par(mar=c(3,2,0.2,2), ps=8, cex=1, mgp=c(3,0.3,0), tcl=-0.25, family="serif")
 with(PhoticD[which(PhoticD[,"Year"]==2010),], plot(DoY, Depth, type="o", ylim=c(5,0), xlim=c(105,240), col="red", ylab="", xlab="", lwd=3, pch=19, las=0))
 with(PhoticD[which(PhoticD[,"Year"]==2012),], lines(DoY, Depth, type="o", ylim=c(5,0), xlim=c(105,240), col="blue", lwd=3, pch=19))
 mtext("Day of year", side=1, line=1.25)
@@ -85,13 +85,13 @@ axis(side=4, las=0, mgp=c(3,0.2,0), tcl=-0.25)
 mtext("Aquashade (ppm)", side=4, line=0.9)
 text(x=167, y=1.9, "[Aquashade]", col="black", cex=1)
 
-par(mar=c(2.5,2,0,0.2), ps=9, cex=1, mgp=c(3,0.3,0), tcl=-0.25, family="serif")
+par(mar=c(2.5,2,0,0.2), ps=8, cex=1, mgp=c(3,0.3,0), tcl=-0.25, family="serif")
 plot(p10[,c("Temp","Depth")], ylim=pYlim, xlim=pXlim10, xlab="", ylab="", type="l", col="red")
 lines(p10[,c("DO","Depth")], lwd=2, col="red")
 mtext("Depth (m)", side=2, line=1.15)
 text(x=13.5, y=6.5, "Day 160", col="red", cex=1)
 
-par(mar=c(2.5,0.2,0,2), ps=9, cex=1, mgp=c(3,0.3,0), tcl=-0.25, family="serif")
+par(mar=c(2.5,0.2,0,2), ps=8, cex=1, mgp=c(3,0.3,0), tcl=-0.25, family="serif")
 plot(p12[,c("Temp","Depth")], ylim=pYlim, xlim=pXlim12, yaxt="n", xlab="", ylab="", type="l", col="blue")
 axis(side=4, mgp=c(3,0.3,0), tcl=-0.25)
 lines(p12[,c("DO","Depth")], lwd=2, col="blue")

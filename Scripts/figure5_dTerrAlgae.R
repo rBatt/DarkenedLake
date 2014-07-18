@@ -6,13 +6,13 @@ Save <- TRUE
 SaveType <- ".png"
 
 if(Save){
-	if(SaveType==".pdf"){pdf(file="/Users/battrd/Documents/School&Work/WiscResearch/Isotopes_2012Analysis/Figures/fig4_dTerrAlgae.pdf", height=3, width=3.23)}
-	if(SaveType==".png"){png(file="/Users/battrd/Documents/School&Work/WiscResearch/Isotopes_2012Analysis/Figures/fig4_dTerrAlgae.png", units="in", res=600, height=3, width=3.23, type="cairo")}
-	if(SaveType==".eps"){setEPS(); postscript(file="/Users/battrd/Documents/School&Work/WiscResearch/Isotopes_2012Analysis/Figures/fig4_dTerrAlgae.eps", height=3, width=3.23, pointsize=10)}
+	if(SaveType==".pdf"){pdf(file="/Users/battrd/Documents/School&Work/WiscResearch/Isotopes_2012Analysis/Figures/fig5_dTerrAlgae.pdf", height=3.103448, width=2.9)}
+	if(SaveType==".png"){png(file="/Users/battrd/Documents/School&Work/WiscResearch/Isotopes_2012Analysis/Figures/fig5_dTerrAlgae.png", units="in", res=200, height=3.103448, width=2.9, type="quartz")}
+	if(SaveType==".eps"){setEPS(); postscript(file="/Users/battrd/Documents/School&Work/WiscResearch/Isotopes_2012Analysis/Figures/fig5_dTerrAlgae.eps", height=3.103448, width=2.9, pointsize=8)}
 }else{
-	dev.new(height=3, width=3, pointsize=10, family="Times")
+	dev.new(height=3.103448, width=2.9, pointsize=8, family="Times")
 }
-par(mfrow=c(1,1), mar=c(2.1,2,0.1,0.1), oma=c(0,0,0,0), ps=9, cex=1, mgp=c(3,0.3,0), tcl=-0.25, family="serif")
+par(mfrow=c(1,1), mar=c(2.1,2,0.1,0.1), oma=c(0,0,0,0), ps=8, cex=1, mgp=c(3,0.3,0), tcl=-0.25, family="serif")
 
 aYlim <- c(min(Chosen25th[,"Algae"], na.rm=TRUE), max(Chosen75th[,"Algae"], na.rm=TRUE))*c(1.15,1.05)
 tYlim <- c(min(Chosen25th[,"All.Terrestrial"], na.rm=TRUE), max(Chosen75th[,"All.Terrestrial"], na.rm=TRUE))*c(1.00,1.15)

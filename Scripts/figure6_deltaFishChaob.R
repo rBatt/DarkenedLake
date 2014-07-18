@@ -15,13 +15,13 @@ fC <- rep("black",4)
 
 # dev.new(width=3.5, height=5)
 if(Save){
-	if(SaveType==".pdf"){pdf("/Users/battrd/Documents/School&Work/WiscResearch/Isotopes_2012Analysis/Figures/fig5_deltaFishChaob.pdf", width=3.23, height=4.5)}
-	if(SaveType==".png"){png("/Users/battrd/Documents/School&Work/WiscResearch/Isotopes_2012Analysis/Figures/fig5_deltaFishChaob.png", width=3.23, height=4.5, units="in", res=600, type="quartz")}
+	if(SaveType==".pdf"){pdf("/Users/battrd/Documents/School&Work/WiscResearch/Isotopes_2012Analysis/Figures/fig6_deltaFishChaob.pdf", width=2.9, height=4.040248)}
+	if(SaveType==".png"){png("/Users/battrd/Documents/School&Work/WiscResearch/Isotopes_2012Analysis/Figures/fig6_deltaFishChaob.png", width=2.9, height=4.040248, units="in", res=200, type="quartz")}
 }else{
-	dev.new(width=3.23, height=4.5)
+	dev.new(width=2.9, height=4.040248)
 }
 
-par(mfrow=c(1,1), mar=c(2.5,2.3,0,0), oma=c(0,0,0.2,0.2), ps=9, las=1, tcl=-0.25, mgp=c(3,0.35,0), yaxp=c(0,20,10), family="Times", cex=1)
+par(mfrow=c(1,1), mar=c(2.5,2.3,0,0), oma=c(0,0,0.2,0.2), ps=8, las=1, tcl=-0.25, mgp=c(3,0.35,0), yaxp=c(0,20,10), family="Times", cex=1)
 r <- c("All.Phytoplankton", "All.Terrestrial")[1]
 pC10 <- ResourceUse[cI10,r] #phytoplankton for chaoborus in 2010
 pC12 <- ResourceUse[cI12,r] #phytoplankton for chaoborus in 2012

@@ -148,7 +148,7 @@ for(i in 1:length(GraphLayers)){
 		options(tikzMetricPackages = c("\\usepackage[utf8]{inputenc}",
 		    "\\usepackage[T1]{fontenc}", "\\usetikzlibrary{calc}",
 		    "\\usepackage{amssymb}","\\usepackage{tensor}"))
-		tikz(file="/Users/battrd/Documents/School&Work/WiscResearch/Isotopes_2012Analysis/Figures/Ward2010&2012_Full_IsoBiPlots.tex", width=6.1, height=4.25, standAlone=TRUE, 
+		tikz(file="/Users/battrd/Documents/School&Work/WiscResearch/Isotopes_2012Analysis/Figures/fig3_IsoBiPlots.tex", width=6.1, height=4.25, standAlone=TRUE, 
 		packages = c("\\usepackage{tikz}",
 		                 "\\usepackage[active,tightpage,psfixbb]{preview}",
 		                 "\\PreviewEnvironment{pgfpicture}",

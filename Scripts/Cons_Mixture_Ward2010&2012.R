@@ -426,6 +426,13 @@ for(YearMix in c(2010, 2012)){
 	# ===================
 	# = END DOM sources =
 	# ===================
+	
+	# =======================================
+	# = Save different years of bugsOut_pt1 =
+	# =======================================
+	if(YearMix==2010){bugsOut_pt1_2010 <- bugsOut_pt1}
+	if(YearMix==2012){bugsOut_pt1_2012 <- bugsOut_pt1}
+	
 
 
 	#Plot the composition of POM

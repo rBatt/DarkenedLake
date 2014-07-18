@@ -1,14 +1,17 @@
 
 load("/Users/Battrd/Documents/School&Work/WiscResearch/Isotopes_2012Analysis/Results/Orgd_ConsMix_Sensit.RData")
+load("/Users/battrd/Documents/School&Work/WiscResearch/Isotopes_2012Analysis/Results/Cons_Mixture_Ward2010&2012.RData")
+library(plyr)
+
 Save <- TRUE
-SaveType <- ".pdf"
+SaveType <- ".png"
 
 # ========================
 # = Sensitivity Box Plot =
 # ========================
 if(Save){
 	if(SaveType==".pdf"){pdf(file="/Users/Battrd/Documents/School&Work/WiscResearch/Isotopes_2012Analysis/Figures/Sensitivity_boxplot.pdf", height=6.5, width=6.81)}
-	if(SaveType==".png"){png(file=paste(paste("Sensitivity", Version, sep=""), ".png", sep=""), units="in", res=600, height=6.5, width=6.81)}
+	if(SaveType==".png"){png(file="/Users/Battrd/Documents/School&Work/WiscResearch/Isotopes_2012Analysis/Figures/Sensitivity_boxplot.png", units="in", res=600, height=6.5, width=6.81)}
 	if(SaveType==".eps"){setEPS();postscript(file=paste(paste("Sensitivity", Version, sep=""), ".eps", sep=""), height=7, width=6.81)}
 }else{
 	dev.new(height=7, width=6.811)
@@ -33,18 +36,20 @@ for(i in 1:length(Cons)){
 		}
 	}
 	# LegPos <- c("topleft", "topleft", "topright", "topright", "topleft", "topright", "topright")[i]
-	NamesThisUse <- make.names(ConsChoices[[Cons[i]]][[GroupChoose]])
+	t.names <- ConsChoices[[Cons[i]]][[GroupChoose]]#[!is.na(ConsChoices[[i]][[GroupChoose]])]
+	NamesThisUse <- make.names(t.names)
+	# NamesThisUse <- make.names(ConsChoices[[Cons[i]]][[GroupChoose]])
 	AllNamesThisuse <- c("Year", "Month", "Consumer", "Grouping", NamesThisUse)
 	ThisRU0 <- droplevels(subset(ResourceUse, Consumer==Cons[i] & Grouping==GroupChoose & Month=="Pooled"))[AllNamesThisuse] #try to subset only the sources that were part of the analysis for this consumer
-	ThisRU00 <- reshape(ThisRU0, varying=list(c(NamesThisUse)), times=ConsChoices[[Cons[i]]][[GroupChoose]], ids=1:nrow(ThisRU0), timevar="Source", v.names="Proportion", direction="long")
+	ThisRU00 <- reshape(ThisRU0, varying=list(c(NamesThisUse)), times=t.names, ids=1:nrow(ThisRU0), timevar="Source", v.names="Proportion", direction="long")
 
 	ThisRU <- ThisRU00[,c("Year", "Month", "Consumer", "Grouping", "Source", "Proportion")]
 	row.names(ThisRU) <- NULL
-	ResourceNames <- ConsChoicesShort[ConsChoices[[Cons[i]]][[GroupChoose]]]
+	ResourceNames <- ConsChoicesShort[ConsChoices[[Cons[i]]][[GroupChoose]]] #[!is.na(ConsChoices[[i]][[GroupChoose]])]
 	tSen <- sensit[[Cons[[i]]]][,NamesThisUse]
 	tSen2 <- sensit2[[Cons[[i]]]][,NamesThisUse]
 	
-	ThisRU[,"Source"] <- factor(ThisRU[,"Source"], levels=ConsChoices[[Cons[i]]][[GroupChoose]], ordered=TRUE)
+	ThisRU[,"Source"] <- factor(ThisRU[,"Source"], levels=t.names, ordered=TRUE)
 		
 	ThisAt_Axis <- c(0.5,3.5,6.5,9.5)[1:length(ResourceNames)]
 	# boxplot(Proportion~Year+Source, data=ThisRU, col=c("#FA807225","#3A5FCD25"), border=c("red","blue"), at=rep(ThisAt_Axis,each=2)+c(-.5, .5), show.names=FALSE, outline=FALSE, ylim=c(0,1), lwd=1.5, yaxt=Yaxt)
@@ -73,9 +78,12 @@ if(Save){dev.off()}
 # = Print Means =
 # ===============
 for(i in 1:length(Cons)){
-	NamesThisUse <- make.names(ConsChoices[[Cons[i]]][[GroupChoose]])
+	t.names <- ConsChoices[[Cons[i]]][[GroupChoose]] #[!is.na(ConsChoices[[i]][[GroupChoose]])]
+	NamesThisUse <- make.names(t.names)
+	# NamesThisUse <- make.names(ConsChoices[[Cons[i]]][[GroupChoose]])
+
 	AllNamesThisuse <- c("Year", "Month", "Consumer", "Grouping", NamesThisUse)
 	myRU <- droplevels(subset(ResourceUse, Consumer==Cons[i] & Grouping==GroupChoose & Month=="Pooled"))[AllNamesThisuse] #try to subset only the sources that were part of the analysis for this consumer
-	myRU <- reshape(myRU, varying=list(c(NamesThisUse)), times=ConsChoices[[Cons[i]]][[GroupChoose]], ids=1:nrow(ThisRU0), timevar="Source", v.names="Proportion", direction="long")
+	myRU <- reshape(myRU, varying=list(c(NamesThisUse)), times=t.names, ids=1:nrow(ThisRU0), timevar="Source", v.names="Proportion", direction="long")
 	print(ddply(myRU, c("Year", "Consumer", "Grouping", "Source"), function(x)data.frame("Proportion"=mean(x[,"Proportion"]))))
 }
