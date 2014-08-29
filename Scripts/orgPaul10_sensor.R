@@ -142,6 +142,7 @@ paul10.epi.full0[!miss.read,"k600.read"] <- k.read.base(
 	)
 	
 miss.read2 <- is.na(paul10.epi.full0[,"k600.read"])
+miss.read2_paul2010 <- miss.read2
 
 dev.new(width=3.5, height=5)
 par(mfrow=c(2,1), mar=c(2.25, 2.25, 0.5, 0.5), mgp=c(1.25, 0.35, 0), tcl=-0.25, ps=10, family="Times")
@@ -170,6 +171,8 @@ paul10.epi <- paul10.epi.full[,c("datetime", "do.obs", "do.sat", "kgas.cole", "k
 # =======================
 # = Save organized data =
 # =======================
+save.image("/Users/Battrd/Documents/School&Work/WiscResearch/Isotopes_2012Analysis/Data/orgPaul10_sensor.RData")
+
 save(paul10.therm, paul10.epi.full, paul10.epi, file="/Users/Battrd/Documents/School&Work/WiscResearch/Isotopes_2012Analysis/Data/sondes_paul2010.RData")
 
 write.table(paul10.therm, file="/Users/Battrd/Documents/School&Work/WiscResearch/Isotopes_2012Analysis/Data/paul10.therm.txt", row.names=FALSE)

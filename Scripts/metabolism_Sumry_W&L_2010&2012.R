@@ -53,7 +53,7 @@ z1perc0 <- grab1perc(light.prof0)
 z1perc0[,"year"] <- as.integer(format.Date(z1perc0[,"datetime"], format="%Y"))
 
 
-kf.epi.good.z10 <- merge(kf.epi.good, z1perc0, all=TRUE)
+kf.epi.good.z1 <- merge(kf.epi.good, z1perc0, all=TRUE)
 z1perc <- ddply(kf.epi.good.z1, c("lake", "year"), aprxProf)[,c("lake","datetime", "z1perc")]
 z1perc[,"lake"] <- as.character(z1perc[,"lake"])
 kf.epi.good.z1 <- merge(kf.epi.good, z1perc, all.x=TRUE)

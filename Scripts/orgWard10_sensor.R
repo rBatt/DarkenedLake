@@ -263,6 +263,7 @@ ward10.epi.full[!miss.read,"k600.read"] <- k.read.base(
 	)
 
 miss.read2 <- is.na(ward10.epi.full[,"k600.read"])
+miss.read2_ward2010 <- miss.read2
 
 # dev.new(width=3.5, height=5)
 # par(mfrow=c(2,1), mar=c(2.25, 2.25, 0.5, 0.5), mgp=c(1.25, 0.35, 0), tcl=-0.25, ps=10, family="Times")
@@ -315,6 +316,8 @@ ward10.meta <- ward10.meta0[,c("datetime", "do.obs", "do.sat", "k.gas", "z.mix",
 # ==============================
 # = Save 2010 Ward Sensor Data =
 # ==============================
+save.image("/Users/Battrd/Documents/School&Work/WiscResearch/Isotopes_2012Analysis/Data/orgWard10_sensor.RData")
+
 save(ward10.therm, ward10.epi.full, ward10.epi, ward10.meta.full, ward10.meta, file="/Users/Battrd/Documents/School&Work/WiscResearch/Isotopes_2012Analysis/Data/sondes_ward2010.RData")
 
 write.table(ward10.therm, file="/Users/Battrd/Documents/School&Work/WiscResearch/Isotopes_2012Analysis/Data/ward10.therm.txt", row.names=FALSE)

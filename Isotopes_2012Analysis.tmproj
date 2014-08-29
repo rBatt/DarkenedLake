@@ -3,7 +3,7 @@
 <plist version="1.0">
 <dict>
 	<key>currentDocument</key>
-	<string>Scripts/metabolism_Sumry_W&amp;L_2010&amp;2012.R</string>
+	<string>Scripts/figure4_consMix_violin.R</string>
 	<key>documents</key>
 	<array>
 		<dict>
@@ -19,31 +19,31 @@
 					<key>filename</key>
 					<string>Scripts/orgWard10_sensor.R</string>
 					<key>lastUsed</key>
-					<date>2014-07-03T10:32:22Z</date>
+					<date>2014-07-25T20:48:08Z</date>
 				</dict>
 				<dict>
 					<key>filename</key>
 					<string>Scripts/orgWard12_sensor.R</string>
 					<key>lastUsed</key>
-					<date>2014-06-26T23:04:27Z</date>
+					<date>2014-07-25T20:47:53Z</date>
 				</dict>
 				<dict>
 					<key>filename</key>
 					<string>Scripts/orgPaul10_sensor.R</string>
 					<key>lastUsed</key>
-					<date>2014-06-26T23:14:02Z</date>
+					<date>2014-07-25T20:47:52Z</date>
 				</dict>
 				<dict>
 					<key>filename</key>
 					<string>Scripts/orgPaul12_sensor.R</string>
 					<key>lastUsed</key>
-					<date>2014-06-26T23:12:36Z</date>
+					<date>2014-07-25T20:47:51Z</date>
 				</dict>
 				<dict>
 					<key>filename</key>
 					<string>Scripts/completeSensors_L&amp;W_10&amp;12.R</string>
 					<key>lastUsed</key>
-					<date>2014-06-26T20:04:54Z</date>
+					<date>2014-07-25T20:47:50Z</date>
 				</dict>
 				<dict>
 					<key>filename</key>
@@ -61,7 +61,7 @@
 					<key>filename</key>
 					<string>Scripts/calcMetab_W&amp;L_10&amp;12.R</string>
 					<key>lastUsed</key>
-					<date>2014-07-18T15:56:35Z</date>
+					<date>2014-07-23T17:06:53Z</date>
 				</dict>
 				<dict>
 					<key>filename</key>
@@ -115,25 +115,25 @@
 					<key>filename</key>
 					<string>Scripts/Organize_ConsMix_Sensitivity.R</string>
 					<key>lastUsed</key>
-					<date>2014-07-07T17:39:40Z</date>
+					<date>2014-07-24T17:18:40Z</date>
 				</dict>
 				<dict>
 					<key>filename</key>
 					<string>Scripts/Cons_Mixture_Ward2010&amp;2012_ModelSelection.R</string>
 					<key>lastUsed</key>
-					<date>2014-07-17T19:49:05Z</date>
+					<date>2014-07-24T17:21:37Z</date>
 				</dict>
 				<dict>
 					<key>filename</key>
 					<string>Scripts/Cons_Mixture_Ward2010&amp;2012.R</string>
 					<key>lastUsed</key>
-					<date>2014-07-18T04:16:02Z</date>
+					<date>2014-07-24T18:27:52Z</date>
 				</dict>
 				<dict>
 					<key>filename</key>
 					<string>Scripts/ConsMix.R</string>
 					<key>lastUsed</key>
-					<date>2014-07-18T04:13:27Z</date>
+					<date>2014-07-24T18:10:30Z</date>
 				</dict>
 				<dict>
 					<key>filename</key>
@@ -166,25 +166,19 @@
 					<key>filename</key>
 					<string>Scripts/plotMetabolism_light.R</string>
 					<key>lastUsed</key>
-					<date>2014-07-07T17:39:09Z</date>
-				</dict>
-				<dict>
-					<key>filename</key>
-					<string>Scripts/Plot_ConsMix_Sensitivity.R</string>
-					<key>lastUsed</key>
-					<date>2014-07-17T18:08:50Z</date>
+					<date>2014-07-24T17:25:50Z</date>
 				</dict>
 				<dict>
 					<key>filename</key>
 					<string>Scripts/myPlotViolin.default.R</string>
 					<key>lastUsed</key>
-					<date>2014-07-17T18:38:19Z</date>
+					<date>2014-07-24T17:24:44Z</date>
 				</dict>
 				<dict>
 					<key>filename</key>
 					<string>Scripts/plot_consMix_summary_boxplot.R</string>
 					<key>lastUsed</key>
-					<date>2014-07-03T10:40:05Z</date>
+					<date>2014-08-24T17:46:15Z</date>
 				</dict>
 			</array>
 			<key>expanded</key>
@@ -205,7 +199,7 @@
 					<key>filename</key>
 					<string>Scripts/figure2_gas_nep_zoop.R</string>
 					<key>lastUsed</key>
-					<date>2014-07-18T16:01:05Z</date>
+					<date>2014-07-24T18:27:57Z</date>
 				</dict>
 				<dict>
 					<key>filename</key>
@@ -217,13 +211,15 @@
 					<key>filename</key>
 					<string>Scripts/figure4_consMix_violin.R</string>
 					<key>lastUsed</key>
-					<date>2014-07-17T20:54:56Z</date>
+					<date>2014-08-24T17:46:15Z</date>
+					<key>selected</key>
+					<true/>
 				</dict>
 				<dict>
 					<key>filename</key>
 					<string>Scripts/figure5_dTerrAlgae.R</string>
 					<key>lastUsed</key>
-					<date>2014-07-17T20:48:16Z</date>
+					<date>2014-07-24T17:27:03Z</date>
 				</dict>
 				<dict>
 					<key>filename</key>
@@ -242,17 +238,21 @@
 			<array>
 				<dict>
 					<key>filename</key>
+					<string>Scripts/sumry_k600_cole2read.R</string>
+					<key>lastUsed</key>
+					<date>2014-07-24T17:26:10Z</date>
+				</dict>
+				<dict>
+					<key>filename</key>
 					<string>Scripts/metabolism_Sumry_W&amp;L_2010&amp;2012.R</string>
 					<key>lastUsed</key>
-					<date>2014-07-18T16:01:05Z</date>
-					<key>selected</key>
-					<true/>
+					<date>2014-08-24T17:46:06Z</date>
 				</dict>
 				<dict>
 					<key>filename</key>
 					<string>Scripts/ward_posterior_sumry_2010&amp;2012.R</string>
 					<key>lastUsed</key>
-					<date>2014-07-18T14:03:17Z</date>
+					<date>2014-07-24T19:46:31Z</date>
 				</dict>
 			</array>
 			<key>expanded</key>
@@ -262,7 +262,20 @@
 		</dict>
 		<dict>
 			<key>children</key>
-			<array/>
+			<array>
+				<dict>
+					<key>filename</key>
+					<string>Scripts/figureS1_ConsMix_Sensitivity.R</string>
+					<key>lastUsed</key>
+					<date>2014-07-24T18:10:26Z</date>
+				</dict>
+				<dict>
+					<key>filename</key>
+					<string>Scripts/figureS2_zoop_byTaxon_2010&amp;2012.R</string>
+					<key>lastUsed</key>
+					<date>2014-07-24T17:36:08Z</date>
+				</dict>
+			</array>
 			<key>expanded</key>
 			<true/>
 			<key>name</key>
@@ -287,7 +300,7 @@
 			<key>firstVisibleColumn</key>
 			<integer>0</integer>
 			<key>firstVisibleLine</key>
-			<integer>283</integer>
+			<integer>32</integer>
 			<key>selectFrom</key>
 			<dict>
 				<key>column</key>
@@ -308,60 +321,28 @@
 			<key>caret</key>
 			<dict>
 				<key>column</key>
-				<integer>137</integer>
+				<integer>32</integer>
 				<key>line</key>
-				<integer>739</integer>
+				<integer>688</integer>
 			</dict>
-			<key>columnSelection</key>
-			<false/>
 			<key>firstVisibleColumn</key>
 			<integer>0</integer>
 			<key>firstVisibleLine</key>
-			<integer>56</integer>
-			<key>selectFrom</key>
-			<dict>
-				<key>column</key>
-				<integer>40</integer>
-				<key>line</key>
-				<integer>739</integer>
-			</dict>
-			<key>selectTo</key>
-			<dict>
-				<key>column</key>
-				<integer>137</integer>
-				<key>line</key>
-				<integer>739</integer>
-			</dict>
+			<integer>50</integer>
 		</dict>
 		<key>Scripts/Cons_Mixture_Ward2010&amp;2012_ModelSelection.R</key>
 		<dict>
 			<key>caret</key>
 			<dict>
 				<key>column</key>
-				<integer>68</integer>
+				<integer>287</integer>
 				<key>line</key>
-				<integer>504</integer>
+				<integer>519</integer>
 			</dict>
-			<key>columnSelection</key>
-			<false/>
 			<key>firstVisibleColumn</key>
 			<integer>0</integer>
 			<key>firstVisibleLine</key>
-			<integer>493</integer>
-			<key>selectFrom</key>
-			<dict>
-				<key>column</key>
-				<integer>57</integer>
-				<key>line</key>
-				<integer>504</integer>
-			</dict>
-			<key>selectTo</key>
-			<dict>
-				<key>column</key>
-				<integer>68</integer>
-				<key>line</key>
-				<integer>504</integer>
-			</dict>
+			<integer>509</integer>
 		</dict>
 		<key>Scripts/DOM_Composition.R</key>
 		<dict>
@@ -398,28 +379,14 @@
 			<key>caret</key>
 			<dict>
 				<key>column</key>
-				<integer>134</integer>
+				<integer>8</integer>
 				<key>line</key>
-				<integer>27</integer>
+				<integer>16</integer>
 			</dict>
 			<key>firstVisibleColumn</key>
 			<integer>0</integer>
 			<key>firstVisibleLine</key>
 			<integer>0</integer>
-		</dict>
-		<key>Scripts/Plot_ConsMix_Sensitivity.R</key>
-		<dict>
-			<key>caret</key>
-			<dict>
-				<key>column</key>
-				<integer>104</integer>
-				<key>line</key>
-				<integer>18</integer>
-			</dict>
-			<key>firstVisibleColumn</key>
-			<integer>0</integer>
-			<key>firstVisibleLine</key>
-			<integer>9</integer>
 		</dict>
 		<key>Scripts/calcMetab_W&amp;L_10&amp;12.R</key>
 		<dict>
@@ -433,7 +400,21 @@
 			<key>firstVisibleColumn</key>
 			<integer>0</integer>
 			<key>firstVisibleLine</key>
-			<integer>117</integer>
+			<integer>83</integer>
+		</dict>
+		<key>Scripts/completeSensors_L&amp;W_10&amp;12.R</key>
+		<dict>
+			<key>caret</key>
+			<dict>
+				<key>column</key>
+				<integer>0</integer>
+				<key>line</key>
+				<integer>0</integer>
+			</dict>
+			<key>firstVisibleColumn</key>
+			<integer>0</integer>
+			<key>firstVisibleLine</key>
+			<integer>0</integer>
 		</dict>
 		<key>Scripts/figure1_photicAqua.R</key>
 		<dict>
@@ -454,29 +435,29 @@
 			<key>caret</key>
 			<dict>
 				<key>column</key>
-				<integer>80</integer>
+				<integer>0</integer>
 				<key>line</key>
-				<integer>48</integer>
+				<integer>8</integer>
 			</dict>
 			<key>columnSelection</key>
 			<false/>
 			<key>firstVisibleColumn</key>
 			<integer>0</integer>
 			<key>firstVisibleLine</key>
-			<integer>38</integer>
+			<integer>0</integer>
 			<key>selectFrom</key>
 			<dict>
 				<key>column</key>
-				<integer>64</integer>
+				<integer>18</integer>
 				<key>line</key>
-				<integer>48</integer>
+				<integer>9</integer>
 			</dict>
 			<key>selectTo</key>
 			<dict>
 				<key>column</key>
-				<integer>80</integer>
+				<integer>0</integer>
 				<key>line</key>
-				<integer>48</integer>
+				<integer>8</integer>
 			</dict>
 		</dict>
 		<key>Scripts/figure3_isotope_biplots.R</key>
@@ -498,14 +479,30 @@
 			<key>caret</key>
 			<dict>
 				<key>column</key>
-				<integer>51</integer>
+				<integer>1</integer>
 				<key>line</key>
-				<integer>60</integer>
+				<integer>50</integer>
 			</dict>
+			<key>columnSelection</key>
+			<false/>
 			<key>firstVisibleColumn</key>
 			<integer>0</integer>
 			<key>firstVisibleLine</key>
 			<integer>0</integer>
+			<key>selectFrom</key>
+			<dict>
+				<key>column</key>
+				<integer>0</integer>
+				<key>line</key>
+				<integer>21</integer>
+			</dict>
+			<key>selectTo</key>
+			<dict>
+				<key>column</key>
+				<integer>1</integer>
+				<key>line</key>
+				<integer>50</integer>
+			</dict>
 		</dict>
 		<key>Scripts/figure5_dTerrAlgae.R</key>
 		<dict>
@@ -534,6 +531,34 @@
 			<integer>0</integer>
 			<key>firstVisibleLine</key>
 			<integer>8</integer>
+		</dict>
+		<key>Scripts/figureS1_ConsMix_Sensitivity.R</key>
+		<dict>
+			<key>caret</key>
+			<dict>
+				<key>column</key>
+				<integer>79</integer>
+				<key>line</key>
+				<integer>15</integer>
+			</dict>
+			<key>firstVisibleColumn</key>
+			<integer>0</integer>
+			<key>firstVisibleLine</key>
+			<integer>1</integer>
+		</dict>
+		<key>Scripts/figureS2_zoop_byTaxon_2010&amp;2012.R</key>
+		<dict>
+			<key>caret</key>
+			<dict>
+				<key>column</key>
+				<integer>2</integer>
+				<key>line</key>
+				<integer>26</integer>
+			</dict>
+			<key>firstVisibleColumn</key>
+			<integer>0</integer>
+			<key>firstVisibleLine</key>
+			<integer>11</integer>
 		</dict>
 		<key>Scripts/lightFunctions.R</key>
 		<dict>
@@ -596,14 +621,30 @@
 			<key>caret</key>
 			<dict>
 				<key>column</key>
-				<integer>36</integer>
+				<integer>99</integer>
 				<key>line</key>
-				<integer>47</integer>
+				<integer>15</integer>
 			</dict>
+			<key>columnSelection</key>
+			<false/>
 			<key>firstVisibleColumn</key>
 			<integer>0</integer>
 			<key>firstVisibleLine</key>
-			<integer>40</integer>
+			<integer>2</integer>
+			<key>selectFrom</key>
+			<dict>
+				<key>column</key>
+				<integer>85</integer>
+				<key>line</key>
+				<integer>15</integer>
+			</dict>
+			<key>selectTo</key>
+			<dict>
+				<key>column</key>
+				<integer>99</integer>
+				<key>line</key>
+				<integer>15</integer>
+			</dict>
 		</dict>
 		<key>Scripts/myPlotViolin.default.R</key>
 		<dict>
@@ -624,74 +665,58 @@
 			<key>caret</key>
 			<dict>
 				<key>column</key>
-				<integer>25</integer>
+				<integer>0</integer>
 				<key>line</key>
-				<integer>170</integer>
+				<integer>144</integer>
 			</dict>
+			<key>columnSelection</key>
+			<false/>
 			<key>firstVisibleColumn</key>
 			<integer>0</integer>
 			<key>firstVisibleLine</key>
-			<integer>149</integer>
+			<integer>144</integer>
+			<key>selectFrom</key>
+			<dict>
+				<key>column</key>
+				<integer>33</integer>
+				<key>line</key>
+				<integer>144</integer>
+			</dict>
+			<key>selectTo</key>
+			<dict>
+				<key>column</key>
+				<integer>0</integer>
+				<key>line</key>
+				<integer>144</integer>
+			</dict>
 		</dict>
 		<key>Scripts/orgPaul12_sensor.R</key>
 		<dict>
 			<key>caret</key>
 			<dict>
 				<key>column</key>
-				<integer>108</integer>
+				<integer>105</integer>
 				<key>line</key>
-				<integer>224</integer>
+				<integer>4</integer>
 			</dict>
-			<key>columnSelection</key>
-			<false/>
 			<key>firstVisibleColumn</key>
 			<integer>0</integer>
 			<key>firstVisibleLine</key>
-			<integer>200</integer>
-			<key>selectFrom</key>
-			<dict>
-				<key>column</key>
-				<integer>32</integer>
-				<key>line</key>
-				<integer>224</integer>
-			</dict>
-			<key>selectTo</key>
-			<dict>
-				<key>column</key>
-				<integer>108</integer>
-				<key>line</key>
-				<integer>224</integer>
-			</dict>
+			<integer>179</integer>
 		</dict>
 		<key>Scripts/orgWard10_sensor.R</key>
 		<dict>
 			<key>caret</key>
 			<dict>
 				<key>column</key>
-				<integer>22</integer>
+				<integer>32</integer>
 				<key>line</key>
-				<integer>234</integer>
+				<integer>315</integer>
 			</dict>
-			<key>columnSelection</key>
-			<false/>
 			<key>firstVisibleColumn</key>
 			<integer>0</integer>
 			<key>firstVisibleLine</key>
-			<integer>230</integer>
-			<key>selectFrom</key>
-			<dict>
-				<key>column</key>
-				<integer>13</integer>
-				<key>line</key>
-				<integer>234</integer>
-			</dict>
-			<key>selectTo</key>
-			<dict>
-				<key>column</key>
-				<integer>27</integer>
-				<key>line</key>
-				<integer>234</integer>
-			</dict>
+			<integer>308</integer>
 		</dict>
 		<key>Scripts/orgWard12_sensor.R</key>
 		<dict>
@@ -700,12 +725,12 @@
 				<key>column</key>
 				<integer>0</integer>
 				<key>line</key>
-				<integer>333</integer>
+				<integer>315</integer>
 			</dict>
 			<key>firstVisibleColumn</key>
 			<integer>0</integer>
 			<key>firstVisibleLine</key>
-			<integer>190</integer>
+			<integer>309</integer>
 		</dict>
 		<key>Scripts/orgWeather_2010&amp;2012.R</key>
 		<dict>
@@ -751,6 +776,20 @@
 				<integer>7</integer>
 			</dict>
 		</dict>
+		<key>Scripts/plotMetabolism_light.R</key>
+		<dict>
+			<key>caret</key>
+			<dict>
+				<key>column</key>
+				<integer>104</integer>
+				<key>line</key>
+				<integer>1</integer>
+			</dict>
+			<key>firstVisibleColumn</key>
+			<integer>0</integer>
+			<key>firstVisibleLine</key>
+			<integer>0</integer>
+		</dict>
 		<key>Scripts/plot_consMix_summary_boxplot.R</key>
 		<dict>
 			<key>caret</key>
@@ -763,7 +802,7 @@
 			<key>firstVisibleColumn</key>
 			<integer>0</integer>
 			<key>firstVisibleLine</key>
-			<integer>37</integer>
+			<integer>32</integer>
 		</dict>
 		<key>Scripts/summarize_routines_ward&amp;paul2010&amp;2012.R</key>
 		<dict>
@@ -778,6 +817,20 @@
 			<integer>0</integer>
 			<key>firstVisibleLine</key>
 			<integer>4</integer>
+		</dict>
+		<key>Scripts/sumry_k600_cole2read.R</key>
+		<dict>
+			<key>caret</key>
+			<dict>
+				<key>column</key>
+				<integer>0</integer>
+				<key>line</key>
+				<integer>15</integer>
+			</dict>
+			<key>firstVisibleColumn</key>
+			<integer>0</integer>
+			<key>firstVisibleLine</key>
+			<integer>0</integer>
 		</dict>
 		<key>Scripts/ward_plot_metabolismMethods.R</key>
 		<dict>
@@ -798,9 +851,9 @@
 			<key>caret</key>
 			<dict>
 				<key>column</key>
-				<integer>76</integer>
+				<integer>0</integer>
 				<key>line</key>
-				<integer>20</integer>
+				<integer>26</integer>
 			</dict>
 			<key>firstVisibleColumn</key>
 			<integer>0</integer>
@@ -827,14 +880,22 @@
 		<string>Scripts/Cons_Mixture_Ward2010&amp;2012.R</string>
 		<string>Scripts/Cons_Mixture_Ward2010&amp;2012_ModelSelection.R</string>
 		<string>Scripts/figure4_consMix_violin.R</string>
+		<string>Scripts/completeSensors_L&amp;W_10&amp;12.R</string>
 		<string>Scripts/ward_posterior_sumry_2010&amp;2012.R</string>
 		<string>Scripts/metabolism_Sumry_W&amp;L_2010&amp;2012.R</string>
+		<string>Scripts/sumry_k600_cole2read.R</string>
+		<string>Scripts/orgPaul12_sensor.R</string>
+		<string>Scripts/orgWard10_sensor.R</string>
+		<string>Scripts/orgWard12_sensor.R</string>
+		<string>Scripts/orgPaul10_sensor.R</string>
 		<string>Scripts/lightFunctions.R</string>
 		<string>Scripts/ward_vol_depth_bathy.R</string>
 		<string>Scripts/DOM_Composition.R</string>
 		<string>Scripts/ConsMix.R</string>
 		<string>Scripts/Organize_ConsMix_Sensitivity.R</string>
-		<string>Scripts/Plot_ConsMix_Sensitivity.R</string>
+		<string>Scripts/figureS1_ConsMix_Sensitivity.R</string>
+		<string>Scripts/figureS2_zoop_byTaxon_2010&amp;2012.R</string>
+		<string>Scripts/plotMetabolism_light.R</string>
 		<string>Scripts/figure6_deltaFishChaob.R</string>
 		<string>Scripts/figure1_photicAqua.R</string>
 		<string>Scripts/myPlotViolin.default.R</string>
@@ -851,6 +912,6 @@
 	<key>showFileHierarchyDrawer</key>
 	<true/>
 	<key>windowFrame</key>
-	<string>{{-1918, 797}, {1658, 621}}</string>
+	<string>{{2588, 756}, {1624, 662}}</string>
 </dict>
 </plist>

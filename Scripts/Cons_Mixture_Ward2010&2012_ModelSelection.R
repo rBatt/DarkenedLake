@@ -517,7 +517,7 @@ for(YearMix in c(2010, 2012)){
 # setwd("/Users/battrd/Documents/School&Work/WiscResearch/Isotopes_2012Analysis")
 # source("DOM_Composition_v0.2.0.R")
 
-
+NeatConsNames <- c("Calanoid"="S. oregonensis", "Mesocyclops"="Mesocyclops", "Chaoborus"="Chaoborus spp.", "Helisoma trivolvis"="H. trivolvis", "FHM"="P. promelas", "DAC"="Phoxinus spp.", "BHD1"="A. melas", "BHD2"="A. melas", "CMM"= "U. limi", "PKS"="L. gibbosus", "YWP"="P. flavescens")
 
 
 save(list=c("Data", "EndMembers"), file=paste("/Users/battrd/Documents/School&Work/WiscResearch/Isotopes_2012Analysis/Results/Data+Phyto.RData" ,sep=""))
