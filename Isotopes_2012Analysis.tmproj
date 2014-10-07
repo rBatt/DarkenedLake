@@ -3,7 +3,7 @@
 <plist version="1.0">
 <dict>
 	<key>currentDocument</key>
-	<string>Scripts/figure4_consMix_violin.R</string>
+	<string>Scripts/toBrett_02Oct2014_d2H2O.R</string>
 	<key>documents</key>
 	<array>
 		<dict>
@@ -13,7 +13,7 @@
 					<key>filename</key>
 					<string>Scripts/orgWeather_2010&amp;2012.R</string>
 					<key>lastUsed</key>
-					<date>2014-06-26T20:07:17Z</date>
+					<date>2014-09-15T17:57:07Z</date>
 				</dict>
 				<dict>
 					<key>filename</key>
@@ -25,25 +25,25 @@
 					<key>filename</key>
 					<string>Scripts/orgWard12_sensor.R</string>
 					<key>lastUsed</key>
-					<date>2014-07-25T20:47:53Z</date>
+					<date>2014-10-02T11:57:41Z</date>
 				</dict>
 				<dict>
 					<key>filename</key>
 					<string>Scripts/orgPaul10_sensor.R</string>
 					<key>lastUsed</key>
-					<date>2014-07-25T20:47:52Z</date>
+					<date>2014-09-29T18:59:13Z</date>
 				</dict>
 				<dict>
 					<key>filename</key>
 					<string>Scripts/orgPaul12_sensor.R</string>
 					<key>lastUsed</key>
-					<date>2014-07-25T20:47:51Z</date>
+					<date>2014-09-29T19:11:55Z</date>
 				</dict>
 				<dict>
 					<key>filename</key>
 					<string>Scripts/completeSensors_L&amp;W_10&amp;12.R</string>
 					<key>lastUsed</key>
-					<date>2014-07-25T20:47:50Z</date>
+					<date>2014-10-02T12:09:18Z</date>
 				</dict>
 				<dict>
 					<key>filename</key>
@@ -55,25 +55,25 @@
 					<key>filename</key>
 					<string>Scripts/make_AllDO.R</string>
 					<key>lastUsed</key>
-					<date>2014-07-18T15:43:03Z</date>
+					<date>2014-09-15T17:57:37Z</date>
 				</dict>
 				<dict>
 					<key>filename</key>
 					<string>Scripts/calcMetab_W&amp;L_10&amp;12.R</string>
 					<key>lastUsed</key>
-					<date>2014-07-23T17:06:53Z</date>
+					<date>2014-09-29T18:59:12Z</date>
 				</dict>
 				<dict>
 					<key>filename</key>
 					<string>Scripts/lightFunctions.R</string>
 					<key>lastUsed</key>
-					<date>2014-07-18T15:56:25Z</date>
+					<date>2014-10-02T12:09:09Z</date>
 				</dict>
 				<dict>
 					<key>filename</key>
 					<string>Scripts/ward_vol_depth_bathy.R</string>
 					<key>lastUsed</key>
-					<date>2014-07-18T14:37:17Z</date>
+					<date>2014-10-02T12:09:11Z</date>
 				</dict>
 			</array>
 			<key>expanded</key>
@@ -115,19 +115,19 @@
 					<key>filename</key>
 					<string>Scripts/Organize_ConsMix_Sensitivity.R</string>
 					<key>lastUsed</key>
-					<date>2014-07-24T17:18:40Z</date>
+					<date>2014-10-02T11:58:54Z</date>
 				</dict>
 				<dict>
 					<key>filename</key>
 					<string>Scripts/Cons_Mixture_Ward2010&amp;2012_ModelSelection.R</string>
 					<key>lastUsed</key>
-					<date>2014-07-24T17:21:37Z</date>
+					<date>2014-10-02T11:58:55Z</date>
 				</dict>
 				<dict>
 					<key>filename</key>
 					<string>Scripts/Cons_Mixture_Ward2010&amp;2012.R</string>
 					<key>lastUsed</key>
-					<date>2014-07-24T18:27:52Z</date>
+					<date>2014-10-02T12:09:38Z</date>
 				</dict>
 				<dict>
 					<key>filename</key>
@@ -211,9 +211,7 @@
 					<key>filename</key>
 					<string>Scripts/figure4_consMix_violin.R</string>
 					<key>lastUsed</key>
-					<date>2014-08-24T17:46:15Z</date>
-					<key>selected</key>
-					<true/>
+					<date>2014-10-02T12:09:19Z</date>
 				</dict>
 				<dict>
 					<key>filename</key>
@@ -246,13 +244,13 @@
 					<key>filename</key>
 					<string>Scripts/metabolism_Sumry_W&amp;L_2010&amp;2012.R</string>
 					<key>lastUsed</key>
-					<date>2014-08-24T17:46:06Z</date>
+					<date>2014-10-02T11:57:42Z</date>
 				</dict>
 				<dict>
 					<key>filename</key>
 					<string>Scripts/ward_posterior_sumry_2010&amp;2012.R</string>
 					<key>lastUsed</key>
-					<date>2014-07-24T19:46:31Z</date>
+					<date>2014-10-02T12:09:28Z</date>
 				</dict>
 			</array>
 			<key>expanded</key>
@@ -273,13 +271,30 @@
 					<key>filename</key>
 					<string>Scripts/figureS2_zoop_byTaxon_2010&amp;2012.R</string>
 					<key>lastUsed</key>
-					<date>2014-07-24T17:36:08Z</date>
+					<date>2014-10-02T12:09:23Z</date>
 				</dict>
 			</array>
 			<key>expanded</key>
 			<true/>
 			<key>name</key>
 			<string>supplement_figures</string>
+		</dict>
+		<dict>
+			<key>children</key>
+			<array>
+				<dict>
+					<key>filename</key>
+					<string>Scripts/toBrett_02Oct2014_d2H2O.R</string>
+					<key>lastUsed</key>
+					<date>2014-10-02T12:09:38Z</date>
+					<key>selected</key>
+					<true/>
+				</dict>
+			</array>
+			<key>expanded</key>
+			<true/>
+			<key>name</key>
+			<string>Other</string>
 		</dict>
 	</array>
 	<key>fileHierarchyDrawerWidth</key>
@@ -321,9 +336,9 @@
 			<key>caret</key>
 			<dict>
 				<key>column</key>
-				<integer>32</integer>
+				<integer>0</integer>
 				<key>line</key>
-				<integer>688</integer>
+				<integer>66</integer>
 			</dict>
 			<key>firstVisibleColumn</key>
 			<integer>0</integer>
@@ -342,7 +357,7 @@
 			<key>firstVisibleColumn</key>
 			<integer>0</integer>
 			<key>firstVisibleLine</key>
-			<integer>509</integer>
+			<integer>502</integer>
 		</dict>
 		<key>Scripts/DOM_Composition.R</key>
 		<dict>
@@ -379,9 +394,9 @@
 			<key>caret</key>
 			<dict>
 				<key>column</key>
-				<integer>8</integer>
+				<integer>54</integer>
 				<key>line</key>
-				<integer>16</integer>
+				<integer>9</integer>
 			</dict>
 			<key>firstVisibleColumn</key>
 			<integer>0</integer>
@@ -400,7 +415,7 @@
 			<key>firstVisibleColumn</key>
 			<integer>0</integer>
 			<key>firstVisibleLine</key>
-			<integer>83</integer>
+			<integer>65</integer>
 		</dict>
 		<key>Scripts/completeSensors_L&amp;W_10&amp;12.R</key>
 		<dict>
@@ -558,7 +573,7 @@
 			<key>firstVisibleColumn</key>
 			<integer>0</integer>
 			<key>firstVisibleLine</key>
-			<integer>11</integer>
+			<integer>5</integer>
 		</dict>
 		<key>Scripts/lightFunctions.R</key>
 		<dict>
@@ -674,7 +689,7 @@
 			<key>firstVisibleColumn</key>
 			<integer>0</integer>
 			<key>firstVisibleLine</key>
-			<integer>144</integer>
+			<integer>149</integer>
 			<key>selectFrom</key>
 			<dict>
 				<key>column</key>
@@ -695,14 +710,30 @@
 			<key>caret</key>
 			<dict>
 				<key>column</key>
-				<integer>105</integer>
+				<integer>44</integer>
 				<key>line</key>
-				<integer>4</integer>
+				<integer>23</integer>
 			</dict>
+			<key>columnSelection</key>
+			<false/>
 			<key>firstVisibleColumn</key>
 			<integer>0</integer>
 			<key>firstVisibleLine</key>
-			<integer>179</integer>
+			<integer>98</integer>
+			<key>selectFrom</key>
+			<dict>
+				<key>column</key>
+				<integer>0</integer>
+				<key>line</key>
+				<integer>23</integer>
+			</dict>
+			<key>selectTo</key>
+			<dict>
+				<key>column</key>
+				<integer>0</integer>
+				<key>line</key>
+				<integer>24</integer>
+			</dict>
 		</dict>
 		<key>Scripts/orgWard10_sensor.R</key>
 		<dict>
@@ -723,14 +754,30 @@
 			<key>caret</key>
 			<dict>
 				<key>column</key>
-				<integer>0</integer>
+				<integer>25</integer>
 				<key>line</key>
-				<integer>315</integer>
+				<integer>32</integer>
 			</dict>
+			<key>columnSelection</key>
+			<false/>
 			<key>firstVisibleColumn</key>
 			<integer>0</integer>
 			<key>firstVisibleLine</key>
-			<integer>309</integer>
+			<integer>21</integer>
+			<key>selectFrom</key>
+			<dict>
+				<key>column</key>
+				<integer>0</integer>
+				<key>line</key>
+				<integer>32</integer>
+			</dict>
+			<key>selectTo</key>
+			<dict>
+				<key>column</key>
+				<integer>25</integer>
+				<key>line</key>
+				<integer>32</integer>
+			</dict>
 		</dict>
 		<key>Scripts/orgWeather_2010&amp;2012.R</key>
 		<dict>
@@ -744,7 +791,7 @@
 			<key>firstVisibleColumn</key>
 			<integer>0</integer>
 			<key>firstVisibleLine</key>
-			<integer>67</integer>
+			<integer>64</integer>
 		</dict>
 		<key>Scripts/plotMetabolism_L&amp;R_10&amp;12.R</key>
 		<dict>
@@ -832,6 +879,20 @@
 			<key>firstVisibleLine</key>
 			<integer>0</integer>
 		</dict>
+		<key>Scripts/toBrett_02Oct2014_d2H2O.R</key>
+		<dict>
+			<key>caret</key>
+			<dict>
+				<key>column</key>
+				<integer>12</integer>
+				<key>line</key>
+				<integer>1</integer>
+			</dict>
+			<key>firstVisibleColumn</key>
+			<integer>0</integer>
+			<key>firstVisibleLine</key>
+			<integer>0</integer>
+		</dict>
 		<key>Scripts/ward_plot_metabolismMethods.R</key>
 		<dict>
 			<key>caret</key>
@@ -851,33 +912,34 @@
 			<key>caret</key>
 			<dict>
 				<key>column</key>
-				<integer>0</integer>
+				<integer>13</integer>
 				<key>line</key>
-				<integer>26</integer>
+				<integer>1</integer>
 			</dict>
 			<key>firstVisibleColumn</key>
 			<integer>0</integer>
 			<key>firstVisibleLine</key>
-			<integer>7</integer>
+			<integer>0</integer>
 		</dict>
 		<key>Scripts/ward_vol_depth_bathy.R</key>
 		<dict>
 			<key>caret</key>
 			<dict>
 				<key>column</key>
-				<integer>0</integer>
+				<integer>50</integer>
 				<key>line</key>
-				<integer>0</integer>
+				<integer>71</integer>
 			</dict>
 			<key>firstVisibleColumn</key>
 			<integer>0</integer>
 			<key>firstVisibleLine</key>
-			<integer>0</integer>
+			<integer>48</integer>
 		</dict>
 	</dict>
 	<key>openDocuments</key>
 	<array>
 		<string>Scripts/Cons_Mixture_Ward2010&amp;2012.R</string>
+		<string>Scripts/toBrett_02Oct2014_d2H2O.R</string>
 		<string>Scripts/Cons_Mixture_Ward2010&amp;2012_ModelSelection.R</string>
 		<string>Scripts/figure4_consMix_violin.R</string>
 		<string>Scripts/completeSensors_L&amp;W_10&amp;12.R</string>
@@ -890,6 +952,7 @@
 		<string>Scripts/orgPaul10_sensor.R</string>
 		<string>Scripts/lightFunctions.R</string>
 		<string>Scripts/ward_vol_depth_bathy.R</string>
+		<string>Scripts/orgWeather_2010&amp;2012.R</string>
 		<string>Scripts/DOM_Composition.R</string>
 		<string>Scripts/ConsMix.R</string>
 		<string>Scripts/Organize_ConsMix_Sensitivity.R</string>
@@ -912,6 +975,6 @@
 	<key>showFileHierarchyDrawer</key>
 	<true/>
 	<key>windowFrame</key>
-	<string>{{2588, 756}, {1624, 662}}</string>
+	<string>{{1507, 216}, {1178, 662}}</string>
 </dict>
 </plist>
