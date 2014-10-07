@@ -1,0 +1,2999 @@
+rm(list=ls())#
+buildVersion <- "_v0.2"#
+#
+myPath <- paste("/Users/Battrd/Documents/School&Work/WiscResearch/Squeal2/Squeal2_Chimp2013/Chimp", buildVersion, sep="")#
+setwd(myPath)#
+runFileName <- paste("Run_Shiny_SoS", buildVersion, ".R", sep="")#
+#
+## Build the package#
+## ---------------------------------------------------------------------#
+#
+## Remove the folder if it exists#
+if(file.exists("./chimpSqueal")){#
+	unlink("chimpSqueal", recursive = TRUE)#
+}#
+#
+## Build the package#
+package.skeleton("chimpSqueal", code_files = paste("./", dir("./", pattern = "\\.R$"), sep = ""), force = TRUE)#
+#
+## Include the data#
+resultsName <- paste("results", buildVersion, ".RData", sep="")#
+dailyDataName <- paste("dailyData", buildVersion, ".RData", sep="")#
+dir.create("chimpSqueal/data")#
+file.copy(from = resultsName, to = "chimpSqueal/data/", overwrite = TRUE)#
+file.copy(from = dailyDataName, to = "chimpSqueal/data/", overwrite = TRUE)#
+file.copy(from = "./DESCRIPTION", to = "chimpSqueal/", overwrite = TRUE)#
+#
+# =======================#
+# = Copy over man files =#
+# =======================#
+#
+# file.copy(from = dir("man_backup/"), to = "chimpSqueal/man/", overwrite = TRUE)#
+## Use roxygen to build the documentation#
+library(roxygen2)#
+roxygenize("chimpSqueal")#
+file.copy(from = "./NAMESPACE", to = "chimpSqueal/", overwrite = TRUE)
+system("R CMD INSTALL --build chimpSqueal")
+system("R CMD build chimpSqueal")
+system("R CMD check chimpSqueal")
+system("R CMD INSTALL --build chimpSqueal")
+system("R CMD build chimpSqueal")
+system("R CMD check chimpSqueal")
+system("R CMD INSTALL --build chimpSqueal")
+system("R CMD build chimpSqueal")
+system("R CMD check chimpSqueal")
+rm(list=ls())#
+buildVersion <- "_v0.2"#
+#
+myPath <- paste("/Users/Battrd/Documents/School&Work/WiscResearch/Squeal2/Squeal2_Chimp2013/Chimp", buildVersion, sep="")#
+setwd(myPath)#
+runFileName <- paste("Run_Shiny_SoS", buildVersion, ".R", sep="")#
+#
+## Build the package#
+## ---------------------------------------------------------------------#
+#
+## Remove the folder if it exists#
+if(file.exists("./chimpSqueal")){#
+	unlink("chimpSqueal", recursive = TRUE)#
+}#
+#
+## Build the package#
+package.skeleton("chimpSqueal", code_files = paste("./", dir("./", pattern = "\\.R$"), sep = ""), force = TRUE)#
+#
+## Include the data#
+resultsName <- paste("results", buildVersion, ".RData", sep="")#
+dailyDataName <- paste("dailyData", buildVersion, ".RData", sep="")#
+dir.create("chimpSqueal/data")#
+file.copy(from = resultsName, to = "chimpSqueal/data/", overwrite = TRUE)#
+file.copy(from = dailyDataName, to = "chimpSqueal/data/", overwrite = TRUE)#
+file.copy(from = "./DESCRIPTION", to = "chimpSqueal/", overwrite = TRUE)#
+#
+# =======================#
+# = Copy over man files =#
+# =======================#
+#
+# file.copy(from = dir("man_backup/"), to = "chimpSqueal/man/", overwrite = TRUE)#
+## Use roxygen to build the documentation#
+library(roxygen2)#
+roxygenize("chimpSqueal")#
+file.copy(from = "./NAMESPACE", to = "chimpSqueal/", overwrite = TRUE)
+Use roxygen to build the documentation#
+library(roxygen2)#
+roxygenize("chimpSqueal")#
+file.copy(from = "./NAMESPACE", to = "chimpSqueal/", overwrite = TRUE)
+roxygenize("chimpSqueal")
+system("R CMD INSTALL --build chimpSqueal")
+system("R CMD build chimpSqueal")
+system("R CMD check chimpSqueal")
+system("R CMD check --as-cran chimpSqueal")
+setwd("~/")
+rm(list=ls())
+install.packages("chimpSqueal_0.2.tar.gz", type="source", repos=NULL)
+library("chimpSqueal")
+?runChimp
+?checkChimp
+test <- runChimp()
+search()
+ls(pos=2)
+chimpSqueal::runChimp()
+chimpSqueal:::runChimp()
+runApp("/Users/Battrd/Desktop/.tmpChimp")
+ls()
+ls(pos=2)
+dataLocs
+checkChimp <- function(versionNumber=0.2){#
+	stopifnot(#
+		require("RCurl"),#
+		require("shiny")#
+		)#
+	cVersion <- paste("_v",versionNumber, sep="")#
+	# =======================================#
+	# = Perform checks on data availability =#
+	# =======================================#
+	dataLocs <- c("env"=NA, "Rpkgs"=NA, "shinyDir"=NA)#
+	#Do the objects exist in the package environment?#
+	inEnv <- exists("dailyData") & exists("results")#
+	dataLocs["env"] <- inEnv#
+	if(!inEnv){ #If neither of the objects is currently present, search for files#
+		#First, look where you would expect to find the .RData files associated with package...#
+		if("chimpSqueal" %in% installed.packages()[,"Package"]){ #First look in the package directory, if the package is isntalled#
+			pkgData <- dir(system.file("data", package="chimpSqueal"))#
+			dataNames <- paste(c("dailyData", "results"), cVersion, ".RData", sep="")#
+			if(all(dataNames %in% pkgData)){#
+				load(dir(system.file("data", package="chimpSqueal"), pattern=dataNames[1], full.names=TRUE), envir=parent.frame())#
+				load(dir(system.file("data", package="chimpSqueal"), pattern=dataNames[2], full.names=TRUE), envir=parent.frame())#
+				inRpkgs <- exists("dailyData") & exists("results")#
+				dataLocs["Rpkgs"] <- inRpkgs#
+				if(inRpkgs){dataPath <- pkgData}#
+			} # END all(dataNames %in% pkgData)#
+		} #END "chimpSqueal" %in% installed.packages()[,"Package"]#
+		#if neither object is present, and the data aren't in the R package directory, check shinyDir#
+		userDir <- paste("/Users/", Sys.info()["user"], sep="")#
+		shinyDir <- paste(userDir, "/Desktop/.tmpChimp", sep="")#
+		if(file.exists(shinyDir)){#
+			tmpData <- dir(shinyDir)#
+			dataNames <- paste(c("dailyData", "results"), cVersion, ".RData", sep="")#
+			if(all(dataNames %in% tmpData)){#
+				load(dir(shinyDir, pattern=dataNames[1], full.names=TRUE), envir=parent.frame())#
+				load(dir(shinyDir, pattern=dataNames[2], full.names=TRUE), envir=parent.frame())#
+				inShinyDir <- exists("dailyData") & exists("results")#
+				dataLocs["shinyDir"] <- inShinyDir#
+			} #END all(dataNames %in% tmpData)#
+		} #END file.exists(shinyDir)		#
+	}# END !inEnv#
+	if(!any(dataLocs, na.rm=TRUE)){ #If I can't find it anywhere, then just download it, and put it in Shiny directory#
+		dlData()#
+		dataPath <- shinyDir#
+	}#
+	# =========================================#
+	# = Perform checks on script availability =#
+	# =========================================#
+	scriptsLocs <- c("env"=NA, "Rpkgs"=NA, "shinyDir"=NA)#
+	#Do the objects exist in the package environment?#
+	inEnvS <- file.exists("ui.R") & file.exists("server.R")#
+	if(inEnvS){#
+		runAppWD <- getwd()	#
+	}#
+	scriptsLocs["env"] <- inEnvS#
+	if(!inEnvS){ #If neither script is present in the current working directory, search for files#
+		#First, look where you would expect to find the .R files associated with package...#
+		if("chimpSqueal" %in% installed.packages()[,"Package"]){ #First look in the package directory, if the package is isntalled#
+			pkgScripts <- dir(system.file("R", package="chimpSqueal")) #pull out all the scripts#
+			scriptsNames <- c("ui.R", "server.R")#
+			if(all(scriptsNames %in% pkgScripts)){ #compare the scripts in the R package directory with those that we want to find#
+				runAppWD <- system.file("R", package="chimpSqueal") #If they've been found, take note of R's package directory, and save for use w/ shiny#
+				scriptsLocs["Rpkgs"] <- TRUE#
+			} # END all(scriptsNames %in% pkgScripts)#
+		} #END "chimpSqueal" %in% installed.packages()[,"Package"]#
+		#if script present in the current wd, and the scripts aren't in the R package directory, check shinyDir#
+		userDir <- paste("/Users/", Sys.info()["user"], sep="")#
+		shinyDir <- paste(userDir, "/Desktop/.tmpChimp", sep="")#
+		if(file.exists(shinyDir)){#
+			tmpData <- dir(shinyDir)#
+			scriptsNames <- c("ui.R", "server.R")#
+			if(all(scriptsNames %in% tmpData)){#
+				runAppWD <- shinyDir#
+				scriptsLocs["shinyDir"] <- TRUE#
+			} #END all(scriptsNames %in% tmpData)#
+		} #END file.exists(shinyDir)		#
+	}# END !inEnv#
+	if(!any(scriptsLocs, na.rm=TRUE)){ #If I can't find it anywhere, then just download it, and put it in Shiny directory#
+		dlScripts()#
+		runAppWD <- shinyDir#
+	}#
+	return(list(runAppWD, dataPath))#
+}
+checkChimp()
+require("RCurl")
+require("shiny")
+cVersion <- paste("_v",versionNumber, sep="")
+versionNumber=0.2
+cVersion <- paste("_v",versionNumber, sep="")
+dataLocs <- c("env"=NA, "Rpkgs"=NA, "shinyDir"=NA)
+inEnv <- exists("dailyData") & exists("results")
+inEnv
+ls()
+rm("dailyData", "results")
+checkChimp()
+ls()
+rm("dailyData", "results")
+inEnv <- exists("dailyData") & exists("results")
+inEnv
+dataLocs["env"] <- inEnv
+dataLocs
+"chimpSqueal" %in% installed.packages()[,"Package"]
+pkgData <- dir(system.file("data", package="chimpSqueal"))
+pkgData
+dataNames <- paste(c("dailyData", "results"), cVersion, ".RData", sep="")
+checkChimp <- function(versionNumber=0.2){#
+	stopifnot(#
+		require("RCurl"),#
+		require("shiny")#
+		)#
+	cVersion <- paste("_v",versionNumber, sep="")#
+	# =======================================#
+	# = Perform checks on data availability =#
+	# =======================================#
+	dataLocs <- c("env"=NA, "Rpkgs"=NA, "shinyDir"=NA)#
+	#Do the objects exist in the package environment?#
+	inEnv <- exists("dailyData") & exists("results")#
+	dataLocs["env"] <- inEnv#
+	if(!inEnv){ #If neither of the objects is currently present, search for files#
+		#First, look where you would expect to find the .RData files associated with package...#
+		if("chimpSqueal" %in% installed.packages()[,"Package"]){ #First look in the package directory, if the package is isntalled#
+			pkgData <- dir(system.file("data", package="chimpSqueal"))#
+			dataNames <- paste(c("dailyData", "results"), cVersion, ".RData", sep="")#
+			if(all(dataNames %in% pkgData)){#
+				load(dir(system.file("data", package="chimpSqueal"), pattern=dataNames[1], full.names=TRUE), envir=parent.frame())#
+				load(dir(system.file("data", package="chimpSqueal"), pattern=dataNames[2], full.names=TRUE), envir=parent.frame())#
+				inRpkgs <- exists("dailyData") & exists("results")#
+				dataLocs["Rpkgs"] <- inRpkgs#
+				if(inRpkgs){dataPath <- dir(system.file("data", package="chimpSqueal"), full.names=TRUE)}#
+			} # END all(dataNames %in% pkgData)#
+		} #END "chimpSqueal" %in% installed.packages()[,"Package"]#
+		#if neither object is present, and the data aren't in the R package directory, check shinyDir#
+		userDir <- paste("/Users/", Sys.info()["user"], sep="")#
+		shinyDir <- paste(userDir, "/Desktop/.tmpChimp", sep="")#
+		if(file.exists(shinyDir)){#
+			tmpData <- dir(shinyDir)#
+			dataNames <- paste(c("dailyData", "results"), cVersion, ".RData", sep="")#
+			if(all(dataNames %in% tmpData)){#
+				load(dir(shinyDir, pattern=dataNames[1], full.names=TRUE), envir=parent.frame())#
+				load(dir(shinyDir, pattern=dataNames[2], full.names=TRUE), envir=parent.frame())#
+				inShinyDir <- exists("dailyData") & exists("results")#
+				dataLocs["shinyDir"] <- inShinyDir#
+			} #END all(dataNames %in% tmpData)#
+		} #END file.exists(shinyDir)		#
+	}# END !inEnv#
+	if(!any(dataLocs, na.rm=TRUE)){ #If I can't find it anywhere, then just download it, and put it in Shiny directory#
+		dlData()#
+		dataPath <- shinyDir#
+	}#
+	# =========================================#
+	# = Perform checks on script availability =#
+	# =========================================#
+	scriptsLocs <- c("env"=NA, "Rpkgs"=NA, "shinyDir"=NA)#
+	#Do the objects exist in the package environment?#
+	inEnvS <- file.exists("ui.R") & file.exists("server.R")#
+	if(inEnvS){#
+		runAppWD <- getwd()	#
+	}#
+	scriptsLocs["env"] <- inEnvS#
+	if(!inEnvS){ #If neither script is present in the current working directory, search for files#
+		#First, look where you would expect to find the .R files associated with package...#
+		if("chimpSqueal" %in% installed.packages()[,"Package"]){ #First look in the package directory, if the package is isntalled#
+			pkgScripts <- dir(system.file("R", package="chimpSqueal")) #pull out all the scripts#
+			scriptsNames <- c("ui.R", "server.R")#
+			if(all(scriptsNames %in% pkgScripts)){ #compare the scripts in the R package directory with those that we want to find#
+				runAppWD <- system.file("R", package="chimpSqueal") #If they've been found, take note of R's package directory, and save for use w/ shiny#
+				scriptsLocs["Rpkgs"] <- TRUE#
+			} # END all(scriptsNames %in% pkgScripts)#
+		} #END "chimpSqueal" %in% installed.packages()[,"Package"]#
+		#if script present in the current wd, and the scripts aren't in the R package directory, check shinyDir#
+		userDir <- paste("/Users/", Sys.info()["user"], sep="")#
+		shinyDir <- paste(userDir, "/Desktop/.tmpChimp", sep="")#
+		if(file.exists(shinyDir)){#
+			tmpData <- dir(shinyDir)#
+			scriptsNames <- c("ui.R", "server.R")#
+			if(all(scriptsNames %in% tmpData)){#
+				runAppWD <- shinyDir#
+				scriptsLocs["shinyDir"] <- TRUE#
+			} #END all(scriptsNames %in% tmpData)#
+		} #END file.exists(shinyDir)		#
+	}# END !inEnv#
+	if(!any(scriptsLocs, na.rm=TRUE)){ #If I can't find it anywhere, then just download it, and put it in Shiny directory#
+		dlScripts()#
+		runAppWD <- shinyDir#
+	}#
+	return(list(runAppWD, dataPath))#
+}
+checkChimp()
+dir(system.file("data", package="chimpSqueal"), pattern="\\.RD" full.names=TRUE)
+dir(system.file("data", package="chimpSqueal"), pattern="\\.RData$" full.names=TRUE)
+dir(system.file("data", package="chimpSqueal"), pattern="\\.RData$", full.names=TRUE)
+checkChimp <- function(versionNumber=0.2){#
+	stopifnot(#
+		require("RCurl"),#
+		require("shiny")#
+		)#
+	cVersion <- paste("_v",versionNumber, sep="")#
+	# =======================================#
+	# = Perform checks on data availability =#
+	# =======================================#
+	dataLocs <- c("env"=NA, "Rpkgs"=NA, "shinyDir"=NA)#
+	#Do the objects exist in the package environment?#
+	inEnv <- exists("dailyData") & exists("results")#
+	dataLocs["env"] <- inEnv#
+	if(!inEnv){ #If neither of the objects is currently present, search for files#
+		#First, look where you would expect to find the .RData files associated with package...#
+		if("chimpSqueal" %in% installed.packages()[,"Package"]){ #First look in the package directory, if the package is isntalled#
+			pkgData <- dir(system.file("data", package="chimpSqueal"))#
+			dataNames <- paste(c("dailyData", "results"), cVersion, ".RData", sep="")#
+			if(all(dataNames %in% pkgData)){#
+				load(dir(system.file("data", package="chimpSqueal"), pattern=dataNames[1], full.names=TRUE), envir=parent.frame())#
+				load(dir(system.file("data", package="chimpSqueal"), pattern=dataNames[2], full.names=TRUE), envir=parent.frame())#
+				inRpkgs <- exists("dailyData") & exists("results")#
+				dataLocs["Rpkgs"] <- inRpkgs#
+				if(inRpkgs){dataPath <- dir(system.file("data", package="chimpSqueal"), pattern="\\.RData$", full.names=TRUE)}#
+			} # END all(dataNames %in% pkgData)#
+		} #END "chimpSqueal" %in% installed.packages()[,"Package"]#
+		#if neither object is present, and the data aren't in the R package directory, check shinyDir#
+		userDir <- paste("/Users/", Sys.info()["user"], sep="")#
+		shinyDir <- paste(userDir, "/Desktop/.tmpChimp", sep="")#
+		if(file.exists(shinyDir)){#
+			tmpData <- dir(shinyDir)#
+			dataNames <- paste(c("dailyData", "results"), cVersion, ".RData", sep="")#
+			if(all(dataNames %in% tmpData)){#
+				load(dir(shinyDir, pattern=dataNames[1], full.names=TRUE), envir=parent.frame())#
+				load(dir(shinyDir, pattern=dataNames[2], full.names=TRUE), envir=parent.frame())#
+				inShinyDir <- exists("dailyData") & exists("results")#
+				dataLocs["shinyDir"] <- inShinyDir#
+			} #END all(dataNames %in% tmpData)#
+		} #END file.exists(shinyDir)		#
+	}# END !inEnv#
+	if(!any(dataLocs, na.rm=TRUE)){ #If I can't find it anywhere, then just download it, and put it in Shiny directory#
+		dlData()#
+		dataPath <- shinyDir#
+	}#
+	# =========================================#
+	# = Perform checks on script availability =#
+	# =========================================#
+	scriptsLocs <- c("env"=NA, "Rpkgs"=NA, "shinyDir"=NA)#
+	#Do the objects exist in the package environment?#
+	inEnvS <- file.exists("ui.R") & file.exists("server.R")#
+	if(inEnvS){#
+		runAppWD <- getwd()	#
+	}#
+	scriptsLocs["env"] <- inEnvS#
+	if(!inEnvS){ #If neither script is present in the current working directory, search for files#
+		#First, look where you would expect to find the .R files associated with package...#
+		if("chimpSqueal" %in% installed.packages()[,"Package"]){ #First look in the package directory, if the package is isntalled#
+			pkgScripts <- dir(system.file("R", package="chimpSqueal")) #pull out all the scripts#
+			scriptsNames <- c("ui.R", "server.R")#
+			if(all(scriptsNames %in% pkgScripts)){ #compare the scripts in the R package directory with those that we want to find#
+				runAppWD <- system.file("R", package="chimpSqueal") #If they've been found, take note of R's package directory, and save for use w/ shiny#
+				scriptsLocs["Rpkgs"] <- TRUE#
+			} # END all(scriptsNames %in% pkgScripts)#
+		} #END "chimpSqueal" %in% installed.packages()[,"Package"]#
+		#if script present in the current wd, and the scripts aren't in the R package directory, check shinyDir#
+		userDir <- paste("/Users/", Sys.info()["user"], sep="")#
+		shinyDir <- paste(userDir, "/Desktop/.tmpChimp", sep="")#
+		if(file.exists(shinyDir)){#
+			tmpData <- dir(shinyDir)#
+			scriptsNames <- c("ui.R", "server.R")#
+			if(all(scriptsNames %in% tmpData)){#
+				runAppWD <- shinyDir#
+				scriptsLocs["shinyDir"] <- TRUE#
+			} #END all(scriptsNames %in% tmpData)#
+		} #END file.exists(shinyDir)		#
+	}# END !inEnv#
+	if(!any(scriptsLocs, na.rm=TRUE)){ #If I can't find it anywhere, then just download it, and put it in Shiny directory#
+		dlScripts()#
+		runAppWD <- shinyDir#
+	}#
+	return(list(runAppWD, dataPath))#
+}
+checkChimp()
+rm("dailyData", "results")
+checkChimp <- function(versionNumber=0.2){#
+	stopifnot(#
+		require("RCurl"),#
+		require("shiny")#
+		)#
+	cVersion <- paste("_v",versionNumber, sep="")#
+	# =======================================#
+	# = Perform checks on data availability =#
+	# =======================================#
+	dataLocs <- c("env"=NA, "Rpkgs"=NA, "shinyDir"=NA)#
+	#Do the objects exist in the package environment?#
+	inEnv <- exists("dailyData") & exists("results")#
+	dataLocs["env"] <- inEnv#
+	if(inEnv){dataPath=NULL}#
+	if(!inEnv){ #If neither of the objects is currently present, search for files#
+		#First, look where you would expect to find the .RData files associated with package...#
+		if("chimpSqueal" %in% installed.packages()[,"Package"]){ #First look in the package directory, if the package is isntalled#
+			pkgData <- dir(system.file("data", package="chimpSqueal"))#
+			dataNames <- paste(c("dailyData", "results"), cVersion, ".RData", sep="")#
+			if(all(dataNames %in% pkgData)){#
+				load(dir(system.file("data", package="chimpSqueal"), pattern=dataNames[1], full.names=TRUE), envir=parent.frame())#
+				load(dir(system.file("data", package="chimpSqueal"), pattern=dataNames[2], full.names=TRUE), envir=parent.frame())#
+				inRpkgs <- exists("dailyData") & exists("results")#
+				dataLocs["Rpkgs"] <- inRpkgs#
+				if(inRpkgs){dataPath <- dir(system.file("data", package="chimpSqueal"), pattern="\\.RData$", full.names=TRUE)}#
+			} # END all(dataNames %in% pkgData)#
+		} #END "chimpSqueal" %in% installed.packages()[,"Package"]#
+		#if neither object is present, and the data aren't in the R package directory, check shinyDir#
+		userDir <- paste("/Users/", Sys.info()["user"], sep="")#
+		shinyDir <- paste(userDir, "/Desktop/.tmpChimp", sep="")#
+		if(file.exists(shinyDir)){#
+			tmpData <- dir(shinyDir)#
+			dataNames <- paste(c("dailyData", "results"), cVersion, ".RData", sep="")#
+			if(all(dataNames %in% tmpData)){#
+				load(dir(shinyDir, pattern=dataNames[1], full.names=TRUE), envir=parent.frame())#
+				load(dir(shinyDir, pattern=dataNames[2], full.names=TRUE), envir=parent.frame())#
+				inShinyDir <- exists("dailyData") & exists("results")#
+				dataLocs["shinyDir"] <- inShinyDir#
+			} #END all(dataNames %in% tmpData)#
+		} #END file.exists(shinyDir)		#
+	}# END !inEnv#
+	if(!any(dataLocs, na.rm=TRUE)){ #If I can't find it anywhere, then just download it, and put it in Shiny directory#
+		dlData()#
+		dataPath <- shinyDir#
+	}#
+	# =========================================#
+	# = Perform checks on script availability =#
+	# =========================================#
+	scriptsLocs <- c("env"=NA, "Rpkgs"=NA, "shinyDir"=NA)#
+	#Do the objects exist in the package environment?#
+	inEnvS <- file.exists("ui.R") & file.exists("server.R")#
+	if(inEnvS){#
+		runAppWD <- getwd()	#
+	}#
+	scriptsLocs["env"] <- inEnvS#
+	if(!inEnvS){ #If neither script is present in the current working directory, search for files#
+		#First, look where you would expect to find the .R files associated with package...#
+		if("chimpSqueal" %in% installed.packages()[,"Package"]){ #First look in the package directory, if the package is isntalled#
+			pkgScripts <- dir(system.file("R", package="chimpSqueal")) #pull out all the scripts#
+			scriptsNames <- c("ui.R", "server.R")#
+			if(all(scriptsNames %in% pkgScripts)){ #compare the scripts in the R package directory with those that we want to find#
+				runAppWD <- system.file("R", package="chimpSqueal") #If they've been found, take note of R's package directory, and save for use w/ shiny#
+				scriptsLocs["Rpkgs"] <- TRUE#
+			} # END all(scriptsNames %in% pkgScripts)#
+		} #END "chimpSqueal" %in% installed.packages()[,"Package"]#
+		#if script present in the current wd, and the scripts aren't in the R package directory, check shinyDir#
+		userDir <- paste("/Users/", Sys.info()["user"], sep="")#
+		shinyDir <- paste(userDir, "/Desktop/.tmpChimp", sep="")#
+		if(file.exists(shinyDir)){#
+			tmpData <- dir(shinyDir)#
+			scriptsNames <- c("ui.R", "server.R")#
+			if(all(scriptsNames %in% tmpData)){#
+				runAppWD <- shinyDir#
+				scriptsLocs["shinyDir"] <- TRUE#
+			} #END all(scriptsNames %in% tmpData)#
+		} #END file.exists(shinyDir)		#
+	}# END !inEnv#
+	if(!any(scriptsLocs, na.rm=TRUE)){ #If I can't find it anywhere, then just download it, and put it in Shiny directory#
+		dlScripts()#
+		runAppWD <- shinyDir#
+	}#
+	return(list(runAppWD, dataPath))#
+}
+checkChimp()
+load(checkChimp()[[2]])
+tapply(checkChimp()[[2]], 1:2, FUN=load)
+checkChimp()[[2]]
+rm("dailyData", "results")
+checkChimp <- function(versionNumber=0.2){#
+	stopifnot(#
+		require("RCurl"),#
+		require("shiny")#
+		)#
+	cVersion <- paste("_v",versionNumber, sep="")#
+	# =======================================#
+	# = Perform checks on data availability =#
+	# =======================================#
+	dataLocs <- c("env"=NA, "Rpkgs"=NA, "shinyDir"=NA)#
+	#Do the objects exist in the package environment?#
+	inEnv <- exists("dailyData") & exists("results")#
+	dataLocs["env"] <- inEnv#
+	if(inEnv){dataPath=NULL}#
+	if(!inEnv){ #If neither of the objects is currently present, search for files#
+		#First, look where you would expect to find the .RData files associated with package...#
+		if("chimpSqueal" %in% installed.packages()[,"Package"]){ #First look in the package directory, if the package is isntalled#
+			pkgData <- dir(system.file("data", package="chimpSqueal"))#
+			dataNames <- paste(c("dailyData", "results"), cVersion, ".RData", sep="")#
+			if(all(dataNames %in% pkgData)){#
+				# load(dir(system.file("data", package="chimpSqueal"), pattern=dataNames[1], full.names=TRUE), envir=parent.frame())#
+				# load(dir(system.file("data", package="chimpSqueal"), pattern=dataNames[2], full.names=TRUE), envir=parent.frame())#
+				inRpkgs <- exists("dailyData") & exists("results")#
+				dataLocs["Rpkgs"] <- inRpkgs#
+				if(inRpkgs){dataPath <- dir(system.file("data", package="chimpSqueal"), pattern="\\.RData$", full.names=TRUE)}#
+			} # END all(dataNames %in% pkgData)#
+		} #END "chimpSqueal" %in% installed.packages()[,"Package"]#
+		#if neither object is present, and the data aren't in the R package directory, check shinyDir#
+		userDir <- paste("/Users/", Sys.info()["user"], sep="")#
+		shinyDir <- paste(userDir, "/Desktop/.tmpChimp", sep="")#
+		if(file.exists(shinyDir)){#
+			tmpData <- dir(shinyDir)#
+			dataNames <- paste(c("dailyData", "results"), cVersion, ".RData", sep="")#
+			if(all(dataNames %in% tmpData)){#
+				# load(dir(shinyDir, pattern=dataNames[1], full.names=TRUE), envir=parent.frame())#
+				# load(dir(shinyDir, pattern=dataNames[2], full.names=TRUE), envir=parent.frame())#
+				inShinyDir <- exists("dailyData") & exists("results")#
+				dataLocs["shinyDir"] <- inShinyDir#
+			} #END all(dataNames %in% tmpData)#
+		} #END file.exists(shinyDir)		#
+	}# END !inEnv#
+	if(!any(dataLocs, na.rm=TRUE)){ #If I can't find it anywhere, then just download it, and put it in Shiny directory#
+		dlData()#
+		dataPath <- shinyDir#
+	}#
+	# =========================================#
+	# = Perform checks on script availability =#
+	# =========================================#
+	scriptsLocs <- c("env"=NA, "Rpkgs"=NA, "shinyDir"=NA)#
+	#Do the objects exist in the package environment?#
+	inEnvS <- file.exists("ui.R") & file.exists("server.R")#
+	if(inEnvS){#
+		runAppWD <- getwd()	#
+	}#
+	scriptsLocs["env"] <- inEnvS#
+	if(!inEnvS){ #If neither script is present in the current working directory, search for files#
+		#First, look where you would expect to find the .R files associated with package...#
+		if("chimpSqueal" %in% installed.packages()[,"Package"]){ #First look in the package directory, if the package is isntalled#
+			pkgScripts <- dir(system.file("R", package="chimpSqueal")) #pull out all the scripts#
+			scriptsNames <- c("ui.R", "server.R")#
+			if(all(scriptsNames %in% pkgScripts)){ #compare the scripts in the R package directory with those that we want to find#
+				runAppWD <- system.file("R", package="chimpSqueal") #If they've been found, take note of R's package directory, and save for use w/ shiny#
+				scriptsLocs["Rpkgs"] <- TRUE#
+			} # END all(scriptsNames %in% pkgScripts)#
+		} #END "chimpSqueal" %in% installed.packages()[,"Package"]#
+		#if script present in the current wd, and the scripts aren't in the R package directory, check shinyDir#
+		userDir <- paste("/Users/", Sys.info()["user"], sep="")#
+		shinyDir <- paste(userDir, "/Desktop/.tmpChimp", sep="")#
+		if(file.exists(shinyDir)){#
+			tmpData <- dir(shinyDir)#
+			scriptsNames <- c("ui.R", "server.R")#
+			if(all(scriptsNames %in% tmpData)){#
+				runAppWD <- shinyDir#
+				scriptsLocs["shinyDir"] <- TRUE#
+			} #END all(scriptsNames %in% tmpData)#
+		} #END file.exists(shinyDir)		#
+	}# END !inEnv#
+	if(!any(scriptsLocs, na.rm=TRUE)){ #If I can't find it anywhere, then just download it, and put it in Shiny directory#
+		dlScripts()#
+		runAppWD <- shinyDir#
+	}#
+	return(list(runAppWD, dataPath))#
+}
+checkChimp()
+dir(system.file("data", package="chimpSqueal"))
+paste(c("dailyData", "results"), cVersion, ".RData", sep="")
+all(dataNames %in% pkgData)
+dataPath
+dir(system.file("data", package="chimpSqueal"), pattern="\\.RData$", full.names=TRUE)
+file.exists(shinyDir)
+userDir <- paste("/Users/", Sys.info()["user"], sep="")
+shinyDir <- paste(userDir, "/Desktop/.tmpChimp", sep="")
+file.exists(shinyDir)
+tmpData <- dir(shinyDir)
+tmpData
+dataNames <- paste(c("dailyData", "results"), cVersion, ".RData", sep="")
+dataNames
+all(dataNames %in% tmpData)
+inShinyDir <- exists("dailyData") & exists("results")
+inShinyDir
+dataNames
+tmpData
+dataNames %in% tmpData
+all(dataNames %in% tmpData)
+c(NULL, 10)
+dir(system.file("data", package="chimpSqueal"), pattern="\\.RData$", full.names=TRUE)
+tapply(dir(system.file("data", package="chimpSqueal"), pattern="\\.RData$", full.names=TRUE), c(1,2), load)
+ls()
+checkChimp <- function(versionNumber=0.2){#
+	stopifnot(#
+		require("RCurl"),#
+		require("shiny")#
+		)#
+	cVersion <- paste("_v",versionNumber, sep="")#
+	# =======================================#
+	# = Perform checks on data availability =#
+	# =======================================#
+	dataLocs <- c("env"=NA, "Rpkgs"=NA, "shinyDir"=NA)#
+	#Do the objects exist in the package environment?#
+	inEnv <- exists("dailyData") & exists("results")#
+	dataLocs["env"] <- inEnv#
+	if(inEnv){dataPath=NULL}#
+	if(!inEnv){ #If neither of the objects is currently present, search for files#
+		#First, look where you would expect to find the .RData files associated with package...#
+		if("chimpSqueal" %in% installed.packages()[,"Package"]){ #First look in the package directory, if the package is isntalled#
+			pkgData <- dir(system.file("data", package="chimpSqueal"))#
+			dataNames <- paste(c("dailyData", "results"), cVersion, ".RData", sep="")#
+			if(all(dataNames %in% pkgData)){#
+				# load(dir(system.file("data", package="chimpSqueal"), pattern=dataNames[1], full.names=TRUE), envir=parent.frame())#
+				# load(dir(system.file("data", package="chimpSqueal"), pattern=dataNames[2], full.names=TRUE), envir=parent.frame())#
+				# inRpkgs <- exists("dailyData") & exists("results")#
+				dataLocs["Rpkgs"] <- TRUE#
+				if(dataLocs["Rpkgs"]){dataPath <- dir(system.file("data", package="chimpSqueal"), pattern="\\.RData$", full.names=TRUE)}#
+			} # END all(dataNames %in% pkgData)#
+		} #END "chimpSqueal" %in% installed.packages()[,"Package"]#
+		#if neither object is present, and the data aren't in the R package directory, check shinyDir#
+		userDir <- paste("/Users/", Sys.info()["user"], sep="")#
+		shinyDir <- paste(userDir, "/Desktop/.tmpChimp", sep="")#
+		if(file.exists(shinyDir)){#
+			tmpData <- dir(shinyDir)#
+			dataNames <- paste(c("dailyData", "results"), cVersion, ".RData", sep="")#
+			if(all(dataNames %in% tmpData)){#
+				# load(dir(shinyDir, pattern=dataNames[1], full.names=TRUE), envir=parent.frame())#
+				# load(dir(shinyDir, pattern=dataNames[2], full.names=TRUE), envir=parent.frame())#
+				# inShinyDir <- exists("dailyData") & exists("results")#
+				dataLocs["shinyDir"] <- TRUE#
+				if(dataLocs["shinyDir"]){dataPath <- shinyDir}#
+			} #END all(dataNames %in% tmpData)#
+		} #END file.exists(shinyDir)		#
+	}# END !inEnv#
+	if(!any(dataLocs, na.rm=TRUE)){ #If I can't find it anywhere, then just download it, and put it in Shiny directory#
+		dlData()#
+		dataPath <- shinyDir#
+	}#
+	# =========================================#
+	# = Perform checks on script availability =#
+	# =========================================#
+	scriptsLocs <- c("env"=NA, "Rpkgs"=NA, "shinyDir"=NA)#
+	#Do the objects exist in the package environment?#
+	inEnvS <- file.exists("ui.R") & file.exists("server.R")#
+	if(inEnvS){#
+		runAppWD <- getwd()	#
+	}#
+	scriptsLocs["env"] <- inEnvS#
+	if(!inEnvS){ #If neither script is present in the current working directory, search for files#
+		#First, look where you would expect to find the .R files associated with package...#
+		if("chimpSqueal" %in% installed.packages()[,"Package"]){ #First look in the package directory, if the package is isntalled#
+			pkgScripts <- dir(system.file("R", package="chimpSqueal")) #pull out all the scripts#
+			scriptsNames <- c("ui.R", "server.R")#
+			if(all(scriptsNames %in% pkgScripts)){ #compare the scripts in the R package directory with those that we want to find#
+				runAppWD <- system.file("R", package="chimpSqueal") #If they've been found, take note of R's package directory, and save for use w/ shiny#
+				scriptsLocs["Rpkgs"] <- TRUE#
+			} # END all(scriptsNames %in% pkgScripts)#
+		} #END "chimpSqueal" %in% installed.packages()[,"Package"]#
+		#if script present in the current wd, and the scripts aren't in the R package directory, check shinyDir#
+		userDir <- paste("/Users/", Sys.info()["user"], sep="")#
+		shinyDir <- paste(userDir, "/Desktop/.tmpChimp", sep="")#
+		if(file.exists(shinyDir)){#
+			tmpData <- dir(shinyDir)#
+			scriptsNames <- c("ui.R", "server.R")#
+			if(all(scriptsNames %in% tmpData)){#
+				runAppWD <- shinyDir#
+				scriptsLocs["shinyDir"] <- TRUE#
+			} #END all(scriptsNames %in% tmpData)#
+		} #END file.exists(shinyDir)		#
+	}# END !inEnv#
+	if(!any(scriptsLocs, na.rm=TRUE)){ #If I can't find it anywhere, then just download it, and put it in Shiny directory#
+		dlScripts()#
+		runAppWD <- shinyDir#
+	}#
+	return(list(runAppWD, dataPath))#
+}
+checkChimp()
+wd4app <- checkChimp()[[1]]
+for(i in checkChimp()[[2]]){load(i)}
+checkChimp()[[2]]
+shinyDir
+paste(shinyDir,dataNames,sep="/")
+dataPath <- paste(shinyDir,dataNames,sep="/")
+dataPath
+dir(system.file("data", package="chimpSqueal"), pattern="\\.RData$", full.names=TRUE)
+checkChimp <- function(versionNumber=0.2){#
+	stopifnot(#
+		require("RCurl"),#
+		require("shiny")#
+		)#
+	cVersion <- paste("_v",versionNumber, sep="")#
+	# =======================================#
+	# = Perform checks on data availability =#
+	# =======================================#
+	dataLocs <- c("env"=NA, "Rpkgs"=NA, "shinyDir"=NA)#
+	#Do the objects exist in the package environment?#
+	inEnv <- exists("dailyData") & exists("results")#
+	dataLocs["env"] <- inEnv#
+	if(inEnv){dataPath=NULL}#
+	if(!inEnv){ #If neither of the objects is currently present, search for files#
+		#First, look where you would expect to find the .RData files associated with package...#
+		if("chimpSqueal" %in% installed.packages()[,"Package"]){ #First look in the package directory, if the package is isntalled#
+			pkgData <- dir(system.file("data", package="chimpSqueal"))#
+			dataNames <- paste(c("dailyData", "results"), cVersion, ".RData", sep="")#
+			if(all(dataNames %in% pkgData)){#
+				# load(dir(system.file("data", package="chimpSqueal"), pattern=dataNames[1], full.names=TRUE), envir=parent.frame())#
+				# load(dir(system.file("data", package="chimpSqueal"), pattern=dataNames[2], full.names=TRUE), envir=parent.frame())#
+				# inRpkgs <- exists("dailyData") & exists("results")#
+				dataLocs["Rpkgs"] <- TRUE#
+				if(dataLocs["Rpkgs"]){dataPath <- dir(system.file("data", package="chimpSqueal"), pattern="\\.RData$", full.names=TRUE)}#
+			} # END all(dataNames %in% pkgData)#
+		} #END "chimpSqueal" %in% installed.packages()[,"Package"]#
+		#if neither object is present, and the data aren't in the R package directory, check shinyDir#
+		userDir <- paste("/Users/", Sys.info()["user"], sep="")#
+		shinyDir <- paste(userDir, "/Desktop/.tmpChimp", sep="")#
+		if(file.exists(shinyDir)){#
+			tmpData <- dir(shinyDir)#
+			dataNames <- paste(c("dailyData", "results"), cVersion, ".RData", sep="")#
+			if(all(dataNames %in% tmpData)){#
+				# load(dir(shinyDir, pattern=dataNames[1], full.names=TRUE), envir=parent.frame())#
+				# load(dir(shinyDir, pattern=dataNames[2], full.names=TRUE), envir=parent.frame())#
+				# inShinyDir <- exists("dailyData") & exists("results")#
+				dataLocs["shinyDir"] <- TRUE#
+				if(dataLocs["shinyDir"]){dataPath <- paste(shinyDir,dataNames,sep="/")}#
+			} #END all(dataNames %in% tmpData)#
+		} #END file.exists(shinyDir)		#
+	}# END !inEnv#
+	if(!any(dataLocs, na.rm=TRUE)){ #If I can't find it anywhere, then just download it, and put it in Shiny directory#
+		dlData()#
+		dataPath <- paste(shinyDir,dataNames,sep="/")#
+	}#
+	# =========================================#
+	# = Perform checks on script availability =#
+	# =========================================#
+	scriptsLocs <- c("env"=NA, "Rpkgs"=NA, "shinyDir"=NA)#
+	#Do the objects exist in the package environment?#
+	inEnvS <- file.exists("ui.R") & file.exists("server.R")#
+	if(inEnvS){#
+		runAppWD <- getwd()	#
+	}#
+	scriptsLocs["env"] <- inEnvS#
+	if(!inEnvS){ #If neither script is present in the current working directory, search for files#
+		#First, look where you would expect to find the .R files associated with package...#
+		if("chimpSqueal" %in% installed.packages()[,"Package"]){ #First look in the package directory, if the package is isntalled#
+			pkgScripts <- dir(system.file("R", package="chimpSqueal")) #pull out all the scripts#
+			scriptsNames <- c("ui.R", "server.R")#
+			if(all(scriptsNames %in% pkgScripts)){ #compare the scripts in the R package directory with those that we want to find#
+				runAppWD <- system.file("R", package="chimpSqueal") #If they've been found, take note of R's package directory, and save for use w/ shiny#
+				scriptsLocs["Rpkgs"] <- TRUE#
+			} # END all(scriptsNames %in% pkgScripts)#
+		} #END "chimpSqueal" %in% installed.packages()[,"Package"]#
+		#if script present in the current wd, and the scripts aren't in the R package directory, check shinyDir#
+		userDir <- paste("/Users/", Sys.info()["user"], sep="")#
+		shinyDir <- paste(userDir, "/Desktop/.tmpChimp", sep="")#
+		if(file.exists(shinyDir)){#
+			tmpData <- dir(shinyDir)#
+			scriptsNames <- c("ui.R", "server.R")#
+			if(all(scriptsNames %in% tmpData)){#
+				runAppWD <- shinyDir#
+				scriptsLocs["shinyDir"] <- TRUE#
+			} #END all(scriptsNames %in% tmpData)#
+		} #END file.exists(shinyDir)		#
+	}# END !inEnv#
+	if(!any(scriptsLocs, na.rm=TRUE)){ #If I can't find it anywhere, then just download it, and put it in Shiny directory#
+		dlScripts()#
+		runAppWD <- shinyDir#
+	}#
+	return(list(runAppWD, dataPath))#
+}
+checkChimp()[[2]]
+for(i in checkChimp()[[2]]){load(i)}
+ls()
+rm("dailyData", "results")
+for(i in checkChimp()[[2]]){load(i)}
+ls()
+Ryan Batt#
+# Wrapper for Shiny Chimp app#
+# Versions for the following scripts increment in unison: Squeal2_ReadDailyData_vx.x.R, Squeal2_Statistics_vx.x.R, Run_Shiny_SoS_v0.1.R; The names of ui.R and server.R are inflexible, so new version of this script (project) are saved in new subfolders. Because of this style, increases in the version number for a file do not necessarily indicate that changes have been made to the file, merely that at least one file in the project has been substantially changed.#
+#_vtest (13-Sept-2013) Familiarize with shiny, using squeal data, by plotting time series and setting up skeleton ui#
+#_v0.0 (15-Sept-2013) Calculate statistics, plot in shiny, and option to save figures#
+#_v0.1 (16-Sept-2013) Begin configuration for distribution. Set up to be downloaded from FTP, sourced by a single wrapper function (that will be emailed, not downloaded, and whose version will not change). Improve error messages/ handling. Figure aesthetics. Cancel out Secchi for Grace.#
+#
+# ===================#
+# = dlData Function =#
+# ===================#
+dlData <- function(cVersion="_v0.2"){#
+	#Identify and create LOCAL directories#
+	userDir <- paste("/Users/", Sys.info()["user"], sep="")#
+	shinyDir <- paste(userDir, "/Desktop/.tmpChimp", sep="")#
+	if(!file.exists(shinyDir)){#
+		dir.create(shinyDir)#
+	}#
+	#Identify server directories#
+	baseURL <- paste("ftp://162.144.12.28/squeal2Chimps/", "chimp", cVersion, "/", sep="")#
+	ddURL <- paste(baseURL, "dailyData", cVersion, ".RData", sep="")#
+	resURL <- paste(baseURL, "results", cVersion, ".RData", sep="")#
+	cascUsePass <- "cascade@bookofluke.org:tjolahop"#
+#
+	#Check for package installation#
+	stopifnot(require("RCurl"))#
+#
+	#Download dailyData_vX.X.RData#
+	print("Downloading Daily Data")#
+	flush.console()#
+	ddConn <- getBinaryURL(ddURL, userpwd=cascUsePass, connecttimeout=120)#
+	writeBin(ddConn, "temp.RData")#
+	load("temp.RData")#
+	unlink("temp.RData")#
+	save(dailyData, file=paste(shinyDir, "/dailyData", cVersion, ".RData", sep=""))#
+#
+	#Download the .RData file of statistical output#
+	print("Downloading Statistical Output")#
+	flush.console()#
+	resConn <- getBinaryURL(resURL, userpwd=cascUsePass)#
+	writeBin(resConn, "temp.RData")#
+	load("temp.RData")#
+	unlink("temp.RData")#
+	save(results, file=paste(shinyDir, "/results", cVersion, ".RData", sep=""))#
+}#
+#
+dlScripts <- function(cVersion="_v0.2"){#
+	#Identify and create LOCAL directories#
+	userDir <- paste("/Users/", Sys.info()["user"], sep="")#
+	shinyDir <- paste(userDir, "/Desktop/.tmpChimp", sep="")#
+	if(!file.exists(shinyDir)){#
+		dir.create(shinyDir)#
+	}#
+	#Identify server directories#
+	baseURL <- paste("ftp://162.144.12.28/squeal2Chimps/", "chimp", cVersion, "/", sep="")#
+	uiURL <- paste(baseURL, "ui.R", sep="")#
+	serverURL <- paste(baseURL, "server.R", sep="")#
+	cascUsePass <- "cascade@bookofluke.org:tjolahop"#
+#
+	#check for package#
+	stopifnot(require("RCurl"))#
+	#download UI#
+	print("Downloading Chimp UI")#
+	flush.console()#
+	ui <- getURL(uiURL, userpwd=cascUsePass)#
+	uiConn <- file(paste(shinyDir, "/ui.R", sep=""))#
+	writeLines(ui, con=uiConn)#
+	close(uiConn)#
+#
+	#download server#
+	print("Downloading Chimp Server")#
+	flush.console()#
+	server <- getURL(serverURL, userpwd=cascUsePass)#
+	serverConn <- file(paste(shinyDir, "/server.R", sep=""))#
+	writeLines(server, con=serverConn)#
+	close(serverConn)#
+}#
+#
+checkChimp <- function(versionNumber=0.2){#
+	stopifnot(#
+		require("RCurl"),#
+		require("shiny")#
+		)#
+	cVersion <- paste("_v",versionNumber, sep="")#
+	# =======================================#
+	# = Perform checks on data availability =#
+	# =======================================#
+	dataLocs <- c("env"=NA, "Rpkgs"=NA, "shinyDir"=NA)#
+	#Do the objects exist in the package environment?#
+	inEnv <- exists("dailyData") & exists("results")#
+	dataLocs["env"] <- inEnv#
+	if(inEnv){dataPath=NULL}#
+	if(!inEnv){ #If neither of the objects is currently present, search for files#
+		#First, look where you would expect to find the .RData files associated with package...#
+		if("chimpSqueal" %in% installed.packages()[,"Package"]){ #First look in the package directory, if the package is isntalled#
+			pkgData <- dir(system.file("data", package="chimpSqueal"))#
+			dataNames <- paste(c("dailyData", "results"), cVersion, ".RData", sep="")#
+			if(all(dataNames %in% pkgData)){#
+				# load(dir(system.file("data", package="chimpSqueal"), pattern=dataNames[1], full.names=TRUE), envir=parent.frame())#
+				# load(dir(system.file("data", package="chimpSqueal"), pattern=dataNames[2], full.names=TRUE), envir=parent.frame())#
+				# inRpkgs <- exists("dailyData") & exists("results")#
+				dataLocs["Rpkgs"] <- TRUE#
+				if(dataLocs["Rpkgs"]){dataPath <- dir(system.file("data", package="chimpSqueal"), pattern="\\.RData$", full.names=TRUE)}#
+			} # END all(dataNames %in% pkgData)#
+		} #END "chimpSqueal" %in% installed.packages()[,"Package"]#
+		#if neither object is present, and the data aren't in the R package directory, check shinyDir#
+		userDir <- paste("/Users/", Sys.info()["user"], sep="")#
+		shinyDir <- paste(userDir, "/Desktop/.tmpChimp", sep="")#
+		if(file.exists(shinyDir)){#
+			tmpData <- dir(shinyDir)#
+			dataNames <- paste(c("dailyData", "results"), cVersion, ".RData", sep="")#
+			if(all(dataNames %in% tmpData)){#
+				# load(dir(shinyDir, pattern=dataNames[1], full.names=TRUE), envir=parent.frame())#
+				# load(dir(shinyDir, pattern=dataNames[2], full.names=TRUE), envir=parent.frame())#
+				# inShinyDir <- exists("dailyData") & exists("results")#
+				dataLocs["shinyDir"] <- TRUE#
+				if(dataLocs["shinyDir"]){dataPath <- paste(shinyDir,dataNames,sep="/")}#
+			} #END all(dataNames %in% tmpData)#
+		} #END file.exists(shinyDir)		#
+	}# END !inEnv#
+	if(!any(dataLocs, na.rm=TRUE)){ #If I can't find it anywhere, then just download it, and put it in Shiny directory#
+		dlData()#
+		dataPath <- paste(shinyDir,dataNames,sep="/")#
+	}#
+	# =========================================#
+	# = Perform checks on script availability =#
+	# =========================================#
+	scriptsLocs <- c("env"=NA, "Rpkgs"=NA, "shinyDir"=NA)#
+	#Do the objects exist in the package environment?#
+	inEnvS <- file.exists("ui.R") & file.exists("server.R")#
+	if(inEnvS){#
+		runAppWD <- getwd()	#
+	}#
+	scriptsLocs["env"] <- inEnvS#
+	if(!inEnvS){ #If neither script is present in the current working directory, search for files#
+		#First, look where you would expect to find the .R files associated with package...#
+		if("chimpSqueal" %in% installed.packages()[,"Package"]){ #First look in the package directory, if the package is isntalled#
+			pkgScripts <- dir(system.file("R", package="chimpSqueal")) #pull out all the scripts#
+			scriptsNames <- c("ui.R", "server.R")#
+			if(all(scriptsNames %in% pkgScripts)){ #compare the scripts in the R package directory with those that we want to find#
+				runAppWD <- system.file("R", package="chimpSqueal") #If they've been found, take note of R's package directory, and save for use w/ shiny#
+				scriptsLocs["Rpkgs"] <- TRUE#
+			} # END all(scriptsNames %in% pkgScripts)#
+		} #END "chimpSqueal" %in% installed.packages()[,"Package"]#
+		#if script present in the current wd, and the scripts aren't in the R package directory, check shinyDir#
+		userDir <- paste("/Users/", Sys.info()["user"], sep="")#
+		shinyDir <- paste(userDir, "/Desktop/.tmpChimp", sep="")#
+		if(file.exists(shinyDir)){#
+			tmpData <- dir(shinyDir)#
+			scriptsNames <- c("ui.R", "server.R")#
+			if(all(scriptsNames %in% tmpData)){#
+				runAppWD <- shinyDir#
+				scriptsLocs["shinyDir"] <- TRUE#
+			} #END all(scriptsNames %in% tmpData)#
+		} #END file.exists(shinyDir)		#
+	}# END !inEnv#
+	if(!any(scriptsLocs, na.rm=TRUE)){ #If I can't find it anywhere, then just download it, and put it in Shiny directory#
+		dlScripts()#
+		runAppWD <- shinyDir#
+	}#
+	return(list(runAppWD, dataPath))#
+}#
+runChimp <- function(versionNumber=0.2){#
+	stopifnot(#
+		require("RCurl"),#
+		require("shiny")#
+		)#
+	cVersion <- paste("_v",versionNumber, sep="")#
+	wd4app <- checkChimp()[[1]]#
+	# return(wd4app)#
+	runApp(wd4app)#
+}
+rm(list=ls())
+runChimp
+runChimp <- function(versionNumber=0.2){#
+	stopifnot(#
+		require("RCurl"),#
+		require("shiny")#
+		)#
+	cVersion <- paste("_v",versionNumber, sep="")#
+	wd4app <- checkChimp()[[1]]#
+	# return(wd4app)#
+	runApp(wd4app)#
+}
+Ryan Batt#
+# Wrapper for Shiny Chimp app#
+# Versions for the following scripts increment in unison: Squeal2_ReadDailyData_vx.x.R, Squeal2_Statistics_vx.x.R, Run_Shiny_SoS_v0.1.R; The names of ui.R and server.R are inflexible, so new version of this script (project) are saved in new subfolders. Because of this style, increases in the version number for a file do not necessarily indicate that changes have been made to the file, merely that at least one file in the project has been substantially changed.#
+#_vtest (13-Sept-2013) Familiarize with shiny, using squeal data, by plotting time series and setting up skeleton ui#
+#_v0.0 (15-Sept-2013) Calculate statistics, plot in shiny, and option to save figures#
+#_v0.1 (16-Sept-2013) Begin configuration for distribution. Set up to be downloaded from FTP, sourced by a single wrapper function (that will be emailed, not downloaded, and whose version will not change). Improve error messages/ handling. Figure aesthetics. Cancel out Secchi for Grace.#
+#
+# ===================#
+# = dlData Function =#
+# ===================#
+dlData <- function(cVersion="_v0.2"){#
+	#Identify and create LOCAL directories#
+	userDir <- paste("/Users/", Sys.info()["user"], sep="")#
+	shinyDir <- paste(userDir, "/Desktop/.tmpChimp", sep="")#
+	if(!file.exists(shinyDir)){#
+		dir.create(shinyDir)#
+	}#
+	#Identify server directories#
+	baseURL <- paste("ftp://162.144.12.28/squeal2Chimps/", "chimp", cVersion, "/", sep="")#
+	ddURL <- paste(baseURL, "dailyData", cVersion, ".RData", sep="")#
+	resURL <- paste(baseURL, "results", cVersion, ".RData", sep="")#
+	cascUsePass <- "cascade@bookofluke.org:tjolahop"#
+#
+	#Check for package installation#
+	stopifnot(require("RCurl"))#
+#
+	#Download dailyData_vX.X.RData#
+	print("Downloading Daily Data")#
+	flush.console()#
+	ddConn <- getBinaryURL(ddURL, userpwd=cascUsePass, connecttimeout=120)#
+	writeBin(ddConn, "temp.RData")#
+	load("temp.RData")#
+	unlink("temp.RData")#
+	save(dailyData, file=paste(shinyDir, "/dailyData", cVersion, ".RData", sep=""))#
+#
+	#Download the .RData file of statistical output#
+	print("Downloading Statistical Output")#
+	flush.console()#
+	resConn <- getBinaryURL(resURL, userpwd=cascUsePass)#
+	writeBin(resConn, "temp.RData")#
+	load("temp.RData")#
+	unlink("temp.RData")#
+	save(results, file=paste(shinyDir, "/results", cVersion, ".RData", sep=""))#
+}#
+#
+dlScripts <- function(cVersion="_v0.2"){#
+	#Identify and create LOCAL directories#
+	userDir <- paste("/Users/", Sys.info()["user"], sep="")#
+	shinyDir <- paste(userDir, "/Desktop/.tmpChimp", sep="")#
+	if(!file.exists(shinyDir)){#
+		dir.create(shinyDir)#
+	}#
+	#Identify server directories#
+	baseURL <- paste("ftp://162.144.12.28/squeal2Chimps/", "chimp", cVersion, "/", sep="")#
+	uiURL <- paste(baseURL, "ui.R", sep="")#
+	serverURL <- paste(baseURL, "server.R", sep="")#
+	cascUsePass <- "cascade@bookofluke.org:tjolahop"#
+#
+	#check for package#
+	stopifnot(require("RCurl"))#
+	#download UI#
+	print("Downloading Chimp UI")#
+	flush.console()#
+	ui <- getURL(uiURL, userpwd=cascUsePass)#
+	uiConn <- file(paste(shinyDir, "/ui.R", sep=""))#
+	writeLines(ui, con=uiConn)#
+	close(uiConn)#
+#
+	#download server#
+	print("Downloading Chimp Server")#
+	flush.console()#
+	server <- getURL(serverURL, userpwd=cascUsePass)#
+	serverConn <- file(paste(shinyDir, "/server.R", sep=""))#
+	writeLines(server, con=serverConn)#
+	close(serverConn)#
+}#
+#
+checkChimp <- function(versionNumber=0.2){#
+	stopifnot(#
+		require("RCurl"),#
+		require("shiny")#
+		)#
+	cVersion <- paste("_v",versionNumber, sep="")#
+	# =======================================#
+	# = Perform checks on data availability =#
+	# =======================================#
+	dataLocs <- c("env"=NA, "Rpkgs"=NA, "shinyDir"=NA)#
+	#Do the objects exist in the package environment?#
+	inEnv <- exists("dailyData") & exists("results")#
+	dataLocs["env"] <- inEnv#
+	if(inEnv){dataPath=NULL}#
+	if(!inEnv){ #If neither of the objects is currently present, search for files#
+		#First, look where you would expect to find the .RData files associated with package...#
+		if("chimpSqueal" %in% installed.packages()[,"Package"]){ #First look in the package directory, if the package is isntalled#
+			pkgData <- dir(system.file("data", package="chimpSqueal"))#
+			dataNames <- paste(c("dailyData", "results"), cVersion, ".RData", sep="")#
+			if(all(dataNames %in% pkgData)){#
+				# load(dir(system.file("data", package="chimpSqueal"), pattern=dataNames[1], full.names=TRUE), envir=parent.frame())#
+				# load(dir(system.file("data", package="chimpSqueal"), pattern=dataNames[2], full.names=TRUE), envir=parent.frame())#
+				# inRpkgs <- exists("dailyData") & exists("results")#
+				dataLocs["Rpkgs"] <- TRUE#
+				if(dataLocs["Rpkgs"]){dataPath <- dir(system.file("data", package="chimpSqueal"), pattern="\\.RData$", full.names=TRUE)}#
+			} # END all(dataNames %in% pkgData)#
+		} #END "chimpSqueal" %in% installed.packages()[,"Package"]#
+		#if neither object is present, and the data aren't in the R package directory, check shinyDir#
+		userDir <- paste("/Users/", Sys.info()["user"], sep="")#
+		shinyDir <- paste(userDir, "/Desktop/.tmpChimp", sep="")#
+		if(file.exists(shinyDir)){#
+			tmpData <- dir(shinyDir)#
+			dataNames <- paste(c("dailyData", "results"), cVersion, ".RData", sep="")#
+			if(all(dataNames %in% tmpData)){#
+				# load(dir(shinyDir, pattern=dataNames[1], full.names=TRUE), envir=parent.frame())#
+				# load(dir(shinyDir, pattern=dataNames[2], full.names=TRUE), envir=parent.frame())#
+				# inShinyDir <- exists("dailyData") & exists("results")#
+				dataLocs["shinyDir"] <- TRUE#
+				if(dataLocs["shinyDir"]){dataPath <- paste(shinyDir,dataNames,sep="/")}#
+			} #END all(dataNames %in% tmpData)#
+		} #END file.exists(shinyDir)		#
+	}# END !inEnv#
+	if(!any(dataLocs, na.rm=TRUE)){ #If I can't find it anywhere, then just download it, and put it in Shiny directory#
+		dlData()#
+		dataPath <- paste(shinyDir,dataNames,sep="/")#
+	}#
+	# =========================================#
+	# = Perform checks on script availability =#
+	# =========================================#
+	scriptsLocs <- c("env"=NA, "Rpkgs"=NA, "shinyDir"=NA)#
+	#Do the objects exist in the package environment?#
+	inEnvS <- file.exists("ui.R") & file.exists("server.R")#
+	if(inEnvS){#
+		runAppWD <- getwd()	#
+	}#
+	scriptsLocs["env"] <- inEnvS#
+	if(!inEnvS){ #If neither script is present in the current working directory, search for files#
+		#First, look where you would expect to find the .R files associated with package...#
+		if("chimpSqueal" %in% installed.packages()[,"Package"]){ #First look in the package directory, if the package is isntalled#
+			pkgScripts <- dir(system.file("R", package="chimpSqueal")) #pull out all the scripts#
+			scriptsNames <- c("ui.R", "server.R")#
+			if(all(scriptsNames %in% pkgScripts)){ #compare the scripts in the R package directory with those that we want to find#
+				runAppWD <- system.file("R", package="chimpSqueal") #If they've been found, take note of R's package directory, and save for use w/ shiny#
+				scriptsLocs["Rpkgs"] <- TRUE#
+			} # END all(scriptsNames %in% pkgScripts)#
+		} #END "chimpSqueal" %in% installed.packages()[,"Package"]#
+		#if script present in the current wd, and the scripts aren't in the R package directory, check shinyDir#
+		userDir <- paste("/Users/", Sys.info()["user"], sep="")#
+		shinyDir <- paste(userDir, "/Desktop/.tmpChimp", sep="")#
+		if(file.exists(shinyDir)){#
+			tmpData <- dir(shinyDir)#
+			scriptsNames <- c("ui.R", "server.R")#
+			if(all(scriptsNames %in% tmpData)){#
+				runAppWD <- shinyDir#
+				scriptsLocs["shinyDir"] <- TRUE#
+			} #END all(scriptsNames %in% tmpData)#
+		} #END file.exists(shinyDir)		#
+	}# END !inEnv#
+	if(!any(scriptsLocs, na.rm=TRUE)){ #If I can't find it anywhere, then just download it, and put it in Shiny directory#
+		dlScripts()#
+		runAppWD <- shinyDir#
+	}#
+	return(list(runAppWD, dataPath))#
+}#
+runChimp <- function(versionNumber=0.2){#
+	stopifnot(#
+		require("RCurl"),#
+		require("shiny")#
+		)#
+	cVersion <- paste("_v",versionNumber, sep="")#
+	wd4app <- checkChimp()[[1]]#
+	# return(wd4app)#
+	runApp(wd4app)#
+}
+runChimp()
+remove.packages("chimpSqueal")
+rm(list=ls())#
+buildVersion <- "_v0.2"#
+#
+myPath <- paste("/Users/Battrd/Documents/School&Work/WiscResearch/Squeal2/Squeal2_Chimp2013/Chimp", buildVersion, sep="")#
+setwd(myPath)#
+runFileName <- paste("Run_Shiny_SoS", buildVersion, ".R", sep="")#
+#
+## Build the package#
+## ---------------------------------------------------------------------#
+#
+## Remove the folder if it exists#
+if(file.exists("./chimpSqueal")){#
+	unlink("chimpSqueal", recursive = TRUE)#
+}#
+#
+## Build the package#
+package.skeleton("chimpSqueal", code_files = paste("./", dir("./", pattern = "\\.R$"), sep = ""), force = TRUE)
+Include the data#
+resultsName <- paste("results", buildVersion, ".RData", sep="")#
+dailyDataName <- paste("dailyData", buildVersion, ".RData", sep="")#
+dir.create("chimpSqueal/data")#
+file.copy(from = resultsName, to = "chimpSqueal/data/", overwrite = TRUE)#
+file.copy(from = dailyDataName, to = "chimpSqueal/data/", overwrite = TRUE)#
+file.copy(from = "./DESCRIPTION", to = "chimpSqueal/", overwrite = TRUE)
+Use roxygen to build the documentation#
+library(roxygen2)#
+roxygenize("chimpSqueal")#
+file.copy(from = "./NAMESPACE", to = "chimpSqueal/", overwrite = TRUE)
+system("R CMD INSTALL --build chimpSqueal")
+system("R CMD build chimpSqueal")
+system("R CMD check chimpSqueal")
+setwd("~/")
+rm(list=ls())
+install.packages("chimpSqueal_0.2.tar.gz", type="source", repos=NULL)
+library("chimpSqueal")
+?runChimp
+install.packages("chimpSqueal_0.2.tar.gz", type="source", repos=NULL)
+library("chimpSqueal")
+?runChimp
+?checkChimp
+runChimp()
+remove.packages("chimpSqueal")
+install.packages("chimpSqueal_0.2.tar.gz", type="source", repos=NULL)
+library("chimpSqueal")
+runChimp()
+writeServer <- '# Ryan Batt
+writeServer <- '# Ryan Batt#
+# Server commands for Shiny Chimp app#
+# Versions for the following scripts increment in unison: Squeal2_ReadDailyData_vx.x.R, Squeal2_Statistics_vx.x.R, Run_Shiny_SoS_v0.1.R; The names of ui.R and server.R are inflexible, so new version of this script (project) are saved in new subfolders. Because of this style, increases in the version number for a file do not necessarily indicate that changes have been made to the file, merely that at least one file in the project has been substantially changed.#
+#_v0.2 (18-Sept-2013): Built for R package chimpSqueal#
+#
+library(shiny)#
+#
+if(exists("dailyData") & exists("results")){#
+	dailyData <- chimpSqueal:::dailyData#
+	results <- chimpSqueal:::results#
+	print("Found data sets locally")#
+}else{#
+	print("Could not find data sets locally, \n downloading data and scripts from FTP")#
+	dataLocations <- checkChimp()[[2]]#
+	print(dataLocations)#
+	load(dataLocations[1])#
+	load(dataLocations[2])#
+}#
+print(ls())#
+#
+plotF <- function(df, respN, lakes){	#
+	lCols <- c("Paul"="blue", "Peter"="red", "Tuesday"="black")#
+	nlakes <- length(lakes)#
+	i1 <- is.element(df[,"Lake"], lakes)#
+	Ylim <- range(df[i1,respN], na.rm=TRUE)#
+	Xlim <- range(df[i1,"DoY"], na.rm=TRUE)#
+	for(i in 1:nlakes){#
+		tLake <- lakes[i]#
+		iLake <- df[,"Lake"] == tLake#
+		day <- df[iLake,"DoY"]#
+		resp <- df[iLake,respN]#
+		if(i==1){#
+			plot(day, resp, col=lCols[tLake], type="l", ylim=Ylim, xlim=Xlim, xlab="", ylab="")#
+			if(is.element("Stat",names(df))){#
+				mtext(paste(respN, "\n", unique(df[,"Stat"])), side=2, line=2.25)#
+			}else{#
+				mtext(respN, side=2, line=2.5)#
+			}#
+		}else{#
+			lines(day, resp, col=lCols[tLake])#
+		}#end if-else#
+	}#end loop#
+}#end function#
+#
+getDat <- function(wOpt, dOpt){#
+	rKey <- attr(results, "split_labels")#
+	iRes <- which(rKey[,"RollWin"]==wOpt & dOpt==rKey[,"Detrend"])#
+	return(results[[iRes]])#
+}#
+#
+# Define server logic required to plot various variables against mpg#
+shinyServer(function(input, output) {	#
+	sDat <- reactive({getDat(wOpt=input$window, dOpt=input$detrend)})#
+	acI <- reactive({sDat()[,"Stat"]==input$acOpt})#
+	varI <- reactive({sDat()[,"Stat"]==input$varOpt})#
+	tsSave <- reactive({plotF(df=dailyData, respN=input$variable, lakes=input$lakeid)})#
+	statSave <- reactive({#
+		par(mfrow=c(2,1), mar=c(2,5,0.5,0.5))#
+		plotF(df=sDat()[acI(),], respN=input$variable, lakes=input$lakeid)#
+		plotF(df=sDat()[varI(),], respN=input$variable, lakes=input$lakeid)#
+	})#
+	output$tsPlot <- renderPlot({tsSave()})#
+	output$statPlot <- renderPlot({statSave()})	#
+	output$dFig <- downloadHandler(#
+		filename <- function(){#
+			if(input$panelID==1){#
+				qn <- c("Paul"="L", "Peter"="R", "Tuesday"="T")#
+				sL <- function(){paste(qn[unlist(input$lakeid)], collapse="")}#
+				print(sL())#
+				vname <- function(){input$variable}#
+				paste("Chimp_", vname(), "_", sL(), ".pdf", sep="")#
+			}else{#
+				qn <- c("Paul"="L", "Peter"="R", "Tuesday"="T")#
+				sL <- function(){paste(input$lakeid, collapse="")}#
+				vname <- function(){input$variable}#
+				wname <- function(){paste(input$window,"-day", sep="")}#
+				paste("Chimp_", vname(), "_", sL(), "_", wname(), ".pdf", sep="")#
+			}#
+		},#end filename function#
+		content <- function(file){#
+			if(input$panelID==1){#
+				pdf(file, width=5, height=3.5)#
+				par(mar=c(4,4,0.5,0.5), ps=10, cex=1)#
+				plotF(df=dailyData, respN=input$variable, lakes=input$lakeid)#
+				mtext("DoY",side=1, line=2.5)#
+				dev.off()#
+			}else{#
+				pdf(file, width=6, height=6)#
+				par(mfrow=c(2,1), mar=c(3,4,0.5,0.5), oma=c(1,0,0,0), ps=10, cex=1)#
+				plotF(df=sDat()[acI(),], respN=input$variable, lakes=input$lakeid)#
+				plotF(df=sDat()[varI(),], respN=input$variable, lakes=input$lakeid)#
+				mtext("DoY",side=1, line=2.5)#
+				dev.off()			#
+			}#
+		},#end content function#
+		contentType="image/pdf"#
+	)#end downloadHandler#
+})#end shinyServer#
+'
+serverConn <- file("server.R")#
+	serverLines <-#
+	'#
+	# Ryan Batt#
+	# Server commands for Shiny Chimp app#
+	# Versions for the following scripts increment in unison: Squeal2_ReadDailyData_vx.x.R, Squeal2_Statistics_vx.x.R, Run_Shiny_SoS_v0.1.R; The names of ui.R and server.R are inflexible, so new version of this script (project) are saved in new subfolders. Because of this style, increases in the version number for a file do not necessarily indicate that changes have been made to the file, merely that at least one file in the project has been substantially changed.#
+	#_v0.2 (18-Sept-2013): Built for R package chimpSqueal#
+#
+	library(shiny)#
+#
+	if(exists("dailyData") & exists("results")){#
+		dailyData <- chimpSqueal:::dailyData#
+		results <- chimpSqueal:::results#
+		print("Found data sets locally")#
+	}else{#
+		print("Could not find data sets locally, \n downloading data and scripts from FTP")#
+		dataLocations <- checkChimp()[[2]]#
+		print(dataLocations)#
+		load(dataLocations[1])#
+		load(dataLocations[2])#
+	}#
+	print(ls())#
+#
+	plotF <- function(df, respN, lakes){	#
+		lCols <- c("Paul"="blue", "Peter"="red", "Tuesday"="black")#
+		nlakes <- length(lakes)#
+		i1 <- is.element(df[,"Lake"], lakes)#
+		Ylim <- range(df[i1,respN], na.rm=TRUE)#
+		Xlim <- range(df[i1,"DoY"], na.rm=TRUE)#
+#
+		for(i in 1:nlakes){#
+			tLake <- lakes[i]#
+			iLake <- df[,"Lake"] == tLake#
+			day <- df[iLake,"DoY"]#
+			resp <- df[iLake,respN]#
+#
+			if(i==1){#
+				plot(day, resp, col=lCols[tLake], type="l", ylim=Ylim, xlim=Xlim, xlab="", ylab="")#
+				if(is.element("Stat",names(df))){#
+					mtext(paste(respN, "\n", unique(df[,"Stat"])), side=2, line=2.25)#
+				}else{#
+					mtext(respN, side=2, line=2.5)#
+				}#
+#
+			}else{#
+				lines(day, resp, col=lCols[tLake])#
+			}#end if-else#
+		}#end loop#
+	}#end function#
+#
+	getDat <- function(wOpt, dOpt){#
+		rKey <- attr(results, "split_labels")#
+		iRes <- which(rKey[,"RollWin"]==wOpt & dOpt==rKey[,"Detrend"])#
+		return(results[[iRes]])#
+	}#
+#
+	# Define server logic required to plot various variables against mpg#
+	shinyServer(function(input, output) {	#
+		sDat <- reactive({getDat(wOpt=input$window, dOpt=input$detrend)})#
+		acI <- reactive({sDat()[,"Stat"]==input$acOpt})#
+		varI <- reactive({sDat()[,"Stat"]==input$varOpt})#
+#
+		tsSave <- reactive({plotF(df=dailyData, respN=input$variable, lakes=input$lakeid)})#
+		statSave <- reactive({#
+			par(mfrow=c(2,1), mar=c(2,5,0.5,0.5))#
+			plotF(df=sDat()[acI(),], respN=input$variable, lakes=input$lakeid)#
+			plotF(df=sDat()[varI(),], respN=input$variable, lakes=input$lakeid)#
+		})#
+#
+		output$tsPlot <- renderPlot({tsSave()})#
+		output$statPlot <- renderPlot({statSave()})	#
+#
+		output$dFig <- downloadHandler(#
+			filename <- function(){#
+				if(input$panelID==1){#
+					qn <- c("Paul"="L", "Peter"="R", "Tuesday"="T")#
+					sL <- function(){paste(qn[unlist(input$lakeid)], collapse="")}#
+					print(sL())#
+					vname <- function(){input$variable}#
+					paste("Chimp_", vname(), "_", sL(), ".pdf", sep="")#
+				}else{#
+					qn <- c("Paul"="L", "Peter"="R", "Tuesday"="T")#
+					sL <- function(){paste(input$lakeid, collapse="")}#
+					vname <- function(){input$variable}#
+					wname <- function(){paste(input$window,"-day", sep="")}#
+					paste("Chimp_", vname(), "_", sL(), "_", wname(), ".pdf", sep="")#
+				}#
+			},#end filename function#
+			content <- function(file){#
+				if(input$panelID==1){#
+					pdf(file, width=5, height=3.5)#
+					par(mar=c(4,4,0.5,0.5), ps=10, cex=1)#
+					plotF(df=dailyData, respN=input$variable, lakes=input$lakeid)#
+					mtext("DoY",side=1, line=2.5)#
+					dev.off()#
+				}else{#
+					pdf(file, width=6, height=6)#
+					par(mfrow=c(2,1), mar=c(3,4,0.5,0.5), oma=c(1,0,0,0), ps=10, cex=1)#
+					plotF(df=sDat()[acI(),], respN=input$variable, lakes=input$lakeid)#
+					plotF(df=sDat()[varI(),], respN=input$variable, lakes=input$lakeid)#
+					mtext("DoY",side=1, line=2.5)#
+					dev.off()			#
+				}#
+			},#end content function#
+			contentType="image/pdf"#
+		)#end downloadHandler#
+	})#end shinyServer#
+	'
+length(serverLines)
+nchar(serverLines)
+userDir <- paste("/Users/", Sys.info()["user"], sep="")#
+	shinyDir <- paste(userDir, "/Desktop/.tmpChimp", sep="")#
+	if(!file.exists(shinyDir)){#
+		dir.create(shinyDir)#
+	}
+writeServer <- function(){#
+		serverConn <- file("server.R")#
+		serverLines <-#
+			('#
+			# Ryan Batt#
+			# Server commands for Shiny Chimp app#
+			# Versions for the following scripts increment in unison: Squeal2_ReadDailyData_vx.x.R, Squeal2_Statistics_vx.x.R, Run_Shiny_SoS_v0.1.R; The names of ui.R and server.R are inflexible, so new version of this script (project) are saved in new subfolders. Because of this style, increases in the version number for a file do not necessarily indicate that changes have been made to the file, merely that at least one file in the project has been substantially changed.#
+			#_v0.2 (18-Sept-2013): Built for R package chimpSqueal#
+#
+			library(shiny)#
+#
+			if(exists("dailyData") & exists("results")){#
+				dailyData <- chimpSqueal:::dailyData#
+				results <- chimpSqueal:::results#
+				print("Found data sets locally")#
+			}else{#
+				print("Could not find data sets locally, \n downloading data and scripts from FTP")#
+				dataLocations <- checkChimp()[[2]]#
+				print(dataLocations)#
+				load(dataLocations[1])#
+				load(dataLocations[2])#
+			}#
+			print(ls())#
+#
+			plotF <- function(df, respN, lakes){	#
+				lCols <- c("Paul"="blue", "Peter"="red", "Tuesday"="black")#
+				nlakes <- length(lakes)#
+				i1 <- is.element(df[,"Lake"], lakes)#
+				Ylim <- range(df[i1,respN], na.rm=TRUE)#
+				Xlim <- range(df[i1,"DoY"], na.rm=TRUE)#
+#
+				for(i in 1:nlakes){#
+					tLake <- lakes[i]#
+					iLake <- df[,"Lake"] == tLake#
+					day <- df[iLake,"DoY"]#
+					resp <- df[iLake,respN]#
+#
+					if(i==1){#
+						plot(day, resp, col=lCols[tLake], type="l", ylim=Ylim, xlim=Xlim, xlab="", ylab="")#
+						if(is.element("Stat",names(df))){#
+							mtext(paste(respN, "\n", unique(df[,"Stat"])), side=2, line=2.25)#
+						}else{#
+							mtext(respN, side=2, line=2.5)#
+						}#
+#
+					}else{#
+						lines(day, resp, col=lCols[tLake])#
+					}#end if-else#
+				}#end loop#
+			}#end function#
+#
+			getDat <- function(wOpt, dOpt){#
+				rKey <- attr(results, "split_labels")#
+				iRes <- which(rKey[,"RollWin"]==wOpt & dOpt==rKey[,"Detrend"])#
+				return(results[[iRes]])#
+			}#
+#
+			# Define server logic required to plot various variables against mpg#
+			shinyServer(function(input, output) {	#
+				sDat <- reactive({getDat(wOpt=input$window, dOpt=input$detrend)})#
+				acI <- reactive({sDat()[,"Stat"]==input$acOpt})#
+				varI <- reactive({sDat()[,"Stat"]==input$varOpt})#
+#
+				tsSave <- reactive({plotF(df=dailyData, respN=input$variable, lakes=input$lakeid)})#
+				statSave <- reactive({#
+					par(mfrow=c(2,1), mar=c(2,5,0.5,0.5))#
+					plotF(df=sDat()[acI(),], respN=input$variable, lakes=input$lakeid)#
+					plotF(df=sDat()[varI(),], respN=input$variable, lakes=input$lakeid)#
+				})#
+#
+				output$tsPlot <- renderPlot({tsSave()})#
+				output$statPlot <- renderPlot({statSave()})	#
+#
+				output$dFig <- downloadHandler(#
+					filename <- function(){#
+						if(input$panelID==1){#
+							qn <- c("Paul"="L", "Peter"="R", "Tuesday"="T")#
+							sL <- function(){paste(qn[unlist(input$lakeid)], collapse="")}#
+							print(sL())#
+							vname <- function(){input$variable}#
+							paste("Chimp_", vname(), "_", sL(), ".pdf", sep="")#
+						}else{#
+							qn <- c("Paul"="L", "Peter"="R", "Tuesday"="T")#
+							sL <- function(){paste(input$lakeid, collapse="")}#
+							vname <- function(){input$variable}#
+							wname <- function(){paste(input$window,"-day", sep="")}#
+							paste("Chimp_", vname(), "_", sL(), "_", wname(), ".pdf", sep="")#
+						}#
+					},#end filename function#
+					content <- function(file){#
+						if(input$panelID==1){#
+							pdf(file, width=5, height=3.5)#
+							par(mar=c(4,4,0.5,0.5), ps=10, cex=1)#
+							plotF(df=dailyData, respN=input$variable, lakes=input$lakeid)#
+							mtext("DoY",side=1, line=2.5)#
+							dev.off()#
+						}else{#
+							pdf(file, width=6, height=6)#
+							par(mfrow=c(2,1), mar=c(3,4,0.5,0.5), oma=c(1,0,0,0), ps=10, cex=1)#
+							plotF(df=sDat()[acI(),], respN=input$variable, lakes=input$lakeid)#
+							plotF(df=sDat()[varI(),], respN=input$variable, lakes=input$lakeid)#
+							mtext("DoY",side=1, line=2.5)#
+							dev.off()			#
+						}#
+					},#end content function#
+					contentType="image/pdf"#
+				)#end downloadHandler#
+			})#end shinyServer#
+			')#
+		writeLines(serverLines, serverConn)#
+	}
+writeServer()
+shinyDir
+dlScripts <- function(cVersion="_v0.3"){#
+	#Identify and create LOCAL directories#
+	userDir <- paste("/Users/", Sys.info()["user"], sep="")#
+	shinyDir <- paste(userDir, "/Desktop/.tmpChimp", sep="")#
+	if(!file.exists(shinyDir)){#
+		dir.create(shinyDir)#
+	}#
+	# ===============#
+	# = writeServer =#
+	# ===============#
+	writeServer <- function(){#
+		serverConn <- file(paste(shinyDir, "/server.R", sep=""))#
+		serverLines <-#
+			('#
+			# Ryan Batt#
+			# Server commands for Shiny Chimp app#
+			# Versions for the following scripts increment in unison: Squeal2_ReadDailyData_vx.x.R, Squeal2_Statistics_vx.x.R, Run_Shiny_SoS_v0.1.R; The names of ui.R and server.R are inflexible, so new version of this script (project) are saved in new subfolders. Because of this style, increases in the version number for a file do not necessarily indicate that changes have been made to the file, merely that at least one file in the project has been substantially changed.#
+			#_v0.2 (18-Sept-2013): Built for R package chimpSqueal#
+#
+			library(shiny)#
+#
+			if(exists("dailyData") & exists("results")){#
+				dailyData <- chimpSqueal:::dailyData#
+				results <- chimpSqueal:::results#
+				print("Found data sets locally")#
+			}else{#
+				print("Could not find data sets locally, \n downloading data and scripts from FTP")#
+				dataLocations <- checkChimp()[[2]]#
+				print(dataLocations)#
+				load(dataLocations[1])#
+				load(dataLocations[2])#
+			}#
+			print(ls())#
+#
+			plotF <- function(df, respN, lakes){	#
+				lCols <- c("Paul"="blue", "Peter"="red", "Tuesday"="black")#
+				nlakes <- length(lakes)#
+				i1 <- is.element(df[,"Lake"], lakes)#
+				Ylim <- range(df[i1,respN], na.rm=TRUE)#
+				Xlim <- range(df[i1,"DoY"], na.rm=TRUE)#
+#
+				for(i in 1:nlakes){#
+					tLake <- lakes[i]#
+					iLake <- df[,"Lake"] == tLake#
+					day <- df[iLake,"DoY"]#
+					resp <- df[iLake,respN]#
+#
+					if(i==1){#
+						plot(day, resp, col=lCols[tLake], type="l", ylim=Ylim, xlim=Xlim, xlab="", ylab="")#
+						if(is.element("Stat",names(df))){#
+							mtext(paste(respN, "\n", unique(df[,"Stat"])), side=2, line=2.25)#
+						}else{#
+							mtext(respN, side=2, line=2.5)#
+						}#
+#
+					}else{#
+						lines(day, resp, col=lCols[tLake])#
+					}#end if-else#
+				}#end loop#
+			}#end function#
+#
+			getDat <- function(wOpt, dOpt){#
+				rKey <- attr(results, "split_labels")#
+				iRes <- which(rKey[,"RollWin"]==wOpt & dOpt==rKey[,"Detrend"])#
+				return(results[[iRes]])#
+			}#
+#
+			# Define server logic required to plot various variables against mpg#
+			shinyServer(function(input, output) {	#
+				sDat <- reactive({getDat(wOpt=input$window, dOpt=input$detrend)})#
+				acI <- reactive({sDat()[,"Stat"]==input$acOpt})#
+				varI <- reactive({sDat()[,"Stat"]==input$varOpt})#
+#
+				tsSave <- reactive({plotF(df=dailyData, respN=input$variable, lakes=input$lakeid)})#
+				statSave <- reactive({#
+					par(mfrow=c(2,1), mar=c(2,5,0.5,0.5))#
+					plotF(df=sDat()[acI(),], respN=input$variable, lakes=input$lakeid)#
+					plotF(df=sDat()[varI(),], respN=input$variable, lakes=input$lakeid)#
+				})#
+#
+				output$tsPlot <- renderPlot({tsSave()})#
+				output$statPlot <- renderPlot({statSave()})	#
+#
+				output$dFig <- downloadHandler(#
+					filename <- function(){#
+						if(input$panelID==1){#
+							qn <- c("Paul"="L", "Peter"="R", "Tuesday"="T")#
+							sL <- function(){paste(qn[unlist(input$lakeid)], collapse="")}#
+							print(sL())#
+							vname <- function(){input$variable}#
+							paste("Chimp_", vname(), "_", sL(), ".pdf", sep="")#
+						}else{#
+							qn <- c("Paul"="L", "Peter"="R", "Tuesday"="T")#
+							sL <- function(){paste(input$lakeid, collapse="")}#
+							vname <- function(){input$variable}#
+							wname <- function(){paste(input$window,"-day", sep="")}#
+							paste("Chimp_", vname(), "_", sL(), "_", wname(), ".pdf", sep="")#
+						}#
+					},#end filename function#
+					content <- function(file){#
+						if(input$panelID==1){#
+							pdf(file, width=5, height=3.5)#
+							par(mar=c(4,4,0.5,0.5), ps=10, cex=1)#
+							plotF(df=dailyData, respN=input$variable, lakes=input$lakeid)#
+							mtext("DoY",side=1, line=2.5)#
+							dev.off()#
+						}else{#
+							pdf(file, width=6, height=6)#
+							par(mfrow=c(2,1), mar=c(3,4,0.5,0.5), oma=c(1,0,0,0), ps=10, cex=1)#
+							plotF(df=sDat()[acI(),], respN=input$variable, lakes=input$lakeid)#
+							plotF(df=sDat()[varI(),], respN=input$variable, lakes=input$lakeid)#
+							mtext("DoY",side=1, line=2.5)#
+							dev.off()			#
+						}#
+					},#end content function#
+					contentType="image/pdf"#
+				)#end downloadHandler#
+			})#end shinyServer#
+			')#
+		writeLines(serverLines, serverConn)#
+	}#
+	# ===========#
+	# = writeUI =#
+	# ===========#
+	writeUI <- function(){#
+		uiConn <- file(paste(shinyDir, "/ui.R", sep=""))#
+		uiLines <-#
+			('#
+			# Ryan Batt#
+			# UI for Shiny Chimp app#
+			# Versions for the following scripts increment in unison: Squeal2_ReadDailyData_vx.x.R, Squeal2_Statistics_vx.x.R, Run_Shiny_SoS_v0.1.R; The names of ui.R and server.R are inflexible, so new version of this script (project) are saved in new subfolders. Because of this style, increases in the version number for a file do not necessarily indicate that changes have been made to the file, merely that at least one file in the project has been substantially changed.#
+			#_v0.2 (18-Sept-2013): Built for R package chimpSqueal#
+#
+			library(shiny)#
+#
+			# Define UI for miles per gallon application#
+			shinyUI(pageWithSidebar(#
+#
+			  # Application title#
+			  headerPanel("Shiny Chimp Graphs (v0.3)"),#
+#
+			  sidebarPanel(#
+				strong(em("Select Data")),#
+				#First option: pick the variable#
+				selectInput("variable", "Variable", list(#
+					"GPP (uM/d, bookkeeping)"="GPP", "GPP (uM/d, linear model)"="GPP_LM", "R (uM/d, bookkeeping)"="R", "R (uM/d, linear model)"="R_LM", "NEP (uM/d, bookkeeping)"="NEP", "NEP (uM/d, linear model)"="NEP_LM",#
+					"Dissolved Oxygen (%, YSI)"="DOsat_YSI", "Dissolved Oxygen (%, Hylb)"="DOsat_HYLB", "Dissolved Oxygen (mg/L, YSI)"="DO_Conc_YSI", "Dissolved Oxygen (mg/L, Hylb)"="DO_Conc_HYLB",#
+					"pH (YSI)"="pH_YSI", "pH (Hylb)"="pH_HYLB",#
+					"Manual Chlorophyll (ug/L)"="ManChl", "Chlorophyll (ug/L, YSI)"="Chla_Conc_YSI", "Chlorophyll (ug/L, Hylb)"="Chla_Conc_HYLB", "Chlorophyll (RFU, YSI)"="Chla_RFU_YSI",#
+					"Phycocyanin (mg/L)"="Phyco", "Blue-green algae (cells/mL, YSI)"="BGA_Conc_YSI", "Blue-green algae (cells/mL, Hylb)"="BGA_Conc_HYLB", "Blue-greeen algae (RFU, YSI)"="BGA_RFU_YSI",#
+					"Staff (units vary)"="Staff", "Cell Counts"="cells" # ,"Secchi (m)"="Secchi"#
+					)),#
+#
+				#second option: pick the lake/s#
+				checkboxGroupInput("lakeid", "Lake", list("Paul"="Paul", "Peter"="Peter", "Tuesday"="Tuesday"), selected="Peter"),#
+#
+				#options for second panel only#
+				conditionalPanel(#
+					condition="input.panelID == 2",#
+					br(),#
+					strong(em("Statistics Options")),#
+					sliderInput(inputId="window", label="Size of rolling window (days):", min=7, max=49, value=28, step=7),#
+					radioButtons("detrend", "Detrend before computing autocorrelation?", list("Yes"="yes", "No"="no")),#
+					radioButtons("acOpt", "Autocorrelation Form:", list("Simple AR(1)"="Ar1", "Autocorrelation Time"="AcTime")),#
+					radioButtons("varOpt", "Variance Form:", list("Simple Variance"="Var", "Standard Deviation"="SD", "Coefficient of Variation"="CV"))#
+					)#
+#
+				), #end sidebarPanel#
+			  mainPanel(#
+				tabsetPanel(#
+					tabPanel("Time Series", plotOutput("tsPlot"), value=1),#
+					tabPanel("Statistics", plotOutput("statPlot"), value=2),#
+					id="panelID",#
+					selected=1#
+					),#
+				downloadButton("dFig", "Save Figure")#
+#
+				)#
+			))#
+			')#
+		writeLines(uiLines, uiConn)#
+	}#
+	# #Identify and create LOCAL directories#
+	# userDir <- paste("/Users/", Sys.info()["user"], sep="")#
+	# shinyDir <- paste(userDir, "/Desktop/.tmpChimp", sep="")#
+	# if(!file.exists(shinyDir)){#
+	# 	dir.create(shinyDir)#
+	# }#
+	# #
+	# #Identify server directories#
+	# baseURL <- paste("ftp://162.144.12.28/squeal2Chimps/", "chimp", cVersion, "/", sep="")#
+	# uiURL <- paste(baseURL, "ui.R", sep="")#
+	# serverURL <- paste(baseURL, "server.R", sep="")#
+	# cascUsePass <- "cascade@bookofluke.org:tjolahop"#
+	# #
+	# #check for package#
+	# stopifnot(require("RCurl"))#
+	# #
+	# #download UI#
+	# print("Downloading Chimp UI")#
+	# flush.console()#
+	# ui <- getURL(uiURL, userpwd=cascUsePass, connecttimeout=120)#
+	# uiConn <- file(paste(shinyDir, "/ui.R", sep=""))#
+	# writeLines(ui, con=uiConn)#
+	# close(uiConn)#
+	# #
+	# #download server#
+	# print("Downloading Chimp Server")#
+	# flush.console()#
+	# server <- getURL(serverURL, userpwd=cascUsePass, connecttimeout=120)#
+	# serverConn <- file(paste(shinyDir, "/server.R", sep=""))#
+	# writeLines(server, con=serverConn)#
+	# close(serverConn)#
+	writeServer()#
+	writeUI()#
+}
+clse()
+close()
+?close
+dlScripts()
+library()
+dir(system.file("data", package="chimpSqueal"))
+system.file("data", package="chimpSqueal")
+?system
+42.5*1.3333
+443*3
+443*4
+Script for simulating the Contaminant Cycling problem#
+# Process Error version fitted by both#
+#   Least Squares and Maximum Likelihood for the same data#
+# To run, type source("Contaminant_LS_ML.R")#
+# To clear all variables, type rm(list = ls())#
+# SRC, updated 26 Jan 2010#
+#
+rm(list = ls())#
+graphics.off()#
+#
+# Define rates#
+r = c(15, 0.2, 0.45, 0.25, 0.35, 0.2, 0.15)#
+#
+# Organize rates into terms of difference equation#
+#  x_t+1 = F + R*x_t #
+#
+F = c(r[1], 0, 0)#
+Rterms = c(1-(r[2]+r[3]+r[4]), 0, 0, r[3], 1-(r[5]+r[6]), 0, r[4], r[5], 1-r[7])#
+R = matrix(Rterms,nrow=3,ncol=3,byrow=TRUE)#
+#
+# Define process error distribution#
+PEmean=c(0,0,0)#
+PEsd=c(0.3,0.3,3)#
+#
+# Initial conditions#
+hvore = 1#
+bug = 1#
+bird = 6#
+x0=c(hvore,bug,bird)#
+#
+# Simulate#
+time=0#
+for (i in 1:39)#
+{#
+x1 = F + R%*%x0 + rnorm(3,mean=PEmean,sd=PEsd)#
+x0 = x1 #
+hvore=c(hvore,x1[1])#
+bug=c(bug,x1[2])#
+bird=c(bird,x1[3])#
+time=c(time,i)#
+}#
+#
+# Plot results#
+dev.new()#
+plot(time,bird,xlim=c(0,40),ylim=c(0,80),ylab="Contaminant Mass",#
+  xlab="time",type='l',col='blue',lwd=3,lty=3,cex.axis=1.5,col.axis='darkblue',#
+  cex.lab=1.5,col.lab='darkblue')#
+points(time,bug,type='l',col='brown',lwd=2)#
+points(time,hvore,type='l',col='darkgreen',lwd=2,lty=2)#
+grid()#
+legend('topleft',legend=c('Bird','Pred. Bug','H-vore'),#
+ lty=c(3,1,2),lwd=c(3,2,2),col=c('blue','brown','darkgreen'),cex=1.2,#
+ title='Model Compartments',text.col='darkblue')#
+#
+# Estimate parameters by Least Squares process error fit#
+#
+# Define function for sum of squared errors#
+SSE <- function(p){#
+F1 = c(p[1], 0, 0)#
+Rterms1 = c(1-(p[2]+p[3]+p[4]), 0, 0, p[3], 1-(p[5]+p[6]), 0, p[4], p[5], 1-p[7])#
+R1 = matrix(Rterms1,nrow=3,ncol=3,byrow=TRUE)#
+err=0#
+for (i in 1:39)#
+{#
+x0 = c(hvore[i],bug[i],bird[i])#
+y = c(hvore[i+1],bug[i+1],bird[i+1])#
+yhat = F1 + R1%*%x0#
+err = c(err,(y-yhat))#
+}#
+sumerr2 = sum(err*err)#
+return(sumerr2)#
+}#
+#
+# Check error with true parameters#
+SSEtrue <- SSE(r)#
+#
+# Form initial guesses of parameters#
+guess = r*rnorm(7,mean=1,sd=0.5)#
+# Error with guess#
+SSEguess <- SSE(guess)#
+#
+# Nonlinear Model Fit; try 'nlm' or 'optim'#
+ModFit <- nlm(SSE, p=guess, print.level=0)#
+rest <- ModFit$estimate#
+minSSE <- ModFit$minimum#
+#
+# Print output#
+print("Least-Squares Process Error Fit",quote=FALSE)#
+print(c("SSE with True parameters",round(SSEtrue,3)),quote=FALSE)#
+print(c("SSE with Guessed parameters",round(SSEguess,3)),quote=FALSE)#
+print(c("Minimum SSE",round(minSSE,3)),quote=FALSE)#
+print("True Parameters",quote=FALSE)#
+print(r)#
+print("Estimated Parameters",quote=FALSE)#
+print(round(rest,2))#
+print('True Parameters - Estimated Parameters / True Parameters',quote=FALSE)#
+print(round((r-rest)/r,2))#
+#
+# Calculate predictions#
+p <- rest  # Substitute estimated parameters into p#
+Fp = c(p[1], 0, 0)#
+Rtermsp = c(1-(p[2]+p[3]+p[4]), 0, 0, p[3], 1-(p[5]+p[6]), 0, p[4], p[5], 1-p[7])#
+Rp = matrix(Rtermsp,nrow=3,ncol=3,byrow=TRUE)#
+yhat1=hvore[1]#
+yhat2=bug[1]#
+yhat3=bird[1]#
+for (i in 1:39)#
+{#
+x0 = c(hvore[i],bug[i],bird[i])#
+x1 = Fp + Rp%*%x0#
+yhat1 = c(yhat1,x1[1])#
+yhat2 = c(yhat2,x1[2])#
+yhat3 = c(yhat3,x1[3])#
+}#
+#
+# Plot predictions and observations#
+dev.new()#
+plot(yhat3,bird,xlim=c(0,80),ylim=c(0,80),ylab=" ",xlab=" ",type='p',#
+  pch=24,col='blue',bg='blue',cex=1.5,cex.axis=1.5)#
+title(main="Predictions & Observations, Least Squares Fit",#
+ ylab="Observation",xlab="Prediction - Least Squares",cex.lab=1.5,#
+ col.lab='darkblue',cex.main=1)#
+points(yhat2,bug,type='p',pch=25,col='brown',bg='brown',cex=1.5)#
+points(yhat1,hvore,type='p',pch=21,col='darkgreen',bg='darkgreen',cex=2)#
+points(c(0,80),c(0,80),type='l',col='red',lwd=2,lty=3)#
+grid()#
+legend('bottomright',legend=c('Bird','Pred. Bug','H-vore'),#
+ pch=c(24,25,21),pt.cex=c(1.5,1.5,1.5),col=c('blue','brown','darkgreen'),#
+ pt.bg=c('blue','brown','darkgreen'),cex=1.2,#
+ title='Model Compartments',text.col='darkblue')#
+#
+# Estimate parameters by process error fit to#
+#  minimize negative log likelihood#
+#
+# Define function for negative log likelihood#
+NLL <- function(p){#
+F1 = c(p[1], 0, 0)#
+Rterms1 = c(1-(p[2]+p[3]+p[4]), 0, 0, p[3], 1-(p[5]+p[6]), 0, p[4], p[5], 1-p[7])#
+R1 = matrix(Rterms1,nrow=3,ncol=3,byrow=TRUE)#
+VarHvore=exp(p[8])#
+VarBug=exp(p[9])#
+VarBird=exp(p[10])#
+errHvore=0#
+errBug=0#
+errBird=0#
+for (i in 1:39)#
+{#
+x0 = c(hvore[i],bug[i],bird[i])#
+y = c(hvore[i+1],bug[i+1],bird[i+1])#
+yhat = F1 + R1%*%x0#
+errHvore[i] = y[1]-yhat[1]#
+errBug[i] = y[2]-yhat[2]#
+errBird[i]= y[3]-yhat[3]#
+}#
+termHvore=(0.5*length(errHvore)*log(2*pi*VarHvore)) + ((t(errHvore)%*%errHvore)/(2*VarHvore))#
+termBug=(0.5*length(errBug)*log(2*pi*VarBug)) + ((t(errBug)%*%errBug)/(2*VarBug))#
+termBird=(0.5*length(errBird)*log(2*pi*VarBird)) + ((t(errBird)%*%errBird)/(2*VarBird))#
+sumterms=termHvore+termBug+termBird#
+return(sumterms)#
+}#
+#
+# Check error with true parameters#
+TruePar = c(r,log(PEsd*PEsd))#
+SSEtrue <- NLL(TruePar)#
+#
+# Form initial guesses of parameters#
+guess = TruePar*rnorm(10,mean=1,sd=0.5)#
+# Error with guess#
+SSEguess <- NLL(guess)#
+#
+# Nonlinear Model Fit; try 'nlm' or 'optim'#
+ModFit <- nlm(NLL, p=guess, print.level=0, iterlim=150)#
+rest <- ModFit$estimate#
+minSSE <- ModFit$minimum#
+convergence <- ModFit$code#
+#
+# Print output#
+print(" ",quote=FALSE)#
+print("Maximum Likelihood Process Error Fit",quote=FALSE)#
+print(c("NLL with True parameters",SSEtrue),quote=FALSE)#
+print(c("NLL with Guessed parameters",SSEguess),quote=FALSE)#
+print(c("Minimum NLL",minSSE),quote=FALSE)#
+print(c('Convergence code (1 or 2 are OK): ',convergence),quote=FALSE)#
+print("True Parameters",quote=FALSE)#
+print(r[1:7])#
+print("Estimated Parameters",quote=FALSE)#
+print(round(rest[1:7],2))#
+print('True Parameters - Estimated Parameters / True Parameters',quote=FALSE)#
+print(round((r[1:7]-rest[1:7])/r[1:7],2))#
+print("True Process Variances",quote=FALSE)#
+print(PEsd*PEsd)#
+print("Estimated Process Variances",quote=FALSE)#
+print(round(exp(rest[8:10]),2))#
+#
+# Calculate predictions#
+p <- rest  # Substitute estimated parameters into p#
+Fp = c(p[1], 0, 0)#
+Rtermsp = c(1-(p[2]+p[3]+p[4]), 0, 0, p[3], 1-(p[5]+p[6]), 0, p[4], p[5], 1-p[7])#
+Rp = matrix(Rtermsp,nrow=3,ncol=3,byrow=TRUE)#
+yhat1=hvore[1]#
+yhat2=bug[1]#
+yhat3=bird[1]#
+for (i in 1:39)#
+{#
+x0 = c(hvore[i],bug[i],bird[i])#
+x1 = Fp + Rp%*%x0#
+yhat1 = c(yhat1,x1[1])#
+yhat2 = c(yhat2,x1[2])#
+yhat3 = c(yhat3,x1[3])#
+}#
+#
+# Plot predictions and observations#
+quartz()#
+plot(yhat3,bird,xlim=c(0,80),ylim=c(0,80),ylab=" ",xlab=" ",type='p',#
+  pch=24,col='blue',bg='blue',cex=1.5,cex.axis=1.5)#
+title(main="Predictions & Observations, Maximum Likelihood Fit",#
+ ylab="Observation",xlab="Prediction - Maximum Likelihood",cex.lab=1.5,#
+ col.lab='darkblue',cex.main=1)#
+points(yhat2,bug,type='p',pch=25,col='brown',bg='brown',cex=1.5)#
+points(yhat1,hvore,type='p',pch=21,col='darkgreen',bg='darkgreen',cex=2)#
+points(c(0,80),c(0,80),type='l',col='red',lwd=2,lty=3)#
+grid()#
+legend('bottomright',legend=c('Bird','Pred. Bug','H-vore'),#
+ pch=c(24,25,21),pt.cex=c(1.5,1.5,1.5),col=c('blue','brown','darkgreen'),#
+ pt.bg=c('blue','brown','darkgreen'),cex=1.2,#
+ title='Model Compartments',text.col='darkblue')
+SSEtrue
+rest
+TruePar
+r
+plot 1:10
+plot1:10
+plot(1:10)
+library("rjags")
+library("r2jags")
+install.packages("rjags")
+library("rjags")
+http://blue.for.msu.edu/NEON/SC/exercises/exercise-jags-1/ex-1.pdf#
+#
+set.seed(1)#
+n <- 100#
+beta.0 <- 0#
+sigma.sq <- 5#
+y <- rnorm(n, beta.0, sqrt(sigma.sq))#
+#
+ModelString <- "#
+	model{#
+		for (i in 1:n){#
+			y[i] ~dnorm(beta.0, tau.sq)#
+		}#
+		beta.0 ~ dnorm(0, 0.0001)#
+		tau.sq <- 1/sigma.sq#
+		sigma.sq ~ dunif(0, 100)#
+	}#
+"#
+#
+data <- list(y=y, n=n)#
+inits <- list(beta.0=0, sigma.sq=1)#
+jags.m <- jags.model(file=textConnection(ModelString), data=data, inits=inits, n.chains=3, n.adapt=100)
+params <- c("beta.0", "sigma.sq")#
+samps <- coda.samples(jags.m, params, n.iter=2000)#
+plot(samps)#
+burn.in <- 1000#
+summary(window(samps, start = burn.in))
+?jags.model
+library("chimpSqueal")
+runChimp()
+Save <- c(TRUE, FALSE)[1]
+1.1 * (1.5/1E6)
+1.1 * (1.5/1E6) * 1E6
+(1.1) * (1.5/1E6) * 1000 * 1000
+help.search("coda")
+library("chimpSqueal")
+runChimp()
+install.packages("rLakeAnalyzer")
+library("rLakeAnalyzer")
+help.search("rLakeAnalyzer")
+library("RCurl")
+?ftpUpload
+getwd()
+dir()
+setwd("~/")
+getwd()
+on, sep="")#
+Iterations <- 6000#
+Save <- c(TRUE, FALSE)[1]#
+SaveType <- c(".pdf", ".png")[2]#
+ConsChoose <- c("Calanoid", "Mesocyclops", "Chaoborus", "Helisoma trivolvis", "FHM", "DAC", "CMM", "BHD1", "BHD2",  "YWP", "PKS")[c(1,3:8)]#
+#
+if(Sys.info()["sysname"]=="Windows"){#
+	windowsFonts(Times=windowsFont("TT Times New Roman"))#
+	BUGSWorkDir <- NULL#
+}else{#
+	BUGSWorkDir <- "~/.wine/drive_c/temp/Rtmp"#
+}#
+#
+#Select the top 2 if on Snow Leopard, the bottom 2 if on Leopard, and the selection doesn't matter if on a PC#
+# WINE="/Applications/Darwine/Wine.bundle/Contents/bin/wine"#
+# WINEPATH="/Applications/Darwine/Wine.bundle/Contents/bin/winepath"#
+WINEPATH="/opt/local/bin/winepath"#
+WINE="/opt/local/bin/wine"#
+library(R2WinBUGS)#
+setwd("/Users/Battrd/Documents/School&Work/WiscResearch/Isotopes_2010Analysis")#
+source("ConsMix_v6.R")#
+setwd("/Users/Battrd/Documents/School&Work/WiscResearch/Data/IsotopeData2012")#
+DataRaw <- read.csv("WardIsotopes_2010&2012_17Jan2013.csv", header=TRUE)#
+Data <- subset(DataRaw, Taxon!="Nija" & !is.element(SampleID, c("O-0362", "V-0270", "P-1202", "P-1166", "O-0382", "P-1165", "P-1206", "P-1238", "P-1239", "P-1243", "Z-1110", "Z-1115", "Z-1195", "Z-1170", "O-0405", "P-1244")) & is.na(FishID))#
+Months <- c("May", "Jun", "Jul", "Aug")#
+#Calculate the algal end member from POM#
+TSources <- c("Alder", "Sedge", "Tamarack", "Tree")#, "Tamarack") #c("Alder", "Sedge", "DOM")#
+#
+#Signature of the terrestrial source#
+nTS <- length(TSources)#
+TMeans <- data.frame("d13C"=rep(NA,nTS),"d15N"=rep(NA,nTS),"dD"=rep(NA,nTS), row.names=TSources)#
+TVars <- data.frame("d13C"=rep(NA,nTS),"d15N"=rep(NA,nTS),"dD"=rep(NA,nTS), row.names=TSources)#
+#Td13C_aov #
+Td15NObs <- data.frame()#
+TdDObs <- data.frame() #matrix(ncol=nTS, dimnames=list(NULL,TSources))#
+for(i in 1:length(TSources)){#
+	TMeans[i,] <- apply(subset(Data, Taxon==TSources[i], select=c("d13C","d15N","dD")),2,mean)#
+}#
+dCNH_Terr_Mu <- apply(TMeans, 2, mean)#
+dCNH_Terr_Var <- data.frame("d13C"=NA, "d15N"=NA, "dD"=NA)#
+#
+if(nTS>1){#
+	Temp_d13C_aov <- anova(lm(d13C ~ Taxon, data=subset(Data, is.element(Taxon, TSources), select=c("Taxon","d13C"))))#
+	if(Temp_d13C_aov$Pr[1] <= 0.1){#
+		dCNH_Terr_Var["d13C"] <- sum(Temp_d13C_aov$Mean)#
+	}else{#
+		dCNH_Terr_Var["d13C"] <- Temp_d13C_aov$Mean[2]#
+	}#
+	Temp_d15N_aov <- anova(lm(d15N ~ Taxon, data=subset(Data, is.element(Taxon, TSources), select=c("Taxon","d15N"))))#
+	if(Temp_d15N_aov$Pr[1] <= 0.1){#
+		dCNH_Terr_Var["d15N"] <- sum(Temp_d15N_aov$Mean)#
+	}else{#
+		dCNH_Terr_Var["d15N"] <- Temp_d15N_aov$Mean[2]#
+	}#
+	Temp_dD_aov <- anova(lm(dD ~ Taxon, data=subset(Data, is.element(Taxon, TSources), select=c("Taxon","dD"))))#
+	if(Temp_dD_aov$Pr[1] <= 0.1){#
+		dCNH_Terr_Var["dD"] <- sum(Temp_dD_aov$Mean)#
+	}else{#
+		dCNH_Terr_Var["dD"] <- Temp_dD_aov$Mean[2]#
+	}#
+}else{#
+	dCNH_Terr_Var <- apply(subset(Data, is.element(Taxon, TSources), select=c("d13C", "d15N", "dD")), 2, var)#
+	}#
+#Define the Terr objects to be used in the POM Mixture portion of the BUGS model#
+#
+#**************************************#
+T_dX <- as.numeric(dCNH_Terr_Mu)#
+T_dX_Var <- as.numeric(dCNH_Terr_Var)#
+#**************************************
+for(YearMix in c(2010, 2012)){#
+	# TODO The water will need to be defined by year.  Either stored in a higher dimensional object, or have separate objects for each year.#
+	Water_dD_Mu <- mean(subset(Data, Type=="Water" & Year==YearMix, select="dD")[,])#
+	Water_dD_Var <- var(subset(Data, Type=="Water" & Year==YearMix, select="dD")[,])#
+#
+	#Calculate Epi phyto deuterium prior from water dD#
+	dD_Water_Epi <- subset(Data, Type=="Water" & Habitat=="Epi" & Year==YearMix, select="dD")[,]#
+	dD_Water_Adj <- mean(c(-152.8, -172.4))#Fractionation range reported in Solomon et al. 2011#
+	dD_Phyto_Epi_Mu <- mean(dD_Water_Epi + dD_Water_Adj)#
+	#From Solomon et al. 2011 Appendix A: alpha phyto-water = mean ± sd = 0.84 ± 0.008; qnorm(p=.025, mean=-231.945, sd=5); var=25 it should have been ~70.. ask Grace.#
+	dD_Phyto_Epi_Var <- var(dD_Water_Epi) + 25#variance of water + fractionation = variance of Phyto#
+	dD_Phyto_Epi_Shape <- dD_Phyto_Epi_Var*0.1#dD_Phyto_Var~dgamma(shape,rate); shape when rate==0.1#
+	#Signature of the Epi POM mixture#
+	dCNH_POM_Epi <- subset(Data, Type=="POM" & Habitat=="Epi" & Year==YearMix, select=c("d13C","d15N","dD"))#
+	POM_dX_Epi_Obs <- matrix(data=c(dCNH_POM_Epi[,1], dCNH_POM_Epi[,2], dCNH_POM_Epi[,3]), ncol=3)#
+	POM_dX_Epi_Var <- apply(dCNH_POM_Epi, 2, var)#
+	nPOM_Epi <- length(POM_dX_Epi_Obs[,1])#
+#
+	#Same POM and phyto calcs for Meta#
+	#Calculate Algal deuterium prior from water dD#
+	dD_Water_Meta <- subset(Data, Type=="Water" & Habitat=="Meta" & Year==YearMix, select="dD")[,]#
+	dD_Phyto_Meta_Mu <- mean(dD_Water_Meta + dD_Water_Adj)#
+	#From Solomon et al. 2011 Appendix A: alpha phyto-water = mean ± sd = 0.84 ± 0.008; qnorm(p=.025, mean=-231.945, sd=5); var=25#
+	dD_Phyto_Meta_Var <- var(dD_Water_Meta) + 25#variance of water + variance of fractionation = variance of Phyto#
+	dD_Phyto_Meta_Shape <- dD_Phyto_Meta_Var*0.1#dD_Phyto_Var~dgamma(shape,rate); shape when rate==0.1#
+#
+	#Signature of the Meta POM mixture#
+	dCNH_POM_Meta <- subset(Data, Type=="POM" & Habitat=="Meta" & Year==YearMix, select=c("d13C","d15N","dD"))#
+	POM_dX_Meta_Obs <- matrix(data=c(dCNH_POM_Meta[,1], dCNH_POM_Meta[,2], dCNH_POM_Meta[,3]), ncol=3)#
+	POM_dX_Meta_Var <- apply(dCNH_POM_Meta, 2, var)#
+	nPOM_Meta <- length(POM_dX_Meta_Obs[,1])#
+#
+	#Run BUGS Part 1: Using POM, calculate the isotopic signatures of epilimnetic and metalimnetic phytoplankton#
+	SupplyBUGS_pt1 <- list(T_dX, T_dX_Var, dD_Phyto_Epi_Mu, dD_Phyto_Epi_Shape, POM_dX_Epi_Obs, nPOM_Epi, dD_Phyto_Meta_Mu, dD_Phyto_Meta_Shape, POM_dX_Meta_Obs, nPOM_Meta)#
+	names(SupplyBUGS_pt1) <- strsplit(c("T_dX, T_dX_Var, dD_Phyto_Epi_Mu, dD_Phyto_Epi_Shape, POM_dX_Epi_Obs, nPOM_Epi, dD_Phyto_Meta_Mu, dD_Phyto_Meta_Shape, POM_dX_Meta_Obs, nPOM_Meta"), split=", ")[[1]]#
+	ParamBUGS_pt1 <- c("f", "P_dC_Epi", "P_dN_Epi", "P_dD_Epi", "P_dC_Epi_Var", "P_dN_Epi_Var", "P_dD_Epi_Var",  "P_dC_Meta", "P_dN_Meta", "P_dD_Meta", "P_dC_Meta_Var", "P_dN_Meta_Var", "P_dD_Meta_Var", "residSd")#
+	BUGSfile_pt1 <- "/Users/Battrd/Documents/School&Work/WiscResearch/Isotopes_2010Analysis/mix_Cons_Mixture_Ward2010_v2_pt1.bug"#
+	if(.Platform$OS.type=="windows"){#
+		bugsOut_pt1 <- bugs(SupplyBUGS_pt1, inits=NULL, ParamBUGS_pt1, BUGSfile_pt1, n.chains=8, n.iter=Iterations, program="winbugs", working.directory=NULL, debug=FALSE, clearWD=FALSE)#
+	}else{#
+		bugsOut_pt1 <- bugs(SupplyBUGS_pt1, inits=NULL, ParamBUGS_pt1, BUGSfile_pt1, n.chains=8, n.iter=Iterations, program="winbugs", working.directory=BUGSWorkDir, clearWD=TRUE, useWINE=TRUE, newWINE=TRUE, WINEPATH=WINEPATH, WINE=WINE, debug=FALSE)#
+	}#
+	#Extract and name relevant information concerning epilimnetic and metalimnetic phytoplankton#
+	#**************************************#
+	P_dX_Epi <- c(bugsOut_pt1$mean$P_dC_Epi, bugsOut_pt1$mean$P_dN_Epi, bugsOut_pt1$mean$P_dD_Epi)#
+	P_dX_Epi_Var <- c(bugsOut_pt1$mean$P_dC_Epi_Var, bugsOut_pt1$mean$P_dN_Epi_Var, bugsOut_pt1$mean$P_dD_Epi_Var)#
+	P_dX_Meta <- c(bugsOut_pt1$mean$P_dC_Meta, bugsOut_pt1$mean$P_dN_Meta, bugsOut_pt1$mean$P_dD_Meta)#
+	P_dX_Meta_Var <- c(bugsOut_pt1$mean$P_dC_Meta_Var, bugsOut_pt1$mean$P_dN_Meta_Var, bugsOut_pt1$mean$P_dD_Meta_Var)#
+#
+	Sim_P_dX_Epi_Obs <- as.data.frame(matrix(data=rep(rnorm(n=nPOM_Epi),3), ncol=3, byrow=FALSE))#
+#
+	Sim_P_dX_Epi_Obs[,1] <- sample(bugsOut_pt1$sims.matrix[,"P_dC_Epi"], size=nPOM_Epi)#
+	Sim_P_dX_Epi_Obs[,2] <- sample(bugsOut_pt1$sims.matrix[,"P_dN_Epi"], size=nPOM_Epi)#
+	Sim_P_dX_Epi_Obs[,3] <- sample(bugsOut_pt1$sims.matrix[,"P_dD_Epi"], size=nPOM_Epi)#
+#
+	Sim_P_dX_Epi_Obs <- (Sim_P_dX_Epi_Obs-as.data.frame(matrix(data=rep(apply(Sim_P_dX_Epi_Obs,2,mean), nPOM_Epi), ncol=3, byrow=TRUE)))/as.data.frame(matrix(data=rep(apply(Sim_P_dX_Epi_Obs,2,sd), nPOM_Epi), ncol=3, byrow=TRUE))#
+	Sim_P_dX_Epi_Obs[,1] <- Sim_P_dX_Epi_Obs[,1]*sqrt(P_dX_Epi_Var[1])+P_dX_Epi[1]#
+	Sim_P_dX_Epi_Obs[,2] <- Sim_P_dX_Epi_Obs[,2]*sqrt(P_dX_Epi_Var[2])+P_dX_Epi[2]#
+	Sim_P_dX_Epi_Obs[,3] <- Sim_P_dX_Epi_Obs[,3]*sqrt(P_dX_Epi_Var[3])+P_dX_Epi[3]#
+#
+	colnames(Sim_P_dX_Epi_Obs) <- c("d13C","d15N","dD")#
+	Sim_P_dX_Epi_Obs <- cbind("Taxon"=rep("EpiPhyto",nPOM_Epi), Sim_P_dX_Epi_Obs)#
+#
+	Sim_P_dX_Meta_Obs <- as.data.frame(matrix(data=rep(rnorm(n=nPOM_Meta),3), ncol=3, byrow=FALSE))#
+#
+	Sim_P_dX_Meta_Obs[,1] <- sample(bugsOut_pt1$sims.matrix[,"P_dC_Meta"], size=nPOM_Meta)#
+	Sim_P_dX_Meta_Obs[,2] <- sample(bugsOut_pt1$sims.matrix[,"P_dN_Meta"], size=nPOM_Meta)#
+	Sim_P_dX_Meta_Obs[,3] <- sample(bugsOut_pt1$sims.matrix[,"P_dD_Meta"], size=nPOM_Meta)#
+#
+	Sim_P_dX_Meta_Obs <- (Sim_P_dX_Meta_Obs-as.data.frame(matrix(data=rep(apply(Sim_P_dX_Meta_Obs,2,mean), nPOM_Meta), ncol=3, byrow=TRUE)))/as.data.frame(matrix(data=rep(apply(Sim_P_dX_Meta_Obs,2,sd), nPOM_Meta), ncol=3, byrow=TRUE))#
+	Sim_P_dX_Meta_Obs <- (Sim_P_dX_Meta_Obs-apply(Sim_P_dX_Meta_Obs,2,mean))/apply(Sim_P_dX_Meta_Obs,2,sd)#
+	Sim_P_dX_Meta_Obs[,1] <- Sim_P_dX_Meta_Obs[,1]*sqrt(P_dX_Meta_Var[1])+P_dX_Meta[1]#
+	Sim_P_dX_Meta_Obs[,2] <- Sim_P_dX_Meta_Obs[,2]*sqrt(P_dX_Meta_Var[2])+P_dX_Meta[2]#
+	Sim_P_dX_Meta_Obs[,3] <- Sim_P_dX_Meta_Obs[,3]*sqrt(P_dX_Meta_Var[3])+P_dX_Meta[3]#
+#
+	colnames(Sim_P_dX_Meta_Obs) <- c("d13C","d15N","dD")#
+	Sim_P_dX_Meta_Obs <- cbind("Taxon"=rep("MetaPhyto",nPOM_Meta), Sim_P_dX_Meta_Obs)#
+	#**************************************#
+	#*****************************************************#
+	#Begin for consumers and their respective sources#
+	#*****************************************************#
+	# Cons <- c("Calanoid", "Chaoborus", "Helisoma trivolvis", "FHM", "DAC", "CMM", "BHD1") #, "PKS", "FHM", "CMM", "BHD", "Mesocyclops", "DAC")#
+	# TL <- c(1, 2, 1, 2, 2, 2, 2, 3) #, 2, 2, 2.5, 2.5, 1.5, 1)#
+	# GraphTitle <- c("Skistodiaptomus oregonensis", "Chaoborus spp.", "Helisoma trivolvis", "Pimephales promelas", "Phoxinus spp.", "Umbra limi", "Small Ameiurus melas") #, "Lepomis gibbosus", "Pimephales promelas", "Umbra limi", "Ameiurus melas",  "Mesocyclops spp.", "Phoxinus spp.")#
+	if(YearMix==2010){#
+		Cons <- c("Calanoid"="Calanoid", "Mesocyclops"="Mesocyclops", "Chaoborus"="Chaoborus", "Helisoma trivolvis"="Helisoma trivolvis", "FHM"="FHM", "DAC"="DAC", "CMM"="CMM", "BHD1"="BHD1", "BHD2"="BHD2", "PKS"="PKS", "YWP"="YWP")[ConsChoose]#
+		TL <- c("Calanoid"=1,"Mesocyclops"=1, "Chaoborus"=2, "Helisoma trivolvis"=1, "FHM"=2, "DAC"=2, "CMM"=2, "BHD1"=2, "BHD2"=3, "PKS"=2, "YWP"=3)[ConsChoose]#
+		GraphTitle <- c("Calanoid"="Skistodiaptomus oregonensis", "Mesocyclops"="Mesocyclops spp.", "Chaoborus spp.", "Helisoma trivolvis"="Helisoma trivolvis", "FHM"="Pimephales promelas", "DAC"="Phoxinus spp.", "CMM"="Umbra limi", "BHD1"="Small Ameiurus melas", "BHD2"="Large Ameiurus melas", "PKS"="Lepomis gibbosus", "YWP"="Perca flavescens")[ConsChoose]#
+	}else{#
+		Cons <- c("Calanoid"="Calanoid", "Mesocyclops"="Mesocyclops", "Chaoborus"="Chaoborus", "Helisoma trivolvis"="Helisoma trivolvis", "FHM"="FHM", "DAC"="DAC", "CMM"="CMM", "BHD1"="BHD1", "BHD2"="BHD2", "PKS"="PKS", "YWP"="YWP")[ConsChoose]#
+		TL <- c("Calanoid"=1,"Mesocyclops"=1, "Chaoborus"=2, "Helisoma trivolvis"=1, "FHM"=2, "DAC"=2, "CMM"=2, "BHD1"=2, "BHD2"=3, "PKS"=2, "YWP"=3)[ConsChoose]#
+		GraphTitle <- c("Calanoid"="Skistodiaptomus oregonensis", "Mesocyclops"="Mesocyclops spp.", "Chaoborus spp.", "Helisoma trivolvis"="Helisoma trivolvis", "FHM"="Pimephales promelas", "DAC"="Phoxinus spp.", "CMM"="Umbra limi", "BHD1"="Small Ameiurus melas", "BHD2"="Large Ameiurus melas", "PKS"="Lepomis gibbosus", "YWP"="Perca flavescens")[ConsChoose]#
+	}#
+	AllMacs <- c("Brasenia schreberi", "Chara", "Najas flexilis", "Nuphar variegata", "Nymphaea odorata", "Potamogeton amplifolius", "Potamogeton nodosus", "Potamogeton pusillus")#
+	FloatMacs <- c("Brasenia schreberi", "Nuphar variegata", "Nymphaea odorata", "Potamogeton nodosus")#
+	SubMacs <- c("Chara", "Najas flexilis", "Potamogeton amplifolius", "Potamogeton pusillus")#
+	AllTerr <- c("Alder", "Sedge", "Tamarack", "Tree")#
+	LocalTerr <- c("Alder", "Sedge", "Tamarack")#
+	SourceOpts <- list("All Macrophytes"=AllMacs, "Floating Macrophytes"=FloatMacs, "Submersed Macrophytes"=SubMacs, "All Terrestrial"=AllTerr, "Local Terrestrial"=LocalTerr, "All Phytoplankton"=c("EpiPhyto", "MetaPhyto"), "Epi. Phytoplankton"="EpiPhyto", "Meta. Phytoplankton"="MetaPhyto", "DOM"="DOM", "Periphyton"="Periphyton")#
+	ConsChoices <- list(#
+					"Calanoid"=list(c("All Terrestrial", "All Phytoplankton")),#
+					"Mesocyclops"=list(c("All Terrestrial", "All Phytoplankton")),#
+					"Chaoborus"=list(c("All Terrestrial", "All Phytoplankton")),#
+					"Helisoma trivolvis"=list(c("All Terrestrial", "Floating Macrophytes", "Periphyton")),#
+					"FHM"=list(c("All Terrestrial", "All Phytoplankton", "Floating Macrophytes", "Periphyton")),#
+					"DAC"=list(c("All Terrestrial", "All Phytoplankton", "Floating Macrophytes", "Periphyton")),#
+					"CMM"=list(c("All Terrestrial", "All Phytoplankton", "Floating Macrophytes")),#
+					"BHD1"=list(c("All Terrestrial", "All Phytoplankton", "Periphyton")),#
+					"BHD2"=list(c("All Terrestrial", "All Phytoplankton", "Floating Macrophytes")),#
+					"PKS"=list(c("All Terrestrial", "All Phytoplankton", "Floating Macrophytes", "Periphyton")),#
+					"YWP"=list(c("All Terrestrial", "All Phytoplankton", "Floating Macrophytes", "Periphyton"))#
+					)#
+	DOMsources <- c("All Terrestrial", "All Macrophytes", "All Phytoplankton","Periphyton")#
+	SourceData <- subset(Data, Trophic==0 & Taxon!="POM" & Year==YearMix | is.element(Type, c("Macrophyte", "Terrestrial")))#
+	SourceTaxa <- as.character(unique(SourceData[,"Taxon"]))#
+	Source_Means <- matrix(ncol=3, nrow=length(SourceTaxa), dimnames=list(SourceTaxa,NULL))#
+	Source_Vars <- matrix(ncol=3, nrow=length(SourceTaxa), dimnames=list(SourceTaxa,NULL))#
+	for(i in 1:length(SourceTaxa)){#
+		Source_Means[i,] <- apply(subset(SourceData, Taxon==SourceTaxa[i], select=c("d13C","d15N","dD")), 2, mean)#
+		Source_Vars[i,] <- apply(subset(SourceData, Taxon==SourceTaxa[i], select=c("d13C","d15N","dD")), 2, var)#
+	}#
+	Source_Means <- rbind(Source_Means, "EpiPhyto"=P_dX_Epi, "MetaPhyto"=P_dX_Meta)#
+	Source_Vars <- rbind(Source_Vars, "EpiPhyto"=P_dX_Epi_Var, "MetaPhyto"=P_dX_Meta_Var)#
+#
+	# nSrcs <- length(SourceNames[[f_Src]])#
+	SourceData_dX_Obs <- SourceData[,c("Taxon","d13C","d15N","dD")]#
+	SourceData_dX_Obs <- rbind(SourceData_dX_Obs, Sim_P_dX_Epi_Obs, Sim_P_dX_Meta_Obs)#
+	if(YearMix==2010){#
+		EndMembers <- data.frame("Year"=YearMix, SourceData_dX_Obs)#
+	}else{#
+		EndMembers0 <- data.frame("Year"=YearMix, SourceData_dX_Obs)#
+		EndMembers <- rbind(EndMembers, EndMembers0)#
+	}#
+	for(g_Cons in 1:length(Cons)){#
+		TempoCons <- Cons[g_Cons]#
+		SourceNames <- ConsChoices[[TempoCons]]#
+#
+		for(f_Src in 1:1){#
+			nSrcs <- length(SourceNames[[f_Src]])#
+			Source1 <- SourceOpts[[SourceNames[[f_Src]][1]]] #FirstSources[[f_Src]]#
+			Source2 <- SourceOpts[[SourceNames[[f_Src]][2]]]#
+			if(nSrcs>=3){Source3 <- SourceOpts[[SourceNames[[f_Src]][3]]]}#
+			if(nSrcs>=4){Source4 <- SourceOpts[[SourceNames[[f_Src]][4]]]}#
+			for(i in 1:nSrcs){#
+				TempName_Source <- paste("Source", i, sep="")#
+				TempName_Mean <- paste(paste("Source", paste(i, "_Mean", sep=""), sep=""))#
+				TempName_Var <- paste(paste("Source", paste(i, "_Var", sep=""), sep=""))#
+				if(length(get(TempName_Source))>1){assign(TempName_Mean, apply(Source_Means[get(TempName_Source),], 2, mean))}else{assign(TempName_Mean, Source_Means[get(TempName_Source),])}#
+#
+				if(length(get(TempName_Source))>1){#
+					assign(TempName_Var, data.frame("d13C"=NA, "d15N"=NA, "dD"=NA))#This is to clear the temporary data frame at the beginning of each loop#
+#
+					Temp_d13C_aov <- anova(lm(d13C ~ Taxon, data=subset(SourceData_dX_Obs, is.element(Taxon, get(TempName_Source)), select=c("Taxon","d13C"))))#
+					if(Temp_d13C_aov$Pr[1] <= 0.1){#
+						Temp_d13C_Var <- sum(Temp_d13C_aov$Mean)#
+					}else{#
+							Temp_d13C_Var <- Temp_d13C_aov$Mean[2] #
+					}#
+					Temp_d15N_aov <- anova(lm(d15N ~ Taxon, data=subset(SourceData_dX_Obs, is.element(Taxon, get(TempName_Source)), select=c("Taxon","d15N"))))#
+					if(Temp_d15N_aov$Pr[1] <= 0.1){#
+						Temp_d15N_Var <- sum(Temp_d15N_aov$Mean)#
+					}else{#
+							Temp_d15N_Var <- Temp_d15N_aov$Mean[2]#
+					}#
+					Temp_dD_aov <- anova(lm(dD ~ Taxon, data=subset(SourceData_dX_Obs, is.element(Taxon, get(TempName_Source)), select=c("Taxon","dD"))))#
+					if(Temp_dD_aov$Pr[1] <= 0.1){#
+						Temp_dD_Var <- sum(Temp_dD_aov$Mean) #
+					}else{#
+						Temp_dD_Var <- Temp_dD_aov$Mean[2] #
+					}#
+					assign(TempName_Var, c(Temp_d13C_Var, Temp_d15N_Var, Temp_dD_Var))#
+				}else{#
+					assign(TempName_Var, Source_Vars[get(TempName_Source),])#
+				}	#
+			}#Finish the loop that handles each source (1 through 4) one at a time for this particular set of sources for this consumer#
+			#Then collect the source means and variances from the previous loop; the following could have been condensed into previous loop.#
+			Srcs_dX_Ward <- c()#
+			Srcs_dX_Var_Ward <- c()#
+			for(i in 1:nSrcs){#
+				TempName_Mean <- paste(paste("Source", paste(i, "_Mean", sep=""), sep=""))#
+				TempName_Var <- paste(paste("Source", paste(i, "_Var", sep=""), sep=""))#
+				Srcs_dX_Ward <- cbind(Srcs_dX_Ward, get(TempName_Mean))#
+				Srcs_dX_Var_Ward <- cbind(Srcs_dX_Var_Ward, get(TempName_Var))#
+			}#
+			# if(YearMix==2010 & all(SourceNames[[f_Src]]==c("All Terrestrial", "All Macrophytes", "All Phytoplankton","Periphyton"))){#
+			# 	DOM_MeanSrcSigs2010 <- Srcs_dX_Ward#
+			# 	DOM_VarSrcSigs2010 <- Srcs_dX_Var_Ward#
+			# }#
+			# if(YearMix==2012 & all(SourceNames[[f_Src]]==c("All Terrestrial", "All Macrophytes", "All Phytoplankton","Periphyton"))){#
+			# 	DOM_MeanSrcSigs2012 <- Srcs_dX_Ward#
+			# 	DOM_VarSrcSigs2012 <- Srcs_dX_Var_Ward#
+			# }#
+			print(paste("Bugging Consumer",g_Cons,YearMix))#
+			Temp_BugOut <- paste("bugsOut_", Cons[g_Cons], "_SrcComb", f_Src, "_","Pooled", sep="")#
+			Cons_Data <- subset(Data, Taxon==Cons[g_Cons] & Year==YearMix, select=c("Trophic","d13C","d15N","dD"))#
+			Cons_dX_Obs <- matrix(data=c(Cons_Data[,2], Cons_Data[,3], Cons_Data[,4]), ncol=3)#
+			ConsName <- as.character(subset(Data, Taxon==Cons[g_Cons] & Year==YearMix, select=Type)[1,1])#There should be a better way to do this...#
+			assign(Temp_BugOut, ConsMix(Cons_dX_Obs=Cons_dX_Obs, TL=TL[g_Cons], Srcs_dX=Srcs_dX_Ward, Srcs_dX_Var=Srcs_dX_Var_Ward, Water_dD_Mu, Water_dD_Var, FractModel=TRUE, SrcNames=SourceNames[[f_Src]], ConsName=ConsName, GraphTitle=GraphTitle[g_Cons], WINE=WINE, WINEPATH= WINEPATH, nChains=8, ChainLength=Iterations, working.directory=BUGSWorkDir, Plot=FALSE))#
+			#Begin working on changing this code so that I can be more flexible with the number of sources, which will also require referring to columns by names (so that graphing labels can be proper, etc)#
+			TempOutput <- get(Temp_BugOut)$sims.matrix[,1:length(SourceNames[[f_Src]])] #remove the deviance column, and rename the output matrix#
+			colnames(TempOutput) <- SourceNames[[f_Src]] #name the columns of the bugs() output matrix according to the names of the sources#
+			NAsources <- names(SourceOpts)[!is.element(names(SourceOpts), SourceNames[[f_Src]])] #the names of the sources that weren't used in this run#
+			NA_srcs_df <- matrix(data=rep(NA, length(NAsources)), ncol=length(NAsources), dimnames=list(NULL, NAsources))#
+			if(g_Cons==1 & f_Src==1 & YearMix==2010){#
+				# ResourceUse <- data.frame("Year"=YearMix, "Month"="Pooled", "Consumer"=Cons[g_Cons], "Grouping"=f_Src, get(Temp_BugOut)$sims.matrix[,1:4])#
+				ResourceUse <- data.frame("Year"=YearMix, "Month"="Pooled", "Consumer"=Cons[g_Cons], "Grouping"=f_Src, TempOutput, NA_srcs_df) #will have to use make.names() to index by name#
+			}else{#
+				TempoResourceUse <- data.frame("Year"=YearMix, "Month"="Pooled", "Consumer"=Cons[g_Cons], "Grouping"=f_Src, TempOutput, NA_srcs_df)#
+				ResourceUse <- rbind(ResourceUse, TempoResourceUse)#
+			}#
+			# TempoResourceUse <- data.frame("Year"=YearMix, "Month"="Pooled", "Consumer"=Cons[g_Cons], "Grouping"=f_Src, get(Temp_BugOut)$sims.matrix[,1:4])#
+			# ResourceUse <- rbind(ResourceUse, TempoResourceUse)#
+		}#Finish loop the loop that handles the two sets of sources for this particular consumer#
+	}#Finish loop that estimates resource use for each consumer under 2 scenarios of available resources/ grouping of resources#
+	# =================================#
+	# = Calculate End Members for DOM =#
+	# =================================#
+		nSrcs <- length(DOMsources)#
+		Source1 <- SourceOpts[[DOMsources[1]]] #FirstSources[[f_Src]]#
+		Source2 <- SourceOpts[[DOMsources[2]]]#
+		if(nSrcs>=3){Source3 <- SourceOpts[[DOMsources[3]]]}#
+		if(nSrcs>=4){Source4 <- SourceOpts[[DOMsources[4]]]}#
+		for(i in 1:nSrcs){#
+			TempName_Source <- paste("Source", i, sep="")#
+			TempName_Mean <- paste(paste("Source", paste(i, "_Mean", sep=""), sep=""))#
+			TempName_Var <- paste(paste("Source", paste(i, "_Var", sep=""), sep=""))#
+			if(length(get(TempName_Source))>1){assign(TempName_Mean, apply(Source_Means[get(TempName_Source),], 2, mean))}else{assign(TempName_Mean, Source_Means[get(TempName_Source),])}#
+			if(length(get(TempName_Source))>1){#
+				assign(TempName_Var, data.frame("d13C"=NA, "d15N"=NA, "dD"=NA))#This is to clear the temporary data frame at the beginning of each loop#
+				Temp_d13C_aov <- anova(lm(d13C ~ Taxon, data=subset(SourceData_dX_Obs, is.element(Taxon, get(TempName_Source)), select=c("Taxon","d13C"))))#
+				if(Temp_d13C_aov$Pr[1] <= 0.1){#
+					Temp_d13C_Var <- sum(Temp_d13C_aov$Mean)#
+				}else{#
+						Temp_d13C_Var <- Temp_d13C_aov$Mean[2] #
+				}#
+				Temp_d15N_aov <- anova(lm(d15N ~ Taxon, data=subset(SourceData_dX_Obs, is.element(Taxon, get(TempName_Source)), select=c("Taxon","d15N"))))#
+				if(Temp_d15N_aov$Pr[1] <= 0.1){#
+					Temp_d15N_Var <- sum(Temp_d15N_aov$Mean)#
+				}else{#
+						Temp_d15N_Var <- Temp_d15N_aov$Mean[2]#
+				}#
+				Temp_dD_aov <- anova(lm(dD ~ Taxon, data=subset(SourceData_dX_Obs, is.element(Taxon, get(TempName_Source)), select=c("Taxon","dD"))))#
+				if(Temp_dD_aov$Pr[1] <= 0.1){#
+					Temp_dD_Var <- sum(Temp_dD_aov$Mean) #
+				}else{#
+					Temp_dD_Var <- Temp_dD_aov$Mean[2] #
+				}#
+				assign(TempName_Var, c(Temp_d13C_Var, Temp_d15N_Var, Temp_dD_Var))#
+			}else{#
+				assign(TempName_Var, Source_Vars[get(TempName_Source),])#
+			}	#
+		}#
+		Srcs_dX_Ward <- c()#
+		Srcs_dX_Var_Ward <- c()#
+		for(i in 1:nSrcs){#
+			TempName_Mean <- paste(paste("Source", paste(i, "_Mean", sep=""), sep=""))#
+			TempName_Var <- paste(paste("Source", paste(i, "_Var", sep=""), sep=""))#
+			Srcs_dX_Ward <- cbind(Srcs_dX_Ward, get(TempName_Mean))#
+			Srcs_dX_Var_Ward <- cbind(Srcs_dX_Var_Ward, get(TempName_Var))#
+		}#
+		if(YearMix==2010){#
+			DOM_MeanSrcSigs2010 <- Srcs_dX_Ward#
+			DOM_VarSrcSigs2010 <- Srcs_dX_Var_Ward#
+		}#
+		if(YearMix==2012){#
+			DOM_MeanSrcSigs2012 <- Srcs_dX_Ward#
+			DOM_VarSrcSigs2012 <- Srcs_dX_Var_Ward#
+		}#
+	# ===================#
+	# = END DOM sources =#
+	# ===================#
+	#Plot the composition of POM#
+	LegendTitle <- list(c("A)", "B)", "C)", "D)"), c("E", "F", "G", "H")) #CHANGED added )'s#
+	PubCex=1#
+	PanelNameAdj <- c(0.25, 0.33, 0.55, 0.58)#
+	setwd(paste("/Users/battrd/Documents/School&Work/WiscResearch/Isotopes_2012Analysis/",FigureFolder,sep=""))#
+	#Plot EPILIMNION#
+	if(Save){#
+		if(SaveType==".pdf"){pdf(file=paste("EpiPhyto_Post_", YearMix, "_", Version, ".pdf", sep=""), width=3.5, height=3.5, family="Times", pointsize=9)}#
+		if(SaveType==".png"){png(file=paste("EpiPhyto_Post_", YearMix, "_", Version, ".png", sep=""), units="in", res=200, width=3.5, height=3.5, family="Times", pointsize=9)}#
+	}else{#
+		dev.new(width=3.5, height=3.5, family="Times", pointsize=9)#
+	}#
+	par(mfrow=c(2,2), las=1, mar=c(3,2.5,0.1,1), oma=c(0,0,0.2,0), cex=PubCex)#
+	TerrYLim <- range(density(bugsOut_pt1$sims.matrix[,"f[1]"], from=0, to=1)$y)*c(1, 1.15)#
+	plot.density(density(bugsOut_pt1$sims.matrix[,"f[1]"], from=0, to=1),xlab="", ylab="", main="", bty="l", xaxt="s", zero.line=FALSE, ylim=TerrYLim)#
+	title(main=LegendTitle[[1]][1], adj=0.025, line=-0.7, font.main=1, cex.main=PubCex) #CHANGED changed the adj from 1 to 0.1, added font.main=1, line from -0.5 to -1#
+	mtext("Terrestrial", side=3, line=-0.9, outer=FALSE, las=0, font=1, adj=PanelNameAdj[1], cex=PubCex) #CHANGED line from 0 to -1, deleted cex=0.85, changed font=3 to 1#
+	title(paste(round(bugsOut_pt1$mean[[1]][1]*100, 0), "%", sep=""),  adj=0.1, line=-1.75, font.main=3, cex.main=PubCex) #CHANGED deleted cex.main=0.85,#
+	PdCYLim <- range(density(bugsOut_pt1$sims.matrix[,"P_dC_Epi"])$y)*c(1, 1.15)#
+	plot.density(density(bugsOut_pt1$sims.matrix[,"P_dC_Epi"]), main="", ylab="", xlab="", bty="l", xaxt="s", zero.line=FALSE, ylim=PdCYLim)#
+	title(main=LegendTitle[[1]][3], adj=0.025, line=-0.7, font.main=1, cex.main=PubCex)#
+	mtext(expression(Phytoplankton~phantom()^13*C), side=3, line=-1.1, outer=FALSE, las=0, font=1, adj=PanelNameAdj[3], cex=PubCex)#
+	title(paste(round(bugsOut_pt1$mean$P_dC_Epi, 1), "", sep=""),  adj=0.1, line=-1.75, font.main=3, cex.main=PubCex)#
+	PhytYLim <- range(density(bugsOut_pt1$sims.matrix[,"f[2]"], from=0, to=1)$y)*c(1, 1.15)#
+	plot.density(density(bugsOut_pt1$sims.matrix[,"f[2]"], from=0, to=1),  main="", xlab="", ylab="", bty="l", xaxt="s", zero.line=FALSE, ylim=PhytYLim)#
+	title(main=LegendTitle[[1]][2], adj=0.025, line=-0.7, font.main=1, cex.main=PubCex)#
+	mtext("Phytoplankton", side=3, line=-0.9, outer=FALSE, las=0, font=1, adj=PanelNameAdj[2], cex=PubCex)#
+	title(paste(round(bugsOut_pt1$mean[[1]][2]*100, 0), "%", sep=""),  adj=0.1, line=-1.75, font.main=3, cex.main=PubCex)#
+	mtext("Fraction of POM", side=1, line=2, cex=PubCex, font=1, outer=FALSE)#
+	PdNYLim <- range(density(bugsOut_pt1$sims.matrix[,"P_dN_Epi"])$y)*c(1, 1.15)#
+	plot.density(density(bugsOut_pt1$sims.matrix[,"P_dN_Epi"]),  main="", ylab="", xlab="", bty="l", xaxt="s", zero.line=FALSE, ylim=PdNYLim)#
+	title(main=LegendTitle[[1]][4], adj=0.025, line=-0.7, font.main=1, cex.main=PubCex)#
+	mtext(expression(Phytoplankton~phantom()^15*N), side=3, line=-1.1, outer=FALSE, las=0, font=1, adj=PanelNameAdj[4], cex=PubCex)#
+	title(paste(round(bugsOut_pt1$mean$P_dN_Epi, 2), "", sep=""),  adj=0.1, line=-1.75, font.main=3, cex.main=PubCex)#
+	mtext("Isotopic signature", side=1, line=2, cex=PubCex, font=1, outer=FALSE)#
+	mtext("Density", side=2, line=-1, font=1, las=0, outer=TRUE, cex=PubCex)#
+	if(Save){dev.off()}#
+	#Plot METALIMNION#
+	if(Save){#
+		if(SaveType==".pdf"){pdf(file=paste("MetaPhyto_Post_", YearMix, "_", Version, ".pdf", sep=""), width=3.5, height=3.5, family="Times", pointsize=9)}#
+		if(SaveType==".png"){png(file=paste("MetaPhyto_Post_", YearMix, "_", Version, ".png", sep=""), units="in", res=200, width=3.5, height=3.5, family="Times", pointsize=9)}#
+	}else{#
+		dev.new(width=3.5, height=3.5, family="Times", pointsize=9)#
+	}#
+	par(mfrow=c(2,2), las=1, mar=c(3,2.5,0.1,1), oma=c(0,0,0.2,0), cex=PubCex)#
+	TerrYLim <- range(density(bugsOut_pt1$sims.matrix[,"f[3]"], from=0, to=1)$y)*c(1, 1.15)#
+	plot.density(density(bugsOut_pt1$sims.matrix[,"f[3]"], from=0, to=1),xlab="", ylab="", main="", bty="l", xaxt="s", zero.line=FALSE, ylim=TerrYLim)#
+	title(main=LegendTitle[[1]][1], adj=0.025, line=-0.7, font.main=1, cex.main=PubCex) #CHANGED changed the adj from 1 to 0.1, added font.main=1, line from -0.5 to -1#
+	mtext("Terrestrial", side=3, line=-0.9, outer=FALSE, las=0, font=1, adj=PanelNameAdj[1], cex=PubCex) #CHANGED line from 0 to -1, deleted cex=0.85, changed font=3 to 1#
+	title(paste(round(bugsOut_pt1$mean[[1]][3]*100, 0), "%", sep=""),  adj=0.1, line=-1.75, font.main=3, cex.main=PubCex) #CHANGED deleted cex.main=0.85,#
+	PdCYLim <- range(density(bugsOut_pt1$sims.matrix[,"P_dC_Meta"])$y)*c(1, 1.15)#
+	plot.density(density(bugsOut_pt1$sims.matrix[,"P_dC_Meta"]), main="", ylab="", xlab="", bty="l", xaxt="s", zero.line=FALSE, ylim=PdCYLim, xlim=c(-75 , 0))#
+	title(main=LegendTitle[[1]][3], adj=0.025, line=-0.7, font.main=1, cex.main=PubCex)#
+	mtext(expression(Phytoplankton~phantom()^13*C), side=3, line=-1.1, outer=FALSE, las=0, font=1, adj=PanelNameAdj[3], cex=PubCex)#
+	title(paste(round(bugsOut_pt1$mean$P_dC_Meta, 1), "", sep=""),  adj=0.1, line=-1.75, font.main=3, cex.main=PubCex)#
+	PhytYLim <- range(density(bugsOut_pt1$sims.matrix[,"f[4]"], from=0, to=1)$y)*c(1, 1.15)#
+	plot.density(density(bugsOut_pt1$sims.matrix[,"f[4]"], from=0, to=1),  main="", xlab="", ylab="", bty="l", xaxt="s", zero.line=FALSE, ylim=PhytYLim)#
+	title(main=LegendTitle[[1]][2], adj=0.025, line=-0.7, font.main=1, cex.main=PubCex)#
+	mtext("Phytoplankton", side=3, line=-0.9, outer=FALSE, las=0, font=1, adj=PanelNameAdj[2], cex=PubCex)#
+	title(paste(round(bugsOut_pt1$mean[[1]][4]*100, 0), "%", sep=""),  adj=0.1, line=-1.75, font.main=3, cex.main=PubCex)#
+	mtext("Fraction of POM", side=1, line=2, cex=PubCex, font=1, outer=FALSE)#
+	PdNYLim <- range(density(bugsOut_pt1$sims.matrix[,"P_dN_Meta"])$y)*c(1, 1.15)#
+	plot.density(density(bugsOut_pt1$sims.matrix[,"P_dN_Meta"]),  main="", ylab="", xlab="", bty="l", xaxt="s", zero.line=FALSE, ylim=PdNYLim)#
+	title(main=LegendTitle[[1]][4], adj=0.025, line=-0.7, font.main=1, cex.main=PubCex)#
+	mtext(expression(Phytoplankton~phantom()^15*N), side=3, line=-1.1, outer=FALSE, las=0, font=1, adj=PanelNameAdj[4], cex=PubCex)#
+	title(paste(round(bugsOut_pt1$mean$P_dN_Meta, 2), "", sep=""),  adj=0.1, line=-1.75, font.main=3, cex.main=PubCex)#
+	mtext("Isotopic signature", side=1, line=2, cex=PubCex, font=1, outer=FALSE)#
+	mtext("Density", side=2, line=-1, font=1, las=0, outer=TRUE, cex=PubCex)#
+	# setwd("/Users/battrd/Documents/School&Work/WiscResearch/Isotopes_2010Analysis/Figures_v8.3")#
+	# dev2bitmap(file="MetaPhyto_Post_v8.3.tif", type="tiffgray",height=3.5, width=3.5, res=200, font="Times", method="pdf", pointsize=12)#
+	if(Save){dev.off()}#
+}#End Year loop
+FigureFolder
+FigureFolder <- paste("Figures/Figures_", Version, sep="")
+Version <- "v0.4.8"
+FigureFolder <- paste("Figures/Figures_", Version, sep="")
+setwd(paste("/Users/battrd/Documents/School&Work/WiscResearch/Isotopes_2012Analysis/",FigureFolder,sep=""))
+Plot EPILIMNION#
+	if(Save){#
+		if(SaveType==".pdf"){pdf(file=paste("EpiPhyto_Post_", YearMix, "_", Version, ".pdf", sep=""), width=3.5, height=3.5, family="Times", pointsize=9)}#
+		if(SaveType==".png"){png(file=paste("EpiPhyto_Post_", YearMix, "_", Version, ".png", sep=""), units="in", res=200, width=3.5, height=3.5, family="Times", pointsize=9)}#
+	}else{#
+		dev.new(width=3.5, height=3.5, family="Times", pointsize=9)#
+	}#
+	par(mfrow=c(2,2), las=1, mar=c(3,2.5,0.1,1), oma=c(0,0,0.2,0), cex=PubCex)#
+	TerrYLim <- range(density(bugsOut_pt1$sims.matrix[,"f[1]"], from=0, to=1)$y)*c(1, 1.15)#
+	plot.density(density(bugsOut_pt1$sims.matrix[,"f[1]"], from=0, to=1),xlab="", ylab="", main="", bty="l", xaxt="s", zero.line=FALSE, ylim=TerrYLim)#
+	title(main=LegendTitle[[1]][1], adj=0.025, line=-0.7, font.main=1, cex.main=PubCex) #CHANGED changed the adj from 1 to 0.1, added font.main=1, line from -0.5 to -1#
+	mtext("Terrestrial", side=3, line=-0.9, outer=FALSE, las=0, font=1, adj=PanelNameAdj[1], cex=PubCex) #CHANGED line from 0 to -1, deleted cex=0.85, changed font=3 to 1#
+	title(paste(round(bugsOut_pt1$mean[[1]][1]*100, 0), "%", sep=""),  adj=0.1, line=-1.75, font.main=3, cex.main=PubCex) #CHANGED deleted cex.main=0.85,#
+	PdCYLim <- range(density(bugsOut_pt1$sims.matrix[,"P_dC_Epi"])$y)*c(1, 1.15)#
+	plot.density(density(bugsOut_pt1$sims.matrix[,"P_dC_Epi"]), main="", ylab="", xlab="", bty="l", xaxt="s", zero.line=FALSE, ylim=PdCYLim)#
+	title(main=LegendTitle[[1]][3], adj=0.025, line=-0.7, font.main=1, cex.main=PubCex)#
+	mtext(expression(Phytoplankton~phantom()^13*C), side=3, line=-1.1, outer=FALSE, las=0, font=1, adj=PanelNameAdj[3], cex=PubCex)#
+	title(paste(round(bugsOut_pt1$mean$P_dC_Epi, 1), "", sep=""),  adj=0.1, line=-1.75, font.main=3, cex.main=PubCex)#
+	PhytYLim <- range(density(bugsOut_pt1$sims.matrix[,"f[2]"], from=0, to=1)$y)*c(1, 1.15)#
+	plot.density(density(bugsOut_pt1$sims.matrix[,"f[2]"], from=0, to=1),  main="", xlab="", ylab="", bty="l", xaxt="s", zero.line=FALSE, ylim=PhytYLim)#
+	title(main=LegendTitle[[1]][2], adj=0.025, line=-0.7, font.main=1, cex.main=PubCex)#
+	mtext("Phytoplankton", side=3, line=-0.9, outer=FALSE, las=0, font=1, adj=PanelNameAdj[2], cex=PubCex)#
+	title(paste(round(bugsOut_pt1$mean[[1]][2]*100, 0), "%", sep=""),  adj=0.1, line=-1.75, font.main=3, cex.main=PubCex)#
+	mtext("Fraction of POM", side=1, line=2, cex=PubCex, font=1, outer=FALSE)#
+	PdNYLim <- range(density(bugsOut_pt1$sims.matrix[,"P_dN_Epi"])$y)*c(1, 1.15)#
+	plot.density(density(bugsOut_pt1$sims.matrix[,"P_dN_Epi"]),  main="", ylab="", xlab="", bty="l", xaxt="s", zero.line=FALSE, ylim=PdNYLim)#
+	title(main=LegendTitle[[1]][4], adj=0.025, line=-0.7, font.main=1, cex.main=PubCex)#
+	mtext(expression(Phytoplankton~phantom()^15*N), side=3, line=-1.1, outer=FALSE, las=0, font=1, adj=PanelNameAdj[4], cex=PubCex)#
+	title(paste(round(bugsOut_pt1$mean$P_dN_Epi, 2), "", sep=""),  adj=0.1, line=-1.75, font.main=3, cex.main=PubCex)#
+	mtext("Isotopic signature", side=1, line=2, cex=PubCex, font=1, outer=FALSE)#
+	mtext("Density", side=2, line=-1, font=1, las=0, outer=TRUE, cex=PubCex)#
+	if(Save){dev.off()}#
+	#Plot METALIMNION#
+	if(Save){#
+		if(SaveType==".pdf"){pdf(file=paste("MetaPhyto_Post_", YearMix, "_", Version, ".pdf", sep=""), width=3.5, height=3.5, family="Times", pointsize=9)}#
+		if(SaveType==".png"){png(file=paste("MetaPhyto_Post_", YearMix, "_", Version, ".png", sep=""), units="in", res=200, width=3.5, height=3.5, family="Times", pointsize=9)}#
+	}else{#
+		dev.new(width=3.5, height=3.5, family="Times", pointsize=9)#
+	}#
+	par(mfrow=c(2,2), las=1, mar=c(3,2.5,0.1,1), oma=c(0,0,0.2,0), cex=PubCex)#
+	TerrYLim <- range(density(bugsOut_pt1$sims.matrix[,"f[3]"], from=0, to=1)$y)*c(1, 1.15)#
+	plot.density(density(bugsOut_pt1$sims.matrix[,"f[3]"], from=0, to=1),xlab="", ylab="", main="", bty="l", xaxt="s", zero.line=FALSE, ylim=TerrYLim)#
+	title(main=LegendTitle[[1]][1], adj=0.025, line=-0.7, font.main=1, cex.main=PubCex) #CHANGED changed the adj from 1 to 0.1, added font.main=1, line from -0.5 to -1#
+	mtext("Terrestrial", side=3, line=-0.9, outer=FALSE, las=0, font=1, adj=PanelNameAdj[1], cex=PubCex) #CHANGED line from 0 to -1, deleted cex=0.85, changed font=3 to 1#
+	title(paste(round(bugsOut_pt1$mean[[1]][3]*100, 0), "%", sep=""),  adj=0.1, line=-1.75, font.main=3, cex.main=PubCex) #CHANGED deleted cex.main=0.85,#
+	PdCYLim <- range(density(bugsOut_pt1$sims.matrix[,"P_dC_Meta"])$y)*c(1, 1.15)#
+	plot.density(density(bugsOut_pt1$sims.matrix[,"P_dC_Meta"]), main="", ylab="", xlab="", bty="l", xaxt="s", zero.line=FALSE, ylim=PdCYLim, xlim=c(-75 , 0))#
+	title(main=LegendTitle[[1]][3], adj=0.025, line=-0.7, font.main=1, cex.main=PubCex)#
+	mtext(expression(Phytoplankton~phantom()^13*C), side=3, line=-1.1, outer=FALSE, las=0, font=1, adj=PanelNameAdj[3], cex=PubCex)#
+	title(paste(round(bugsOut_pt1$mean$P_dC_Meta, 1), "", sep=""),  adj=0.1, line=-1.75, font.main=3, cex.main=PubCex)#
+	PhytYLim <- range(density(bugsOut_pt1$sims.matrix[,"f[4]"], from=0, to=1)$y)*c(1, 1.15)#
+	plot.density(density(bugsOut_pt1$sims.matrix[,"f[4]"], from=0, to=1),  main="", xlab="", ylab="", bty="l", xaxt="s", zero.line=FALSE, ylim=PhytYLim)#
+	title(main=LegendTitle[[1]][2], adj=0.025, line=-0.7, font.main=1, cex.main=PubCex)#
+	mtext("Phytoplankton", side=3, line=-0.9, outer=FALSE, las=0, font=1, adj=PanelNameAdj[2], cex=PubCex)#
+	title(paste(round(bugsOut_pt1$mean[[1]][4]*100, 0), "%", sep=""),  adj=0.1, line=-1.75, font.main=3, cex.main=PubCex)#
+	mtext("Fraction of POM", side=1, line=2, cex=PubCex, font=1, outer=FALSE)#
+	PdNYLim <- range(density(bugsOut_pt1$sims.matrix[,"P_dN_Meta"])$y)*c(1, 1.15)#
+	plot.density(density(bugsOut_pt1$sims.matrix[,"P_dN_Meta"]),  main="", ylab="", xlab="", bty="l", xaxt="s", zero.line=FALSE, ylim=PdNYLim)#
+	title(main=LegendTitle[[1]][4], adj=0.025, line=-0.7, font.main=1, cex.main=PubCex)#
+	mtext(expression(Phytoplankton~phantom()^15*N), side=3, line=-1.1, outer=FALSE, las=0, font=1, adj=PanelNameAdj[4], cex=PubCex)#
+	title(paste(round(bugsOut_pt1$mean$P_dN_Meta, 2), "", sep=""),  adj=0.1, line=-1.75, font.main=3, cex.main=PubCex)#
+	mtext("Isotopic signature", side=1, line=2, cex=PubCex, font=1, outer=FALSE)#
+	mtext("Density", side=2, line=-1, font=1, las=0, outer=TRUE, cex=PubCex)#
+	# setwd("/Users/battrd/Documents/School&Work/WiscResearch/Isotopes_2010Analysis/Figures_v8.3")#
+	# dev2bitmap(file="MetaPhyto_Post_v8.3.tif", type="tiffgray",height=3.5, width=3.5, res=200, font="Times", method="pdf", pointsize=12)#
+	if(Save){dev.off()}
+YearMix
+rm(list=ls())#
+graphics.off()#
+#
+Version <- "v0.4.9"#
+FigureFolder <- paste("Figures/Figures_", Version, sep="")#
+Iterations <- 6000#
+Save <- c(TRUE, FALSE)[1]#
+SaveType <- c(".pdf", ".png")[2]#
+ConsChoose <- c("Calanoid", "Mesocyclops", "Chaoborus", "Helisoma trivolvis", "FHM", "DAC", "CMM", "BHD1", "BHD2",  "YWP", "PKS")[c(1,3:8)]#
+#
+if(Sys.info()["sysname"]=="Windows"){#
+	windowsFonts(Times=windowsFont("TT Times New Roman"))#
+	BUGSWorkDir <- NULL#
+}else{#
+	BUGSWorkDir <- "~/.wine/drive_c/temp/Rtmp"#
+}#
+#
+#Select the top 2 if on Snow Leopard, the bottom 2 if on Leopard, and the selection doesn't matter if on a PC#
+# WINE="/Applications/Darwine/Wine.bundle/Contents/bin/wine"#
+# WINEPATH="/Applications/Darwine/Wine.bundle/Contents/bin/winepath"#
+WINEPATH="/opt/local/bin/winepath"#
+WINE="/opt/local/bin/wine"#
+library(R2WinBUGS)#
+setwd("/Users/Battrd/Documents/School&Work/WiscResearch/Isotopes_2010Analysis")#
+source("ConsMix_v6.R")#
+setwd("/Users/Battrd/Documents/School&Work/WiscResearch/Data/IsotopeData2012")#
+DataRaw <- read.csv("WardIsotopes_2010&2012_17Jan2013.csv", header=TRUE)#
+Data <- subset(DataRaw, Taxon!="Nija" & !is.element(SampleID, c("O-0362", "V-0270", "P-1202", "P-1166", "O-0382", "P-1165", "P-1206", "P-1238", "P-1239", "P-1243", "Z-1110", "Z-1115", "Z-1195", "Z-1170", "O-0405", "P-1244")) & is.na(FishID))#
+Months <- c("May", "Jun", "Jul", "Aug")#
+#Calculate the algal end member from POM#
+TSources <- c("Alder", "Sedge", "Tamarack", "Tree")#, "Tamarack") #c("Alder", "Sedge", "DOM")#
+#
+#Signature of the terrestrial source#
+nTS <- length(TSources)#
+TMeans <- data.frame("d13C"=rep(NA,nTS),"d15N"=rep(NA,nTS),"dD"=rep(NA,nTS), row.names=TSources)#
+TVars <- data.frame("d13C"=rep(NA,nTS),"d15N"=rep(NA,nTS),"dD"=rep(NA,nTS), row.names=TSources)#
+#Td13C_aov #
+Td15NObs <- data.frame()#
+TdDObs <- data.frame() #matrix(ncol=nTS, dimnames=list(NULL,TSources))#
+for(i in 1:length(TSources)){#
+	TMeans[i,] <- apply(subset(Data, Taxon==TSources[i], select=c("d13C","d15N","dD")),2,mean)#
+}#
+dCNH_Terr_Mu <- apply(TMeans, 2, mean)#
+dCNH_Terr_Var <- data.frame("d13C"=NA, "d15N"=NA, "dD"=NA)#
+#
+if(nTS>1){#
+	Temp_d13C_aov <- anova(lm(d13C ~ Taxon, data=subset(Data, is.element(Taxon, TSources), select=c("Taxon","d13C"))))#
+	if(Temp_d13C_aov$Pr[1] <= 0.1){#
+		dCNH_Terr_Var["d13C"] <- sum(Temp_d13C_aov$Mean)#
+	}else{#
+		dCNH_Terr_Var["d13C"] <- Temp_d13C_aov$Mean[2]#
+	}#
+	Temp_d15N_aov <- anova(lm(d15N ~ Taxon, data=subset(Data, is.element(Taxon, TSources), select=c("Taxon","d15N"))))#
+	if(Temp_d15N_aov$Pr[1] <= 0.1){#
+		dCNH_Terr_Var["d15N"] <- sum(Temp_d15N_aov$Mean)#
+	}else{#
+		dCNH_Terr_Var["d15N"] <- Temp_d15N_aov$Mean[2]#
+	}#
+	Temp_dD_aov <- anova(lm(dD ~ Taxon, data=subset(Data, is.element(Taxon, TSources), select=c("Taxon","dD"))))#
+	if(Temp_dD_aov$Pr[1] <= 0.1){#
+		dCNH_Terr_Var["dD"] <- sum(Temp_dD_aov$Mean)#
+	}else{#
+		dCNH_Terr_Var["dD"] <- Temp_dD_aov$Mean[2]#
+	}#
+}else{#
+	dCNH_Terr_Var <- apply(subset(Data, is.element(Taxon, TSources), select=c("d13C", "d15N", "dD")), 2, var)#
+	}#
+#Define the Terr objects to be used in the POM Mixture portion of the BUGS model#
+#
+#**************************************#
+T_dX <- as.numeric(dCNH_Terr_Mu)#
+T_dX_Var <- as.numeric(dCNH_Terr_Var)#
+#**************************************#
+for(YearMix in c(2010, 2012)){#
+	# TODO The water will need to be defined by year.  Either stored in a higher dimensional object, or have separate objects for each year.#
+	Water_dD_Mu <- mean(subset(Data, Type=="Water" & Year==YearMix, select="dD")[,])#
+	Water_dD_Var <- var(subset(Data, Type=="Water" & Year==YearMix, select="dD")[,])#
+#
+	#Calculate Epi phyto deuterium prior from water dD#
+	dD_Water_Epi <- subset(Data, Type=="Water" & Habitat=="Epi" & Year==YearMix, select="dD")[,]#
+	dD_Water_Adj <- mean(c(-152.8, -172.4))#Fractionation range reported in Solomon et al. 2011#
+	dD_Phyto_Epi_Mu <- mean(dD_Water_Epi + dD_Water_Adj)#
+	#From Solomon et al. 2011 Appendix A: alpha phyto-water = mean ± sd = 0.84 ± 0.008; qnorm(p=.025, mean=-231.945, sd=5); var=25 it should have been ~70.. ask Grace.#
+	dD_Phyto_Epi_Var <- var(dD_Water_Epi) + 25#variance of water + fractionation = variance of Phyto#
+	dD_Phyto_Epi_Shape <- dD_Phyto_Epi_Var*0.1#dD_Phyto_Var~dgamma(shape,rate); shape when rate==0.1#
+	#Signature of the Epi POM mixture#
+	dCNH_POM_Epi <- subset(Data, Type=="POM" & Habitat=="Epi" & Year==YearMix, select=c("d13C","d15N","dD"))#
+	POM_dX_Epi_Obs <- matrix(data=c(dCNH_POM_Epi[,1], dCNH_POM_Epi[,2], dCNH_POM_Epi[,3]), ncol=3)#
+	POM_dX_Epi_Var <- apply(dCNH_POM_Epi, 2, var)#
+	nPOM_Epi <- length(POM_dX_Epi_Obs[,1])#
+#
+	#Same POM and phyto calcs for Meta#
+	#Calculate Algal deuterium prior from water dD#
+	dD_Water_Meta <- subset(Data, Type=="Water" & Habitat=="Meta" & Year==YearMix, select="dD")[,]#
+	dD_Phyto_Meta_Mu <- mean(dD_Water_Meta + dD_Water_Adj)#
+	#From Solomon et al. 2011 Appendix A: alpha phyto-water = mean ± sd = 0.84 ± 0.008; qnorm(p=.025, mean=-231.945, sd=5); var=25#
+	dD_Phyto_Meta_Var <- var(dD_Water_Meta) + 25#variance of water + variance of fractionation = variance of Phyto#
+	dD_Phyto_Meta_Shape <- dD_Phyto_Meta_Var*0.1#dD_Phyto_Var~dgamma(shape,rate); shape when rate==0.1#
+#
+	#Signature of the Meta POM mixture#
+	dCNH_POM_Meta <- subset(Data, Type=="POM" & Habitat=="Meta" & Year==YearMix, select=c("d13C","d15N","dD"))#
+	POM_dX_Meta_Obs <- matrix(data=c(dCNH_POM_Meta[,1], dCNH_POM_Meta[,2], dCNH_POM_Meta[,3]), ncol=3)#
+	POM_dX_Meta_Var <- apply(dCNH_POM_Meta, 2, var)#
+	nPOM_Meta <- length(POM_dX_Meta_Obs[,1])#
+#
+	#Run BUGS Part 1: Using POM, calculate the isotopic signatures of epilimnetic and metalimnetic phytoplankton#
+	SupplyBUGS_pt1 <- list(T_dX, T_dX_Var, dD_Phyto_Epi_Mu, dD_Phyto_Epi_Shape, POM_dX_Epi_Obs, nPOM_Epi, dD_Phyto_Meta_Mu, dD_Phyto_Meta_Shape, POM_dX_Meta_Obs, nPOM_Meta)#
+	names(SupplyBUGS_pt1) <- strsplit(c("T_dX, T_dX_Var, dD_Phyto_Epi_Mu, dD_Phyto_Epi_Shape, POM_dX_Epi_Obs, nPOM_Epi, dD_Phyto_Meta_Mu, dD_Phyto_Meta_Shape, POM_dX_Meta_Obs, nPOM_Meta"), split=", ")[[1]]#
+	ParamBUGS_pt1 <- c("f", "P_dC_Epi", "P_dN_Epi", "P_dD_Epi", "P_dC_Epi_Var", "P_dN_Epi_Var", "P_dD_Epi_Var",  "P_dC_Meta", "P_dN_Meta", "P_dD_Meta", "P_dC_Meta_Var", "P_dN_Meta_Var", "P_dD_Meta_Var", "residSd")#
+	BUGSfile_pt1 <- "/Users/Battrd/Documents/School&Work/WiscResearch/Isotopes_2010Analysis/mix_Cons_Mixture_Ward2010_v2_pt1.bug"#
+	if(.Platform$OS.type=="windows"){#
+		bugsOut_pt1 <- bugs(SupplyBUGS_pt1, inits=NULL, ParamBUGS_pt1, BUGSfile_pt1, n.chains=8, n.iter=Iterations, program="winbugs", working.directory=NULL, debug=FALSE, clearWD=FALSE)#
+	}else{#
+		bugsOut_pt1 <- bugs(SupplyBUGS_pt1, inits=NULL, ParamBUGS_pt1, BUGSfile_pt1, n.chains=8, n.iter=Iterations, program="winbugs", working.directory=BUGSWorkDir, clearWD=TRUE, useWINE=TRUE, newWINE=TRUE, WINEPATH=WINEPATH, WINE=WINE, debug=FALSE)#
+	}#
+	#Extract and name relevant information concerning epilimnetic and metalimnetic phytoplankton#
+	#**************************************#
+	P_dX_Epi <- c(bugsOut_pt1$mean$P_dC_Epi, bugsOut_pt1$mean$P_dN_Epi, bugsOut_pt1$mean$P_dD_Epi)#
+	P_dX_Epi_Var <- c(bugsOut_pt1$mean$P_dC_Epi_Var, bugsOut_pt1$mean$P_dN_Epi_Var, bugsOut_pt1$mean$P_dD_Epi_Var)#
+	P_dX_Meta <- c(bugsOut_pt1$mean$P_dC_Meta, bugsOut_pt1$mean$P_dN_Meta, bugsOut_pt1$mean$P_dD_Meta)#
+	P_dX_Meta_Var <- c(bugsOut_pt1$mean$P_dC_Meta_Var, bugsOut_pt1$mean$P_dN_Meta_Var, bugsOut_pt1$mean$P_dD_Meta_Var)#
+#
+	Sim_P_dX_Epi_Obs <- as.data.frame(matrix(data=rep(rnorm(n=nPOM_Epi),3), ncol=3, byrow=FALSE))#
+#
+	Sim_P_dX_Epi_Obs[,1] <- sample(bugsOut_pt1$sims.matrix[,"P_dC_Epi"], size=nPOM_Epi)#
+	Sim_P_dX_Epi_Obs[,2] <- sample(bugsOut_pt1$sims.matrix[,"P_dN_Epi"], size=nPOM_Epi)#
+	Sim_P_dX_Epi_Obs[,3] <- sample(bugsOut_pt1$sims.matrix[,"P_dD_Epi"], size=nPOM_Epi)#
+#
+	Sim_P_dX_Epi_Obs <- (Sim_P_dX_Epi_Obs-as.data.frame(matrix(data=rep(apply(Sim_P_dX_Epi_Obs,2,mean), nPOM_Epi), ncol=3, byrow=TRUE)))/as.data.frame(matrix(data=rep(apply(Sim_P_dX_Epi_Obs,2,sd), nPOM_Epi), ncol=3, byrow=TRUE))#
+	Sim_P_dX_Epi_Obs[,1] <- Sim_P_dX_Epi_Obs[,1]*sqrt(P_dX_Epi_Var[1])+P_dX_Epi[1]#
+	Sim_P_dX_Epi_Obs[,2] <- Sim_P_dX_Epi_Obs[,2]*sqrt(P_dX_Epi_Var[2])+P_dX_Epi[2]#
+	Sim_P_dX_Epi_Obs[,3] <- Sim_P_dX_Epi_Obs[,3]*sqrt(P_dX_Epi_Var[3])+P_dX_Epi[3]#
+#
+	colnames(Sim_P_dX_Epi_Obs) <- c("d13C","d15N","dD")#
+	Sim_P_dX_Epi_Obs <- cbind("Taxon"=rep("EpiPhyto",nPOM_Epi), Sim_P_dX_Epi_Obs)#
+#
+	Sim_P_dX_Meta_Obs <- as.data.frame(matrix(data=rep(rnorm(n=nPOM_Meta),3), ncol=3, byrow=FALSE))#
+#
+	Sim_P_dX_Meta_Obs[,1] <- sample(bugsOut_pt1$sims.matrix[,"P_dC_Meta"], size=nPOM_Meta)#
+	Sim_P_dX_Meta_Obs[,2] <- sample(bugsOut_pt1$sims.matrix[,"P_dN_Meta"], size=nPOM_Meta)#
+	Sim_P_dX_Meta_Obs[,3] <- sample(bugsOut_pt1$sims.matrix[,"P_dD_Meta"], size=nPOM_Meta)#
+#
+	Sim_P_dX_Meta_Obs <- (Sim_P_dX_Meta_Obs-as.data.frame(matrix(data=rep(apply(Sim_P_dX_Meta_Obs,2,mean), nPOM_Meta), ncol=3, byrow=TRUE)))/as.data.frame(matrix(data=rep(apply(Sim_P_dX_Meta_Obs,2,sd), nPOM_Meta), ncol=3, byrow=TRUE))#
+	Sim_P_dX_Meta_Obs <- (Sim_P_dX_Meta_Obs-apply(Sim_P_dX_Meta_Obs,2,mean))/apply(Sim_P_dX_Meta_Obs,2,sd)#
+	Sim_P_dX_Meta_Obs[,1] <- Sim_P_dX_Meta_Obs[,1]*sqrt(P_dX_Meta_Var[1])+P_dX_Meta[1]#
+	Sim_P_dX_Meta_Obs[,2] <- Sim_P_dX_Meta_Obs[,2]*sqrt(P_dX_Meta_Var[2])+P_dX_Meta[2]#
+	Sim_P_dX_Meta_Obs[,3] <- Sim_P_dX_Meta_Obs[,3]*sqrt(P_dX_Meta_Var[3])+P_dX_Meta[3]#
+#
+	colnames(Sim_P_dX_Meta_Obs) <- c("d13C","d15N","dD")#
+	Sim_P_dX_Meta_Obs <- cbind("Taxon"=rep("MetaPhyto",nPOM_Meta), Sim_P_dX_Meta_Obs)#
+	#**************************************#
+	#*****************************************************#
+	#Begin for consumers and their respective sources#
+	#*****************************************************#
+	# Cons <- c("Calanoid", "Chaoborus", "Helisoma trivolvis", "FHM", "DAC", "CMM", "BHD1") #, "PKS", "FHM", "CMM", "BHD", "Mesocyclops", "DAC")#
+	# TL <- c(1, 2, 1, 2, 2, 2, 2, 3) #, 2, 2, 2.5, 2.5, 1.5, 1)#
+	# GraphTitle <- c("Skistodiaptomus oregonensis", "Chaoborus spp.", "Helisoma trivolvis", "Pimephales promelas", "Phoxinus spp.", "Umbra limi", "Small Ameiurus melas") #, "Lepomis gibbosus", "Pimephales promelas", "Umbra limi", "Ameiurus melas",  "Mesocyclops spp.", "Phoxinus spp.")#
+	if(YearMix==2010){#
+		Cons <- c("Calanoid"="Calanoid", "Mesocyclops"="Mesocyclops", "Chaoborus"="Chaoborus", "Helisoma trivolvis"="Helisoma trivolvis", "FHM"="FHM", "DAC"="DAC", "CMM"="CMM", "BHD1"="BHD1", "BHD2"="BHD2", "PKS"="PKS", "YWP"="YWP")[ConsChoose]#
+		TL <- c("Calanoid"=1,"Mesocyclops"=1, "Chaoborus"=2, "Helisoma trivolvis"=1, "FHM"=2, "DAC"=2, "CMM"=2, "BHD1"=2, "BHD2"=3, "PKS"=2, "YWP"=3)[ConsChoose]#
+		GraphTitle <- c("Calanoid"="Skistodiaptomus oregonensis", "Mesocyclops"="Mesocyclops spp.", "Chaoborus spp.", "Helisoma trivolvis"="Helisoma trivolvis", "FHM"="Pimephales promelas", "DAC"="Phoxinus spp.", "CMM"="Umbra limi", "BHD1"="Small Ameiurus melas", "BHD2"="Large Ameiurus melas", "PKS"="Lepomis gibbosus", "YWP"="Perca flavescens")[ConsChoose]#
+	}else{#
+		Cons <- c("Calanoid"="Calanoid", "Mesocyclops"="Mesocyclops", "Chaoborus"="Chaoborus", "Helisoma trivolvis"="Helisoma trivolvis", "FHM"="FHM", "DAC"="DAC", "CMM"="CMM", "BHD1"="BHD1", "BHD2"="BHD2", "PKS"="PKS", "YWP"="YWP")[ConsChoose]#
+		TL <- c("Calanoid"=1,"Mesocyclops"=1, "Chaoborus"=2, "Helisoma trivolvis"=1, "FHM"=2, "DAC"=2, "CMM"=2, "BHD1"=2, "BHD2"=3, "PKS"=2, "YWP"=3)[ConsChoose]#
+		GraphTitle <- c("Calanoid"="Skistodiaptomus oregonensis", "Mesocyclops"="Mesocyclops spp.", "Chaoborus spp.", "Helisoma trivolvis"="Helisoma trivolvis", "FHM"="Pimephales promelas", "DAC"="Phoxinus spp.", "CMM"="Umbra limi", "BHD1"="Small Ameiurus melas", "BHD2"="Large Ameiurus melas", "PKS"="Lepomis gibbosus", "YWP"="Perca flavescens")[ConsChoose]#
+	}#
+	AllMacs <- c("Brasenia schreberi", "Chara", "Najas flexilis", "Nuphar variegata", "Nymphaea odorata", "Potamogeton amplifolius", "Potamogeton nodosus", "Potamogeton pusillus")#
+	FloatMacs <- c("Brasenia schreberi", "Nuphar variegata", "Nymphaea odorata", "Potamogeton nodosus")#
+	SubMacs <- c("Chara", "Najas flexilis", "Potamogeton amplifolius", "Potamogeton pusillus")#
+	AllTerr <- c("Alder", "Sedge", "Tamarack", "Tree")#
+	LocalTerr <- c("Alder", "Sedge", "Tamarack")#
+	SourceOpts <- list("All Macrophytes"=AllMacs, "Floating Macrophytes"=FloatMacs, "Submersed Macrophytes"=SubMacs, "All Terrestrial"=AllTerr, "Local Terrestrial"=LocalTerr, "All Phytoplankton"=c("EpiPhyto", "MetaPhyto"), "Epi. Phytoplankton"="EpiPhyto", "Meta. Phytoplankton"="MetaPhyto", "DOM"="DOM", "Periphyton"="Periphyton")#
+	ConsChoices <- list(#
+					"Calanoid"=list(c("All Terrestrial", "All Phytoplankton")),#
+					"Mesocyclops"=list(c("All Terrestrial", "All Phytoplankton")),#
+					"Chaoborus"=list(c("All Terrestrial", "All Phytoplankton")),#
+					"Helisoma trivolvis"=list(c("All Terrestrial", "Floating Macrophytes", "Periphyton")),#
+					"FHM"=list(c("All Terrestrial", "All Phytoplankton", "Floating Macrophytes", "Periphyton")),#
+					"DAC"=list(c("All Terrestrial", "All Phytoplankton", "Floating Macrophytes", "Periphyton")),#
+					"CMM"=list(c("All Terrestrial", "All Phytoplankton", "Floating Macrophytes")),#
+					"BHD1"=list(c("All Terrestrial", "All Phytoplankton", "Periphyton")),#
+					"BHD2"=list(c("All Terrestrial", "All Phytoplankton", "Floating Macrophytes")),#
+					"PKS"=list(c("All Terrestrial", "All Phytoplankton", "Floating Macrophytes", "Periphyton")),#
+					"YWP"=list(c("All Terrestrial", "All Phytoplankton", "Floating Macrophytes", "Periphyton"))#
+					)#
+	DOMsources <- c("All Terrestrial", "All Macrophytes", "All Phytoplankton","Periphyton")#
+	SourceData <- subset(Data, Trophic==0 & Taxon!="POM" & Year==YearMix | is.element(Type, c("Macrophyte", "Terrestrial")))#
+	SourceTaxa <- as.character(unique(SourceData[,"Taxon"]))#
+	Source_Means <- matrix(ncol=3, nrow=length(SourceTaxa), dimnames=list(SourceTaxa,NULL))#
+	Source_Vars <- matrix(ncol=3, nrow=length(SourceTaxa), dimnames=list(SourceTaxa,NULL))#
+	for(i in 1:length(SourceTaxa)){#
+		Source_Means[i,] <- apply(subset(SourceData, Taxon==SourceTaxa[i], select=c("d13C","d15N","dD")), 2, mean)#
+		Source_Vars[i,] <- apply(subset(SourceData, Taxon==SourceTaxa[i], select=c("d13C","d15N","dD")), 2, var)#
+	}#
+	Source_Means <- rbind(Source_Means, "EpiPhyto"=P_dX_Epi, "MetaPhyto"=P_dX_Meta)#
+	Source_Vars <- rbind(Source_Vars, "EpiPhyto"=P_dX_Epi_Var, "MetaPhyto"=P_dX_Meta_Var)#
+#
+	# nSrcs <- length(SourceNames[[f_Src]])#
+	SourceData_dX_Obs <- SourceData[,c("Taxon","d13C","d15N","dD")]#
+	SourceData_dX_Obs <- rbind(SourceData_dX_Obs, Sim_P_dX_Epi_Obs, Sim_P_dX_Meta_Obs)#
+	if(YearMix==2010){#
+		EndMembers <- data.frame("Year"=YearMix, SourceData_dX_Obs)#
+	}else{#
+		EndMembers0 <- data.frame("Year"=YearMix, SourceData_dX_Obs)#
+		EndMembers <- rbind(EndMembers, EndMembers0)#
+	}#
+	for(g_Cons in 1:length(Cons)){#
+		TempoCons <- Cons[g_Cons]#
+		SourceNames <- ConsChoices[[TempoCons]]#
+#
+		for(f_Src in 1:1){#
+			nSrcs <- length(SourceNames[[f_Src]])#
+			Source1 <- SourceOpts[[SourceNames[[f_Src]][1]]] #FirstSources[[f_Src]]#
+			Source2 <- SourceOpts[[SourceNames[[f_Src]][2]]]#
+			if(nSrcs>=3){Source3 <- SourceOpts[[SourceNames[[f_Src]][3]]]}#
+			if(nSrcs>=4){Source4 <- SourceOpts[[SourceNames[[f_Src]][4]]]}#
+			for(i in 1:nSrcs){#
+				TempName_Source <- paste("Source", i, sep="")#
+				TempName_Mean <- paste(paste("Source", paste(i, "_Mean", sep=""), sep=""))#
+				TempName_Var <- paste(paste("Source", paste(i, "_Var", sep=""), sep=""))#
+				if(length(get(TempName_Source))>1){assign(TempName_Mean, apply(Source_Means[get(TempName_Source),], 2, mean))}else{assign(TempName_Mean, Source_Means[get(TempName_Source),])}#
+#
+				if(length(get(TempName_Source))>1){#
+					assign(TempName_Var, data.frame("d13C"=NA, "d15N"=NA, "dD"=NA))#This is to clear the temporary data frame at the beginning of each loop#
+#
+					Temp_d13C_aov <- anova(lm(d13C ~ Taxon, data=subset(SourceData_dX_Obs, is.element(Taxon, get(TempName_Source)), select=c("Taxon","d13C"))))#
+					if(Temp_d13C_aov$Pr[1] <= 0.1){#
+						Temp_d13C_Var <- sum(Temp_d13C_aov$Mean)#
+					}else{#
+							Temp_d13C_Var <- Temp_d13C_aov$Mean[2] #
+					}#
+					Temp_d15N_aov <- anova(lm(d15N ~ Taxon, data=subset(SourceData_dX_Obs, is.element(Taxon, get(TempName_Source)), select=c("Taxon","d15N"))))#
+					if(Temp_d15N_aov$Pr[1] <= 0.1){#
+						Temp_d15N_Var <- sum(Temp_d15N_aov$Mean)#
+					}else{#
+							Temp_d15N_Var <- Temp_d15N_aov$Mean[2]#
+					}#
+					Temp_dD_aov <- anova(lm(dD ~ Taxon, data=subset(SourceData_dX_Obs, is.element(Taxon, get(TempName_Source)), select=c("Taxon","dD"))))#
+					if(Temp_dD_aov$Pr[1] <= 0.1){#
+						Temp_dD_Var <- sum(Temp_dD_aov$Mean) #
+					}else{#
+						Temp_dD_Var <- Temp_dD_aov$Mean[2] #
+					}#
+					assign(TempName_Var, c(Temp_d13C_Var, Temp_d15N_Var, Temp_dD_Var))#
+				}else{#
+					assign(TempName_Var, Source_Vars[get(TempName_Source),])#
+				}	#
+			}#Finish the loop that handles each source (1 through 4) one at a time for this particular set of sources for this consumer#
+			#Then collect the source means and variances from the previous loop; the following could have been condensed into previous loop.#
+			Srcs_dX_Ward <- c()#
+			Srcs_dX_Var_Ward <- c()#
+			for(i in 1:nSrcs){#
+				TempName_Mean <- paste(paste("Source", paste(i, "_Mean", sep=""), sep=""))#
+				TempName_Var <- paste(paste("Source", paste(i, "_Var", sep=""), sep=""))#
+				Srcs_dX_Ward <- cbind(Srcs_dX_Ward, get(TempName_Mean))#
+				Srcs_dX_Var_Ward <- cbind(Srcs_dX_Var_Ward, get(TempName_Var))#
+			}#
+			# if(YearMix==2010 & all(SourceNames[[f_Src]]==c("All Terrestrial", "All Macrophytes", "All Phytoplankton","Periphyton"))){#
+			# 	DOM_MeanSrcSigs2010 <- Srcs_dX_Ward#
+			# 	DOM_VarSrcSigs2010 <- Srcs_dX_Var_Ward#
+			# }#
+			# if(YearMix==2012 & all(SourceNames[[f_Src]]==c("All Terrestrial", "All Macrophytes", "All Phytoplankton","Periphyton"))){#
+			# 	DOM_MeanSrcSigs2012 <- Srcs_dX_Ward#
+			# 	DOM_VarSrcSigs2012 <- Srcs_dX_Var_Ward#
+			# }#
+			print(paste("Bugging Consumer",g_Cons,YearMix))#
+			Temp_BugOut <- paste("bugsOut_", Cons[g_Cons], "_SrcComb", f_Src, "_","Pooled", sep="")#
+			Cons_Data <- subset(Data, Taxon==Cons[g_Cons] & Year==YearMix, select=c("Trophic","d13C","d15N","dD"))#
+			Cons_dX_Obs <- matrix(data=c(Cons_Data[,2], Cons_Data[,3], Cons_Data[,4]), ncol=3)#
+			ConsName <- as.character(subset(Data, Taxon==Cons[g_Cons] & Year==YearMix, select=Type)[1,1])#There should be a better way to do this...#
+			assign(Temp_BugOut, ConsMix(Cons_dX_Obs=Cons_dX_Obs, TL=TL[g_Cons], Srcs_dX=Srcs_dX_Ward, Srcs_dX_Var=Srcs_dX_Var_Ward, Water_dD_Mu, Water_dD_Var, FractModel=TRUE, SrcNames=SourceNames[[f_Src]], ConsName=ConsName, GraphTitle=GraphTitle[g_Cons], WINE=WINE, WINEPATH= WINEPATH, nChains=8, ChainLength=Iterations, working.directory=BUGSWorkDir, Plot=FALSE))#
+			#Begin working on changing this code so that I can be more flexible with the number of sources, which will also require referring to columns by names (so that graphing labels can be proper, etc)#
+			TempOutput <- get(Temp_BugOut)$sims.matrix[,1:length(SourceNames[[f_Src]])] #remove the deviance column, and rename the output matrix#
+			colnames(TempOutput) <- SourceNames[[f_Src]] #name the columns of the bugs() output matrix according to the names of the sources#
+			NAsources <- names(SourceOpts)[!is.element(names(SourceOpts), SourceNames[[f_Src]])] #the names of the sources that weren't used in this run#
+			NA_srcs_df <- matrix(data=rep(NA, length(NAsources)), ncol=length(NAsources), dimnames=list(NULL, NAsources))#
+			if(g_Cons==1 & f_Src==1 & YearMix==2010){#
+				# ResourceUse <- data.frame("Year"=YearMix, "Month"="Pooled", "Consumer"=Cons[g_Cons], "Grouping"=f_Src, get(Temp_BugOut)$sims.matrix[,1:4])#
+				ResourceUse <- data.frame("Year"=YearMix, "Month"="Pooled", "Consumer"=Cons[g_Cons], "Grouping"=f_Src, TempOutput, NA_srcs_df) #will have to use make.names() to index by name#
+			}else{#
+				TempoResourceUse <- data.frame("Year"=YearMix, "Month"="Pooled", "Consumer"=Cons[g_Cons], "Grouping"=f_Src, TempOutput, NA_srcs_df)#
+				ResourceUse <- rbind(ResourceUse, TempoResourceUse)#
+			}#
+			# TempoResourceUse <- data.frame("Year"=YearMix, "Month"="Pooled", "Consumer"=Cons[g_Cons], "Grouping"=f_Src, get(Temp_BugOut)$sims.matrix[,1:4])#
+			# ResourceUse <- rbind(ResourceUse, TempoResourceUse)#
+		}#Finish loop the loop that handles the two sets of sources for this particular consumer#
+	}#Finish loop that estimates resource use for each consumer under 2 scenarios of available resources/ grouping of resources#
+	# =================================#
+	# = Calculate End Members for DOM =#
+	# =================================#
+		nSrcs <- length(DOMsources)#
+		Source1 <- SourceOpts[[DOMsources[1]]] #FirstSources[[f_Src]]#
+		Source2 <- SourceOpts[[DOMsources[2]]]#
+		if(nSrcs>=3){Source3 <- SourceOpts[[DOMsources[3]]]}#
+		if(nSrcs>=4){Source4 <- SourceOpts[[DOMsources[4]]]}#
+		for(i in 1:nSrcs){#
+			TempName_Source <- paste("Source", i, sep="")#
+			TempName_Mean <- paste(paste("Source", paste(i, "_Mean", sep=""), sep=""))#
+			TempName_Var <- paste(paste("Source", paste(i, "_Var", sep=""), sep=""))#
+			if(length(get(TempName_Source))>1){assign(TempName_Mean, apply(Source_Means[get(TempName_Source),], 2, mean))}else{assign(TempName_Mean, Source_Means[get(TempName_Source),])}#
+			if(length(get(TempName_Source))>1){#
+				assign(TempName_Var, data.frame("d13C"=NA, "d15N"=NA, "dD"=NA))#This is to clear the temporary data frame at the beginning of each loop#
+				Temp_d13C_aov <- anova(lm(d13C ~ Taxon, data=subset(SourceData_dX_Obs, is.element(Taxon, get(TempName_Source)), select=c("Taxon","d13C"))))#
+				if(Temp_d13C_aov$Pr[1] <= 0.1){#
+					Temp_d13C_Var <- sum(Temp_d13C_aov$Mean)#
+				}else{#
+						Temp_d13C_Var <- Temp_d13C_aov$Mean[2] #
+				}#
+				Temp_d15N_aov <- anova(lm(d15N ~ Taxon, data=subset(SourceData_dX_Obs, is.element(Taxon, get(TempName_Source)), select=c("Taxon","d15N"))))#
+				if(Temp_d15N_aov$Pr[1] <= 0.1){#
+					Temp_d15N_Var <- sum(Temp_d15N_aov$Mean)#
+				}else{#
+						Temp_d15N_Var <- Temp_d15N_aov$Mean[2]#
+				}#
+				Temp_dD_aov <- anova(lm(dD ~ Taxon, data=subset(SourceData_dX_Obs, is.element(Taxon, get(TempName_Source)), select=c("Taxon","dD"))))#
+				if(Temp_dD_aov$Pr[1] <= 0.1){#
+					Temp_dD_Var <- sum(Temp_dD_aov$Mean) #
+				}else{#
+					Temp_dD_Var <- Temp_dD_aov$Mean[2] #
+				}#
+				assign(TempName_Var, c(Temp_d13C_Var, Temp_d15N_Var, Temp_dD_Var))#
+			}else{#
+				assign(TempName_Var, Source_Vars[get(TempName_Source),])#
+			}	#
+		}#
+		Srcs_dX_Ward <- c()#
+		Srcs_dX_Var_Ward <- c()#
+		for(i in 1:nSrcs){#
+			TempName_Mean <- paste(paste("Source", paste(i, "_Mean", sep=""), sep=""))#
+			TempName_Var <- paste(paste("Source", paste(i, "_Var", sep=""), sep=""))#
+			Srcs_dX_Ward <- cbind(Srcs_dX_Ward, get(TempName_Mean))#
+			Srcs_dX_Var_Ward <- cbind(Srcs_dX_Var_Ward, get(TempName_Var))#
+		}#
+		if(YearMix==2010){#
+			DOM_MeanSrcSigs2010 <- Srcs_dX_Ward#
+			DOM_VarSrcSigs2010 <- Srcs_dX_Var_Ward#
+		}#
+		if(YearMix==2012){#
+			DOM_MeanSrcSigs2012 <- Srcs_dX_Ward#
+			DOM_VarSrcSigs2012 <- Srcs_dX_Var_Ward#
+		}#
+	# ===================#
+	# = END DOM sources =#
+	# ===================#
+	#Plot the composition of POM#
+	LegendTitle <- list(c("A)", "B)", "C)", "D)"), c("E", "F", "G", "H")) #CHANGED added )'s#
+	PubCex=1#
+	PanelNameAdj <- c(0.25, 0.33, 0.55, 0.58)#
+	setwd(paste("/Users/battrd/Documents/School&Work/WiscResearch/Isotopes_2012Analysis/",FigureFolder,sep=""))#
+	#Plot EPILIMNION#
+	if(Save){#
+		if(SaveType==".pdf"){pdf(file=paste("EpiPhyto_Post_", YearMix, "_", Version, ".pdf", sep=""), width=3.5, height=3.5, family="Times", pointsize=9)}#
+		if(SaveType==".png"){png(file=paste("EpiPhyto_Post_", YearMix, "_", Version, ".png", sep=""), units="in", res=200, width=3.5, height=3.5, family="Times", pointsize=9)}#
+	}else{#
+		dev.new(width=3.5, height=3.5, family="Times", pointsize=9)#
+	}#
+	par(mfrow=c(2,2), las=1, mar=c(3,2.5,0.1,1), oma=c(0,0,0.2,0), cex=PubCex)#
+	TerrYLim <- range(density(bugsOut_pt1$sims.matrix[,"f[1]"], from=0, to=1)$y)*c(1, 1.15)#
+	plot.density(density(bugsOut_pt1$sims.matrix[,"f[1]"], from=0, to=1),xlab="", ylab="", main="", bty="l", xaxt="s", zero.line=FALSE, ylim=TerrYLim)#
+	title(main=LegendTitle[[1]][1], adj=0.025, line=-0.7, font.main=1, cex.main=PubCex) #CHANGED changed the adj from 1 to 0.1, added font.main=1, line from -0.5 to -1#
+	mtext("Terrestrial", side=3, line=-0.9, outer=FALSE, las=0, font=1, adj=PanelNameAdj[1], cex=PubCex) #CHANGED line from 0 to -1, deleted cex=0.85, changed font=3 to 1#
+	title(paste(round(bugsOut_pt1$mean[[1]][1]*100, 0), "%", sep=""),  adj=0.1, line=-1.75, font.main=3, cex.main=PubCex) #CHANGED deleted cex.main=0.85,#
+	PdCYLim <- range(density(bugsOut_pt1$sims.matrix[,"P_dC_Epi"])$y)*c(1, 1.15)#
+	plot.density(density(bugsOut_pt1$sims.matrix[,"P_dC_Epi"]), main="", ylab="", xlab="", bty="l", xaxt="s", zero.line=FALSE, ylim=PdCYLim)#
+	title(main=LegendTitle[[1]][3], adj=0.025, line=-0.7, font.main=1, cex.main=PubCex)#
+	mtext(expression(Phytoplankton~phantom()^13*C), side=3, line=-1.1, outer=FALSE, las=0, font=1, adj=PanelNameAdj[3], cex=PubCex)#
+	title(paste(round(bugsOut_pt1$mean$P_dC_Epi, 1), "", sep=""),  adj=0.1, line=-1.75, font.main=3, cex.main=PubCex)#
+	PhytYLim <- range(density(bugsOut_pt1$sims.matrix[,"f[2]"], from=0, to=1)$y)*c(1, 1.15)#
+	plot.density(density(bugsOut_pt1$sims.matrix[,"f[2]"], from=0, to=1),  main="", xlab="", ylab="", bty="l", xaxt="s", zero.line=FALSE, ylim=PhytYLim)#
+	title(main=LegendTitle[[1]][2], adj=0.025, line=-0.7, font.main=1, cex.main=PubCex)#
+	mtext("Phytoplankton", side=3, line=-0.9, outer=FALSE, las=0, font=1, adj=PanelNameAdj[2], cex=PubCex)#
+	title(paste(round(bugsOut_pt1$mean[[1]][2]*100, 0), "%", sep=""),  adj=0.1, line=-1.75, font.main=3, cex.main=PubCex)#
+	mtext("Fraction of POM", side=1, line=2, cex=PubCex, font=1, outer=FALSE)#
+	PdNYLim <- range(density(bugsOut_pt1$sims.matrix[,"P_dN_Epi"])$y)*c(1, 1.15)#
+	plot.density(density(bugsOut_pt1$sims.matrix[,"P_dN_Epi"]),  main="", ylab="", xlab="", bty="l", xaxt="s", zero.line=FALSE, ylim=PdNYLim)#
+	title(main=LegendTitle[[1]][4], adj=0.025, line=-0.7, font.main=1, cex.main=PubCex)#
+	mtext(expression(Phytoplankton~phantom()^15*N), side=3, line=-1.1, outer=FALSE, las=0, font=1, adj=PanelNameAdj[4], cex=PubCex)#
+	title(paste(round(bugsOut_pt1$mean$P_dN_Epi, 2), "", sep=""),  adj=0.1, line=-1.75, font.main=3, cex.main=PubCex)#
+	mtext("Isotopic signature", side=1, line=2, cex=PubCex, font=1, outer=FALSE)#
+	mtext("Density", side=2, line=-1, font=1, las=0, outer=TRUE, cex=PubCex)#
+	if(Save){dev.off()}#
+	#Plot METALIMNION#
+	if(Save){#
+		if(SaveType==".pdf"){pdf(file=paste("MetaPhyto_Post_", YearMix, "_", Version, ".pdf", sep=""), width=3.5, height=3.5, family="Times", pointsize=9)}#
+		if(SaveType==".png"){png(file=paste("MetaPhyto_Post_", YearMix, "_", Version, ".png", sep=""), units="in", res=200, width=3.5, height=3.5, family="Times", pointsize=9)}#
+	}else{#
+		dev.new(width=3.5, height=3.5, family="Times", pointsize=9)#
+	}#
+	par(mfrow=c(2,2), las=1, mar=c(3,2.5,0.1,1), oma=c(0,0,0.2,0), cex=PubCex)#
+	TerrYLim <- range(density(bugsOut_pt1$sims.matrix[,"f[3]"], from=0, to=1)$y)*c(1, 1.15)#
+	plot.density(density(bugsOut_pt1$sims.matrix[,"f[3]"], from=0, to=1),xlab="", ylab="", main="", bty="l", xaxt="s", zero.line=FALSE, ylim=TerrYLim)#
+	title(main=LegendTitle[[1]][1], adj=0.025, line=-0.7, font.main=1, cex.main=PubCex) #CHANGED changed the adj from 1 to 0.1, added font.main=1, line from -0.5 to -1#
+	mtext("Terrestrial", side=3, line=-0.9, outer=FALSE, las=0, font=1, adj=PanelNameAdj[1], cex=PubCex) #CHANGED line from 0 to -1, deleted cex=0.85, changed font=3 to 1#
+	title(paste(round(bugsOut_pt1$mean[[1]][3]*100, 0), "%", sep=""),  adj=0.1, line=-1.75, font.main=3, cex.main=PubCex) #CHANGED deleted cex.main=0.85,#
+	PdCYLim <- range(density(bugsOut_pt1$sims.matrix[,"P_dC_Meta"])$y)*c(1, 1.15)#
+	plot.density(density(bugsOut_pt1$sims.matrix[,"P_dC_Meta"]), main="", ylab="", xlab="", bty="l", xaxt="s", zero.line=FALSE, ylim=PdCYLim, xlim=c(-75 , 0))#
+	title(main=LegendTitle[[1]][3], adj=0.025, line=-0.7, font.main=1, cex.main=PubCex)#
+	mtext(expression(Phytoplankton~phantom()^13*C), side=3, line=-1.1, outer=FALSE, las=0, font=1, adj=PanelNameAdj[3], cex=PubCex)#
+	title(paste(round(bugsOut_pt1$mean$P_dC_Meta, 1), "", sep=""),  adj=0.1, line=-1.75, font.main=3, cex.main=PubCex)#
+	PhytYLim <- range(density(bugsOut_pt1$sims.matrix[,"f[4]"], from=0, to=1)$y)*c(1, 1.15)#
+	plot.density(density(bugsOut_pt1$sims.matrix[,"f[4]"], from=0, to=1),  main="", xlab="", ylab="", bty="l", xaxt="s", zero.line=FALSE, ylim=PhytYLim)#
+	title(main=LegendTitle[[1]][2], adj=0.025, line=-0.7, font.main=1, cex.main=PubCex)#
+	mtext("Phytoplankton", side=3, line=-0.9, outer=FALSE, las=0, font=1, adj=PanelNameAdj[2], cex=PubCex)#
+	title(paste(round(bugsOut_pt1$mean[[1]][4]*100, 0), "%", sep=""),  adj=0.1, line=-1.75, font.main=3, cex.main=PubCex)#
+	mtext("Fraction of POM", side=1, line=2, cex=PubCex, font=1, outer=FALSE)#
+	PdNYLim <- range(density(bugsOut_pt1$sims.matrix[,"P_dN_Meta"])$y)*c(1, 1.15)#
+	plot.density(density(bugsOut_pt1$sims.matrix[,"P_dN_Meta"]),  main="", ylab="", xlab="", bty="l", xaxt="s", zero.line=FALSE, ylim=PdNYLim)#
+	title(main=LegendTitle[[1]][4], adj=0.025, line=-0.7, font.main=1, cex.main=PubCex)#
+	mtext(expression(Phytoplankton~phantom()^15*N), side=3, line=-1.1, outer=FALSE, las=0, font=1, adj=PanelNameAdj[4], cex=PubCex)#
+	title(paste(round(bugsOut_pt1$mean$P_dN_Meta, 2), "", sep=""),  adj=0.1, line=-1.75, font.main=3, cex.main=PubCex)#
+	mtext("Isotopic signature", side=1, line=2, cex=PubCex, font=1, outer=FALSE)#
+	mtext("Density", side=2, line=-1, font=1, las=0, outer=TRUE, cex=PubCex)#
+	# setwd("/Users/battrd/Documents/School&Work/WiscResearch/Isotopes_2010Analysis/Figures_v8.3")#
+	# dev2bitmap(file="MetaPhyto_Post_v8.3.tif", type="tiffgray",height=3.5, width=3.5, res=200, font="Times", method="pdf", pointsize=12)#
+	if(Save){dev.off()}#
+}#End Year loop
+(0.023 - .085*(1.5/106.5))*100#to get the percent DOM (sans aquashade) that is hydrogen
+(0.1 - .46*(1.5/106.5))*100 #to get the percent DOM (sans aquashade) that is carbon
+.4931*1.5
+0.0439 * 1.5
+0.042*1.5
+.04*106.5
+.004*106.5
+.023 * 106.5
+(1.5 * 0.4931)/106.5
+1.5/106.5
+(1.5*0.4931)/10.65
+(1.5*0.042)/2.4495
+(1.5*0.0439)/0.426
+(1.5*0.0439)
+(1.5*0.0439)/0.426
+(1.5*0.042)/2.4495
+.004 * 106.5
+(1.5*0.0439)/0.426
+(1.5*0.085)/0.426
+CorrectDOM <- function(dTot, dAqua=c("dC"=-26.82, "dN"=-0.02, "dD"=-65.4), fAqua=c("fC"=0.0629, "fN"=0.3052, "fD"=0.0248)){#
+CorrectDOM <- function(dTot, dAqua=c("dC"=-26.82, "dN"=-0.02, "dD"=-65.4), fAqua=c("fC"=0.0694507, "fN"=0.1545775, "fD"=0.2571953)){#
+	fNorm <- 1- fAqua#
+	dNorm <- matrix(data=rep(NA, 3*nrow(dTot)), nrow=nrow(dTot))#
+	for(i in 1:nrow(dTot)){#
+		dNorm[i,] <- (dTot[i,]-fAqua*dAqua)/fNorm#
+	}#
+	return(dNorm)#
+}
+DOM2010 <- as.matrix(subset(Data, Taxon=="DOM" & Year==2010, select=c("d13C", "d15N", "dD")))#
+dimnames(DOM2010) <- NULL#
+DOM2012_0 <- as.matrix(subset(Data, Taxon=="DOM" & Year==2012, select=c("d13C", "d15N", "dD")))#
+dimnames(DOM2012_0) <- NULL#
+DOM2012 <- CorrectDOM(dTot=DOM2012_0)
+DOM2012_0
+DOM2012
+colMeans(DOM2012_0)
+colMeans(DOM2012)
+colMeans(DOM2010_0)
+colMeans(DOM2010)
+DOM2010 <- as.matrix(subset(Data, Taxon=="DOM" & Year==2010, select=c("d13C", "d15N", "dD")))#
+dimnames(DOM2010) <- NULL#
+DOM2012_0 <- as.matrix(subset(Data, Taxon=="DOM" & Year==2012, select=c("d13C", "d15N", "dD")))#
+dimnames(DOM2012_0) <- NULL#
+DOM2012 <- CorrectDOM(dTot=DOM2012_0)#
+#
+domOut2010 <- ConsMix(Cons_dX_Obs=DOM2010, TL=0, Srcs_dX=DOM_MeanSrcSigs2010, Srcs_dX_Var=DOM_VarSrcSigs2010, Water_dD_Mu=0, Water_dD_Var=0, FractModel=FALSE, SrcNames=c("All Terr.", "Macroph.", "Phytos.", "Periphyton"), ConsName=NULL, Omega_Info=c(0,0), TL_Var=0, Plot=FALSE, NewPlot=TRUE, DispMu=FALSE, GraphTitle=NULL, nChains=5, ChainLength=1000, debug=FALSE, WINE=WINE, WINEPATH= WINEPATH)#
+domOut2012 <- ConsMix(Cons_dX_Obs=DOM2012, TL=0, Srcs_dX=DOM_MeanSrcSigs2012, Srcs_dX_Var=DOM_VarSrcSigs2012, Water_dD_Mu=0, Water_dD_Var=0, FractModel=FALSE, SrcNames=c("All Terr.", "Macroph.", "Phytos.", "Periphyton"), ConsName=NULL, Omega_Info=c(0,0), TL_Var=0, Plot=FALSE, NewPlot=TRUE, DispMu=FALSE, GraphTitle=NULL, nChains=5, ChainLength=1000, debug=FALSE, WINE=WINE, WINEPATH= WINEPATH)#
+#
+DOM_Comp00 <- rbind(data.frame("Year"=2010, domOut2010$sims.matrix[,1:4]), data.frame("Year"=2012, domOut2012$sims.matrix[,1:4]))#
+DOM_Comp0 <- reshape(DOM_Comp00, varying=list(c("DietF.1.", "DietF.2.", "DietF.3.", "DietF.4.")), times=1:4, ids=1:nrow(DOM_Comp00), timevar="Source", v.names="Proportion", direction="long")#
+DOM_Comp <- DOM_Comp0[,c("Year","Source", "Proportion")]#
+row.names(DOM_Comp) <- NULL#
+domResourceNames <- c("Terr", "Macroph", "Phyto", "Periphy")
+DOM_Comp
+boxplot(Proportion~Year+Source, data=DOM_Comp, col=c("#FA807225","#3A5FCD25"), border=c("red","blue"), at=rep(c(0.5,3,5.5,8),each=2)+c(-.5, .5), show.names=FALSE, outline=FALSE, ylim=c(0,1), lwd=1.5, cex=1)#
+axis(side=1, at=c(0.5,3,5.5,8), labels=domResourceNames, cex.axis=1)#
+mtext("DOM", side=2, line=2, cex=1)
+CorrectDOM <- function(dTot, dAqua=c("dC"=-26.82, "dN"=-0.02, "dD"=-65.4), fAqua=c("fC"=0.0629, "fN"=0.3052, "fD"=0.0248)){#
+CorrectDOM <- function(dTot, dAqua=c("dC"=-26.82, "dN"=-0.02, "dD"=-65.4), fAqua=c("fC"=0.0694507, "fN"=0.1545775, "fD"=0.02571953)){#
+	fNorm <- 1- fAqua#
+	dNorm <- matrix(data=rep(NA, 3*nrow(dTot)), nrow=nrow(dTot))#
+	for(i in 1:nrow(dTot)){#
+		dNorm[i,] <- (dTot[i,]-fAqua*dAqua)/fNorm#
+	}#
+	return(dNorm)#
+}#
+#Select the top 2 if on Snow Leopard, the bottom 2 if on Leopard, and the selection doesn't matter if on a PC#
+# WINE="/Applications/Darwine/Wine.bundle/Contents/bin/wine"#
+# WINEPATH="/Applications/Darwine/Wine.bundle/Contents/bin/winepath"#
+# WINEPATH="/opt/local/bin/winepath"#
+# WINE="/opt/local/bin/wine"#
+#
+DOM2010 <- as.matrix(subset(Data, Taxon=="DOM" & Year==2010, select=c("d13C", "d15N", "dD")))#
+dimnames(DOM2010) <- NULL#
+DOM2012_0 <- as.matrix(subset(Data, Taxon=="DOM" & Year==2012, select=c("d13C", "d15N", "dD")))#
+dimnames(DOM2012_0) <- NULL#
+DOM2012 <- CorrectDOM(dTot=DOM2012_0)#
+#
+domOut2010 <- ConsMix(Cons_dX_Obs=DOM2010, TL=0, Srcs_dX=DOM_MeanSrcSigs2010, Srcs_dX_Var=DOM_VarSrcSigs2010, Water_dD_Mu=0, Water_dD_Var=0, FractModel=FALSE, SrcNames=c("All Terr.", "Macroph.", "Phytos.", "Periphyton"), ConsName=NULL, Omega_Info=c(0,0), TL_Var=0, Plot=FALSE, NewPlot=TRUE, DispMu=FALSE, GraphTitle=NULL, nChains=5, ChainLength=1000, debug=FALSE, WINE=WINE, WINEPATH= WINEPATH)#
+domOut2012 <- ConsMix(Cons_dX_Obs=DOM2012, TL=0, Srcs_dX=DOM_MeanSrcSigs2012, Srcs_dX_Var=DOM_VarSrcSigs2012, Water_dD_Mu=0, Water_dD_Var=0, FractModel=FALSE, SrcNames=c("All Terr.", "Macroph.", "Phytos.", "Periphyton"), ConsName=NULL, Omega_Info=c(0,0), TL_Var=0, Plot=FALSE, NewPlot=TRUE, DispMu=FALSE, GraphTitle=NULL, nChains=5, ChainLength=1000, debug=FALSE, WINE=WINE, WINEPATH= WINEPATH)#
+#
+DOM_Comp00 <- rbind(data.frame("Year"=2010, domOut2010$sims.matrix[,1:4]), data.frame("Year"=2012, domOut2012$sims.matrix[,1:4]))#
+DOM_Comp0 <- reshape(DOM_Comp00, varying=list(c("DietF.1.", "DietF.2.", "DietF.3.", "DietF.4.")), times=1:4, ids=1:nrow(DOM_Comp00), timevar="Source", v.names="Proportion", direction="long")#
+DOM_Comp <- DOM_Comp0[,c("Year","Source", "Proportion")]#
+row.names(DOM_Comp) <- NULL#
+domResourceNames <- c("Terr", "Macroph", "Phyto", "Periphy")
+DOM2012
+colMeans(DOM2012)
+boxplot(Proportion~Year+Source, data=DOM_Comp, col=c("#FA807225","#3A5FCD25"), border=c("red","blue"), at=rep(c(0.5,3,5.5,8),each=2)+c(-.5, .5), show.names=FALSE, outline=FALSE, ylim=c(0,1), lwd=1.5, cex=1)#
+axis(side=1, at=c(0.5,3,5.5,8), labels=domResourceNames, cex.axis=1)#
+mtext("DOM", side=2, line=2, cex=1)
+head(DOM_Comp)
+aggregate(DOM_Comp[,"Proportion"], by=list(DOM_Comp[,"Source"], DOM_Comp[,"Year"]), mean)
+aggregate(DOM_Comp[,"Proportion"], by=list(DOM_Comp[,"Year"], DOM_Comp[,"Source"]), mean)
+?aggregate
+?relevel
+level(c(1,1,1,2,3,4,4,4)) <- c("Terr", "Macroph", "Phyto", "Periphy")
+factor(c(1,1,1,2,3,4,4,4), labels=c("Terr", "Macroph", "Phyto", "Periphy"))
+DOM_Comp2 <- aggregate(DOM_Comp[,"Proportion"], by=list(DOM_Comp[,"Year"], DOM_Comp[,"Source"]), mean)
+DOM_Comp2[,"Source"] <- factor(DOM_Comp2[,"Source"], labels=c("Terr", "Macroph", "Phyto", "Periphy"))
+DOM_Comp2 <- aggregate(DOM_Comp[,"Proportion"], by=list("Year"=DOM_Comp[,"Year"], "Source"=DOM_Comp[,"Source"]), mean)
+DOM_Comp2
+DOM_Comp2[,"Source"] <- factor(DOM_Comp2[,"Source"], labels=c("Terr", "Macroph", "Phyto", "Periphy"))
+DOM_Comp2

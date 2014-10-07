@@ -1,0 +1,2156 @@
+mod.choose=="consMod.logisGrowth"
+mod.choose
+mod.choose <- c("consMod.basic", "consMod.expGrowth", "consMod.logisGrowth" )[3]
+mod.choose=="consMod.logisGrowth"
+all(colSums(apply(t.mass.dat, 2, function(x)!is.na(x)))>1)
+mod.choose=="consMod.logisGrowth" && all(colSums(apply(t.mass.dat, 2, function(x)!is.na(x)))>1)
+TRUE && FALSE
+FALSE && TRUE
+?stopifnot
+paste("Logistic growth model chosen, but necessary biomass data are unavailable –", ilake, co)
+3750/
+3
+3024/3
+3024*0.3
+?alarm
+alarm()
+system("\a")
+system(tput bel)
+system("tput bel")
+sys.info()
+Sys.info()
+.Machine()
+sys.Machine()
+.Machine
+?par
+?dev.new()
+dev.new()
+?.Machine
+?Resources
+??Resources
+dev.new()
+test <- matrix(1:9, ncol=3)
+test
+edit(test)
+fix(test)
+?edit
+btest <- function(B_t, B_max=60, K=0.15, delta.t=7){(B_max*B_t*exp(K*-delta.t))/(B_max+B_t*(exp(K*-delta.t)-1))}
+edit(btest)
+vi(btest)
+data.entry()
+data.entry(test)
+edit(test)
+pacf(1:100)
+pacf((1:100)^2)
+plot((1:100)^2)
+?pacf
+pacf(1:10)
+pacf(1:10000)
+# Likelihood
+# Flow is True ==> Obsrerved ===> Estimate.
+pi
+# Flow is True ==> Obsrerved ===> Estimate.
+# In other words, observed values are True values that have (obs) noise added,
+# btest <- function(B_t, B_max=60, K=0.15, delta.t=7){(B_max*B_t*exp(K*-delta.t))/(B_max+B_t*(exp(K*-delta.t)-1))}#
+# =====================================================#
+# = Basic consumer model (no preference, no turnover) =#
+# =====================================================#
+consMod.basic <- function(){#
+	# Missing water#
+	for(j in 1:length(wX.interp)){#
+		wX[j] ~ dnorm(wX.interp[j], wX.prec[j])#
+	}#
+	# Prior on Pref#
+	# Pref0[1] ~ dunif(-3.5, 3.5)#
+	# Pref0[2] ~ dunif(-3.5, 3.5)#
+	# Pref[1] <- exp(Pref0[1]) / exp(Pref0[2])#
+	# Pref[2] <- exp(Pref0[1]) / exp(Pref0[2])#
+	# Pref0 ~ dunif(0, 3.5)#
+	# Pref[1] <- exp(Pref0)#
+	# Pref[2] <- 1#
+	# distribution of terrestrial signature#
+	for(i in 1:3){#
+		rX.ter[i] ~ dnorm(terMu[i], 1/terSd[i]^2)#
+	}#
+	# distribution of algal signature, and of pom phi#
+	for(i in 1:N){#
+		rX.euk[i,1] ~ dnorm(rX.euk.mu[i,1], rX.euk.prec[i,1])#
+		rX.euk[i,2] ~ dnorm(rX.euk.mu[i,2], rX.euk.prec[i,2])#
+		rX.euk[i,3] ~ dnorm(rX.euk.mu[i,3], rX.euk.prec[i,3])#
+		pPhi[i,1] ~ dnorm(pPhi.mu[i,1], pPhi.prec[i,1])#
+		pPhi[i,2] ~ dnorm(pPhi.mu[i,2], pPhi.prec[i,2])#
+	}#
+	# Prior on K, the daily % biomass turnover#
+	# K ~ dbeta(alpha, beta)#
+	# Other constants#
+	dNH ~ dnorm(2.5, 1/6.25) # N trophic fractionation for herbivore linkage#
+	dNC ~ dnorm(3.4, 1/0.16) # N frac for carnivore linkage#
+	tau ~ dnorm(tau_hat, 1/1E-1) # trophic position#
+	omega ~ dnorm(ohat, 1/ohat.var) # dietary water#
+	# wTot <- 1 - pow((1-omega),tau)#
+	# For some reason I get an error when I use tau here. I can use tau if omega is a constant, though. #
+	# Must be a technicality w/ how I'm combining stochastic nodes#
+	wTot <- 1 - (1-omega)^tau_hat # total dietary water#
+	# Observation precision, tauV (consumer model)#
+	# tauV[1] ~ dgamma(1E-3, 1E-3)#
+	# tauV[2] ~ dgamma(1E-3, 1E-3)#
+	# tauV[3] ~ dgamma(1E-3, 1E-3)#
+	# sigmaV <- 1/sqrt(tauV)#
+#
+	# Process precision, tauW (consumer model)#
+	tauW[1] ~ dgamma(1E-3, 1E-3)#
+	tauW[2] ~ dgamma(1E-3, 1E-3)#
+	tauW[3] ~ dgamma(1E-3, 1E-3)#
+	sigmaW <- 1/sqrt(tauW)#
+	# ==============================#
+	# = Model for Zoop composition =#
+	# ==============================#
+	# Estimate newly-ingested zoop diet#
+	# zPhi0 <- 1/(pPhi%*%Pref) # 1/(availability*preference) summed across the resources#
+	# Manly, Miller, and Cook 1972, American Naturalist, eqs. 1 & 2#
+	for(i in 1:2){#
+		zphi_prior[i] <- 1#
+	}#
+	for(i in 1:N){#
+		# denom[i] <- 1/(pPhi[i,1]*Pref[1] + pPhi[i,2]*Pref[2])#
+		# #
+		# prob[i,1] <- (pPhi[i,1]*Pref[1])*denom[i]#
+		# prob[i,2] <- (pPhi[i,2]*Pref[2])*denom[i]#
+		# zPhi[i,1:2] ~ ddirch(prob[i,1:2])#
+		zPhi[i,1:2] ~ ddirch(zphi_prior[1:2])#
+		# zPhi[i,1] <- (pPhi[i,1]*Pref[1])*denom[i] # algal use#
+		# zPhi[i,2] <- (pPhi[i,2]*Pref[2])*denom[i] # terrestrial use#
+	}#
+#
+	# First column of zPhi is Euk, second column is Terr#
+	zXt[1,1:3] <- zPhi[1,1] * rX.euk[1,1:3] + zPhi[1,2] * rX.ter[1:3]#
+	for(i in 2:N){#
+		zXt[i,1:3] <- zPhi[i,1] * rX.euk[i,1:3] + zPhi[i,2] * rX.ter[1:3]#
+	}#
+	# calculate signature being assimilated (diet signature + fractionation)#
+	for(i in 1:N){#
+		Fr[i, 1] <- zXt[i,1] + 0 # C from EquiIso#
+		Fr[i, 2] <- zXt[i,2] + dNH + dNC * (tau-1) # N from EquiIso#
+		Fr[i, 3] <- zXt[i,3]*(1-wTot) + wTot*wX[i] # H from EquiIso#
+	}#
+	# First time step, assume equilibrated#
+	# zXeq[1,1:3] <- Fr[1,1:3]#
+	for(j in 1:3){#
+		# zXtrue[1,j] ~ dnorm(zXeq[1,j], tauW[j])#
+		# zX[1,j] ~ dnorm(zXtrue[1,j], tauV[j])#
+		zX[1,j] ~ dnorm(Fr[1,j], tauW[j])#
+	}#
+	# Likelihood#
+	# Flow is True ==> Observed ===> Estimate. #
+	# In other words, observed values are True values that have (obs) noise added, #
+	# and Estimates are Observed values that have (process) noise added#
+	# This is a dynamical linear model that incorporates both process and observation error#
+	for(j in 1:3){#
+		for(i in 2:N){#
+			# zX[i,j] ~ dnorm(zXtrue[i,j], tauV[j])#
+			# zXeq[i,j] <- Fr[i,j] + (zXtrue[i-1,j]-Fr[i,j])*exp(-K*delta.t) # Sets zXeq to the output from EquiIso#
+			# zXtrue[i,j] ~ dnorm(zXeq[i,j], tauW[j])#
+			# zXeq[i,j] <- Fr[i,j] + (zXeq[i-1,j]-Fr[i,j])*exp(-K*delta.t) # Sets zXeq to the output from EquiIso#
+			zX[i,j] ~ dnorm(Fr[i,j], tauW[j])				#
+		}#
+	}#
+}#
+# ========================================================#
+# = Jags consumer model: preference & exponential growth =#
+# ========================================================#
+consMod.expGrowth <- function(){#
+	# Missing water#
+	for(j in 1:length(wX.interp)){#
+		wX[j] ~ dnorm(wX.interp[j], wX.prec[j])#
+	}#
+	# Prior on Pref#
+	# Pref0[1] ~ dunif(-3.5, 3.5)#
+	# Pref0[2] ~ dunif(-3.5, 3.5)#
+	# Pref[1] <- exp(Pref0[1]) / exp(Pref0[2])#
+	# Pref[2] <- exp(Pref0[1]) / exp(Pref0[2])#
+	Pref0 ~ dunif(0, 3.5)#
+	Pref[1] <- exp(Pref0)#
+	Pref[2] <- 1#
+	# distribution of terrestrial signature#
+	for(i in 1:3){#
+		rX.ter[i] ~ dnorm(terMu[i], 1/terSd[i]^2)#
+	}#
+	# distribution of algal signature, and of pom phi#
+	for(i in 1:N){#
+		rX.euk[i,1] ~ dnorm(rX.euk.mu[i,1], rX.euk.prec[i,1])#
+		rX.euk[i,2] ~ dnorm(rX.euk.mu[i,2], rX.euk.prec[i,2])#
+		rX.euk[i,3] ~ dnorm(rX.euk.mu[i,3], rX.euk.prec[i,3])#
+		pPhi[i,1] ~ dnorm(pPhi.mu[i,1], pPhi.prec[i,1])#
+		pPhi[i,2] ~ dnorm(pPhi.mu[i,2], pPhi.prec[i,2])#
+	}#
+	# Prior on K, the daily % biomass turnover#
+	K ~ dbeta(alpha, beta)#
+	# Other constants#
+	dNH ~ dnorm(2.52, 1/6.25) # N trophic fractionation for herbivore linkage#
+	dNC ~ dnorm(3.4, 1/0.16) # N frac for carnivore linkage#
+	tau ~ dnorm(tau_hat, 1/1E-1) # trophic position#
+	omega ~ dnorm(ohat, 1/ohat.var) # dietary water#
+	# wTot <- 1 - pow((1-omega),tau)#
+	# For some reason I get an error when I use tau here. I can use tau if omega is a constant, though. #
+	# Must be a technicality w/ how I'm combining stochastic nodes#
+	wTot <- 1 - (1-omega)^tau_hat # total dietary water#
+	# Observation precision, tauV (consumer model)#
+	# tauV[1] ~ dgamma(1E-3, 1E-3)#
+	# tauV[2] ~ dgamma(1E-3, 1E-3)#
+	# tauV[3] ~ dgamma(1E-3, 1E-3)#
+	# sigmaV <- 1/sqrt(tauV)#
+#
+	# Process precision, tauW (consumer model)#
+	tauW[1] ~ dgamma(1E-3, 1E-3)#
+	tauW[2] ~ dgamma(1E-3, 1E-3)#
+	tauW[3] ~ dgamma(1E-3, 1E-3)#
+	sigmaW <- 1/sqrt(tauW)#
+	# ==============================#
+	# = Model for Zoop composition =#
+	# ==============================#
+	# Estimate newly-ingested zoop diet#
+	# zPhi0 <- 1/(pPhi%*%Pref) # 1/(availability*preference) summed across the resources#
+	# Manly, Miller, and Cook 1972, American Naturalist, eqs. 1 & 2#
+	ddirch.weight ~ dunif(1, 10)#
+	for(i in 1:N){#
+		denom[i] <- 1/(pPhi[i,1]*Pref[1] + pPhi[i,2]*Pref[2])#
+		prob[i,1] <- (pPhi[i,1]*Pref[1])*denom[i] * ddirch.weight#
+		prob[i,2] <- (pPhi[i,2]*Pref[2])*denom[i] * ddirch.weight#
+		zPhi[i,1:2] ~ ddirch(prob[i,1:2])#
+		# zPhi[i,1] <- (pPhi[i,1]*Pref[1])*denom[i] # algal use#
+		# zPhi[i,2] <- (pPhi[i,2]*Pref[2])*denom[i] # terrestrial use#
+	}#
+#
+	# First column of zPhi is Euk, second column is Terr#
+	zXt[1,1:3] <- zPhi[1,1] * rX.euk[1,1:3] + zPhi[1,2] * rX.ter[1:3]#
+	for(i in 2:N){#
+		zXt[i,1:3] <- zPhi[i,1] * rX.euk[i,1:3] + zPhi[i,2] * rX.ter[1:3]#
+	}#
+	# calculate signature being assimilated (diet signature + fractionation)#
+	for(i in 1:N){#
+		Fr[i, 1] <- zXt[i,1] + 0 # C from EquiIso#
+		Fr[i, 2] <- zXt[i,2] + dNH + dNC * (tau-1) # N from EquiIso#
+		Fr[i, 3] <- zXt[i,3]*(1-wTot) + wTot*wX[i] # H from EquiIso#
+	}#
+	# First time step, assume equilibrated#
+	zXeq[1,1:3] <- Fr[1,1:3]#
+	for(j in 1:3){#
+		# zXtrue[1,j] ~ dnorm(zXeq[1,j], tauW[j])#
+		# zX[1,j] ~ dnorm(zXtrue[1,j], tauV[j])#
+		zX[1,j] ~ dnorm(zXeq[1,j], tauW[j])#
+	}#
+	# Likelihood#
+	# Flow is True ==> Observed ===> Estimate. #
+	# In other words, observed values are True values that have (obs) noise added, #
+	# and Estimates are Observed values that have (process) noise added#
+	# This is a dynamical linear model that incorporates both process and observation error#
+	for(j in 1:3){#
+		for(i in 2:N){#
+			# zX[i,j] ~ dnorm(zXtrue[i,j], tauV[j])#
+			# zXeq[i,j] <- Fr[i,j] + (zXtrue[i-1,j]-Fr[i,j])*exp(-K*delta.t) # Sets zXeq to the output from EquiIso#
+			# zXtrue[i,j] ~ dnorm(zXeq[i,j], tauW[j])#
+			zXeq[i,j] <- Fr[i,j] + (zXeq[i-1,j]-Fr[i,j])*exp(-K*delta.t) # Sets zXeq to the output from EquiIso#
+			zX[i,j] ~ dnorm(zXeq[i,j], tauW[j])				#
+		}#
+	}#
+}#
+# ====================================================#
+# = Jags consumer model: preference& LOGISTIC growth =#
+# ====================================================#
+consMod.logisGrowth <- function(){#
+	# Missing water#
+	for(j in 1:length(wX.interp)){#
+		wX[j] ~ dnorm(wX.interp[j], wX.prec[j])#
+	}#
+	# Prior on Pref#
+	# Pref0[1] ~ dunif(-3.5, 3.5)#
+	# Pref0[2] ~ dunif(-3.5, 3.5)#
+	# Pref[1] <- exp(Pref0[1]) / exp(Pref0[2])#
+	# Pref[2] <- exp(Pref0[1]) / exp(Pref0[2])#
+	Pref0 ~ dunif(0, 3.5)#
+	Pref[1] <- exp(Pref0)#
+	Pref[2] <- 1#
+	# distribution of terrestrial signature#
+	for(i in 1:3){#
+		rX.ter[i] ~ dnorm(terMu[i], 1/terSd[i]^2)#
+	}#
+	# distribution of algal signature, and of pom phi#
+	for(i in 1:N){#
+		rX.euk[i,1] ~ dnorm(rX.euk.mu[i,1], rX.euk.prec[i,1])#
+		rX.euk[i,2] ~ dnorm(rX.euk.mu[i,2], rX.euk.prec[i,2])#
+		rX.euk[i,3] ~ dnorm(rX.euk.mu[i,3], rX.euk.prec[i,3])#
+		pPhi[i,1] ~ dnorm(pPhi.mu[i,1], pPhi.prec[i,1])#
+		pPhi[i,2] ~ dnorm(pPhi.mu[i,2], pPhi.prec[i,2])#
+	}#
+	# Prior on K, the daily % biomass turnover#
+	K ~ dbeta(alpha, beta)#
+	# ========================#
+	# = Biomass Calculations =#
+	# ========================#
+	for(i in 1:N){#
+		B_t_log[i] ~ dnorm(mass.interp[i], mass.prec[i])#
+		B_t[i] <- exp(B_t_log[i])#
+		B_0[i] <- (B_max*B_t[i]*exp(K*-delta.t))/(B_max+B_t[i]*(exp(K*-delta.t)-1))#
+	}#
+	# Other constants#
+	dNH ~ dnorm(2.52, 1/6.25) # N trophic fractionation for herbivore linkage#
+	dNC ~ dnorm(3.4, 1/0.16) # N frac for carnivore linkage#
+	tau ~ dnorm(tau_hat, 1/1E-1) # trophic position#
+	omega ~ dnorm(ohat, 1/ohat.var) # dietary water#
+	# wTot <- 1 - pow((1-omega),tau)#
+	# For some reason I get an error when I use tau here. I can use tau if omega is a constant, though. #
+	# Must be a technicality w/ how I'm combining stochastic nodes#
+	wTot <- 1 - (1-omega)^tau_hat # total dietary water#
+	# Observation precision, tauV (consumer model)#
+	# tauV[1] ~ dgamma(1E-3, 1E-3)#
+	# tauV[2] ~ dgamma(1E-3, 1E-3)#
+	# tauV[3] ~ dgamma(1E-3, 1E-3)#
+	# sigmaV <- 1/sqrt(tauV)#
+#
+	# Process precision, tauW (consumer model)#
+	tauW[1] ~ dgamma(1E-3, 1E-3)#
+	tauW[2] ~ dgamma(1E-3, 1E-3)#
+	tauW[3] ~ dgamma(1E-3, 1E-3)#
+	sigmaW <- 1/sqrt(tauW)#
+	# ==============================#
+	# = Model for Zoop composition =#
+	# ==============================#
+	# Estimate newly-ingested zoop diet#
+	# zPhi0 <- 1/(pPhi%*%Pref) # 1/(availability*preference) summed across the resources#
+	# Manly, Miller, and Cook 1972, American Naturalist, eqs. 1 & 2#
+	ddirch.weight ~ dunif(1, 10)#
+	for(i in 1:N){#
+		denom[i] <- 1/(pPhi[i,1]*Pref[1] + pPhi[i,2]*Pref[2])#
+		prob[i,1] <- (pPhi[i,1]*Pref[1])*denom[i] * ddirch.weight#
+		prob[i,2] <- (pPhi[i,2]*Pref[2])*denom[i] * ddirch.weight#
+		zPhi[i,1:2] ~ ddirch(prob[i,1:2])#
+		# zPhi[i,1] <- (pPhi[i,1]*Pref[1])*denom[i] # algal use#
+		# zPhi[i,2] <- (pPhi[i,2]*Pref[2])*denom[i] # terrestrial use#
+	}#
+#
+	# First column of zPhi is Euk, second column is Terr#
+	zXt[1,1:3] <- zPhi[1,1] * rX.euk[1,1:3] + zPhi[1,2] * rX.ter[1:3]#
+	for(i in 2:N){#
+		zXt[i,1:3] <- zPhi[i,1] * rX.euk[i,1:3] + zPhi[i,2] * rX.ter[1:3]#
+	}#
+	# calculate signature being assimilated (diet signature + fractionation)#
+	for(i in 1:N){#
+		Fr[i, 1] <- zXt[i,1] + 0 # C from EquiIso#
+		Fr[i, 2] <- zXt[i,2] + dNH + dNC * (tau-1) # N from EquiIso#
+		Fr[i, 3] <- zXt[i,3]*(1-wTot) + wTot*wX[i] # H from EquiIso#
+	}#
+	# First time step, assume equilibrated#
+	zXeq[1,1:3] <- Fr[1,1:3]#
+	for(j in 1:3){#
+		# zXtrue[1,j] ~ dnorm(zXeq[1,j], tauW[j])#
+		# zX[1,j] ~ dnorm(zXtrue[1,j], tauV[j])#
+		zX[1,j] ~ dnorm(zXeq[1,j], tauW[j])#
+	}#
+	# Likelihood#
+	# Flow is True ==> Obsrerved ===> Estimate. #
+	# In other words, observed values are True values that have (obs) noise added, #
+	# and Estimates are Observed values that have (process) noise added#
+	# This is a dynamical linear model that incorporates both process and observation error#
+	for(j in 1:3){#
+		for(i in 2:N){#
+			# zX[i,j] ~ dnorm(zXtrue[i,j], tauV[j])#
+			# zXeq[i,j] <- Fr[i,j] + (zXtrue[i-1,j]-Fr[i,j])*exp(-K*delta.t) # Sets zXeq to the output from EquiIso#
+			# zXtrue[i,j] ~ dnorm(zXeq[i,j], tauW[j])#
+			zXeq[i,j] <- Fr[i,j] + (zXeq[i-1,j]-Fr[i,j])*exp(-K*delta.t) # Sets zXeq to the output from EquiIso#
+			zXeq[i,j] <- (B_0[i]*zXeq[i-1,j] + (B_t[i]-B_0[i])*Fr[i,j])/B_t[i]#
+			zX[i,j] ~ dnorm(zXeq[i,j], tauW[j])				#
+		}#
+	}#
+}#
+# ==================================#
+# = Jags model for POM composition =#
+# ==================================#
+pomMod <- function(){#
+	# Missing water#
+	for(j in 1:length(wX.interp)){#
+		wX[j] ~ dnorm(wX.interp[j], wX.prec[j])#
+	}#
+	# Missing co2#
+	for(j in 1:length(co2.interp)){#
+		co2[j] ~ dnorm(co2.interp[j], co2.prec[j])#
+	}#
+	# Priors on pom phi's#
+	for(j in 1:N){#
+		pPhi[j,1:2] ~ ddirch(alpha.dirich[1:2])#
+	}#
+	# epsilon 2h2o (water to algae, h)#
+	eps.2h2o ~ dnorm(-162.6, 1/25) # solomon et al 2011#
+	# eps.2h2o ~ dnorm(-160.9, 1/19.8^2) # yang et al in press#
+	# epsilon 13co2 (co2 to algae, c)#
+	eps.co2 ~ dnorm(-14.7, 1/2.7^2) # yang et al in press#
+	# terrestrial isotope values#
+	for(i in 1:3){#
+		rX.ter[i] ~ dnorm(terMu[i], 1/terSd[i]^2)#
+	}#
+	# Precision for POM composition#
+	for(i in 1:3){		#
+		tau.p[i] ~ dgamma(1E-3, 1E-3)#
+	}#
+	sigma.p <- 1/sqrt(tau.p)#
+	# =============================#
+	# = Model for POM composition =#
+	# =============================#
+	for(i in 1:N){ # loop through each of the observations (time steps)#
+		# 2a#
+		# rX.euk[i,1] ~ dnorm(co2[i] + eps.co2, 1/9)#
+		rX.euk[i,1] <- co2[i] + eps.co2#
+		rX.euk[i,2] ~ dnorm(0, 0.1)#
+		# rX.euk[i,3] ~ dnorm(-162.6+wX[i], 1/25)#
+		rX.euk[i,3] <- wX[i] + eps.2h2o#
+		# 2b#
+		pX.hat[i,1] <- pPhi[i,1]*rX.euk[i,1] + pPhi[i,2]*rX.ter[1]#
+		pX.hat[i,2] <- pPhi[i,1]*rX.euk[i,2] + pPhi[i,2]*rX.ter[2]#
+		pX.hat[i,3] <- pPhi[i,1]*rX.euk[i,3] + pPhi[i,2]*rX.ter[3]#
+		pX.obs[i,1] ~ dnorm(pX.hat[i,1], tau.p[1]) # pom 13C#
+		pX.obs[i,2] ~ dnorm(pX.hat[i,2], tau.p[2]) # pom 15N#
+		pX.obs[i,3] ~ dnorm(pX.hat[i,3], tau.p[3]) # pom 2H#
+	}#
+}#
+#
+# ======================#
+# = Full Jags Function =#
+# ======================#
+# This function *does* estimate the composition of POM#
+#
+tsMod <- function(){#
+	# ===========#
+	# = Outline =#
+	# ===========#
+	# 1) Set up constants, parameters (stochastic nodes)#
+	#	a) missingness#
+	#	b) priors on parameters#
+	#	c) nuisance parameters#
+	#	d) process and observation variances#
+	# 2) POM model#
+	#	a) estimate algal (euk) end member#
+	#	b) composition of POM (%euk and %terr)#
+	# 3) Consumer model#
+	# 1a#
+	# ====================================#
+	# = Handle Missingness in Predictors =#
+	# ====================================#
+	# Missing water#
+	for(j in 1:length(wX.interp)){#
+		wX[j] ~ dnorm(wX.interp[j], wX.prec[j])#
+	}#
+	# Missing co2#
+	for(j in 1:length(co2.interp)){#
+		co2[j] ~ dnorm(co2.interp[j], co2.prec[j])#
+	}#
+	# # Missing water#
+	# for(j in 1:length(wX.miss)){#
+	# 	wX[wX.miss[j]] ~ dnorm(wX.interp[j], 1E-3)#
+	# }#
+	# #
+	# # Missing co2#
+	# for(j in 1:length(co2.miss)){#
+	# 	co2[co2.miss[j]] ~ dnorm(co2.interp[j], 1E-3)#
+	# }#
+	# 1b#
+	# ========================#
+	# = Priors on parameters =#
+	# ========================#
+	# Prior on Phi#
+	# for(j in 1:N){#
+	# 	for(i in 1:2){ # loop through each of the end members#
+	# 		pPhi0[j,i] ~ dunif(-3,5) # set a prior for Phi (the prior is in log units of the proportion)#
+	# 	}#
+	# 	pPhi.sum[j] <- exp(pPhi0[j,1]) + exp(pPhi0[j,2]) # untransform Phi, take sum#
+	# 	pPhi[j,1] <- exp(pPhi0[j,1])/pPhi.sum[j] # divide the first untransformed Phi by the total (sum)#
+	# 	pPhi[j,2] <- 1 - pPhi[j,1] # to ensure adds to 1, make the last Phi (in this case, second) 1 - [other Phi's]#
+	# }#
+	for(j in 1:N){#
+		pPhi[j,1:2] ~ ddirch(alpha.dirich[1:2])#
+	}#
+	# Prior on day-by-day zPhi (zPhi2)#
+	for(j in 1:N){#
+		for(i in 1:2){ # loop through each of the end members#
+			zPhi20[j,i] ~ dunif(-3,5) # set a prior for Phi (the prior is in log units of the proportion)#
+		}#
+		zPhi2.sum[j] <- exp(zPhi20[j,1]) + exp(zPhi20[j,2]) # untransform Phi, take sum#
+		zPhi2[j,1] <- exp(zPhi20[j,1])/zPhi2.sum[j] # divide the first untransformed Phi by the total (sum)#
+		zPhi2[j,2] <- 1 - zPhi2[j,1] # to ensure adds to 1, make the last Phi (in this case, second) 1 - [other Phi's]#
+	}#
+	# Prior on Pref#
+	Pref0 ~ dunif(0, 1.25)#
+	Pref[1] <- exp(Pref0)#
+	# Pref[1] ~ dunif(0.2, 5)#
+	Pref[2] <- 1#
+	# 1c#
+	# =====================================================#
+	# = Stochastic values (priors on nuisance parameters) =#
+	# =====================================================#
+	# epsilon 2h2o (water to algae, h)#
+	eps.2h2o ~ dnorm(-162.6, 1/25) # solomon et al 2011#
+	# eps.2h2o ~ dnorm(-160.9, 1/19.8^2) # yang et al in press#
+	# epsilon 13co2 (co2 to algae, c)#
+	eps.co2 ~ dnorm(-14.7, 1/2.7^2) # yang et al in press#
+	# terrestrial isotope values#
+	for(i in 1:3){#
+		rX.ter[i] ~ dnorm(terMu[i], 1/terSd[i]^2)#
+	}#
+	# Prior on K, the daily % biomass turnover#
+	K ~ dbeta(alpha, beta)#
+	# Other constants#
+	dNH ~ dnorm(2.5, 1/6.25) # N trophic fractionation for herbivore linkage#
+	dNC ~ dnorm(3.4, 1/0.16) # N frac for carnivore linkage#
+	tau ~ dnorm(tau_hat, 1/1E-1) # trophic position#
+	omega ~ dnorm(ohat, 1/0.016) # dietary water#
+	# wTot <- 1 - pow((1-omega),tau)#
+	# For some reason I get an error when I use tau here. I can use tau if omega is a constant, though. #
+	# Must be a technicality w/ how I'm combining stochastic nodes#
+	wTot <- 1 - (1-omega)^tau_hat # total dietary water#
+	# 1d#
+	# ==========================================#
+	# = Priors on uncertainty (e.g., variance) =#
+	# ==========================================#
+	# Precision for POM composition#
+	for(i in 1:3){		#
+		tau.p[i] ~ dgamma(1E-3, 1E-3)#
+	}#
+	sigma.p <- 1/sqrt(tau.p)#
+	# Observation precision, tauV (consumer model)#
+	tauV[1] ~ dgamma(1E-3, 1E-3)#
+	tauV[2] ~ dgamma(1E-3, 1E-3)#
+	tauV[3] ~ dgamma(1E-3, 1E-3)#
+	sigmaV <- 1/sqrt(tauV)#
+#
+	# Process precision, tauW (consumer model)#
+	tauW[1] ~ dgamma(1E-3, 1E-3)#
+	tauW[2] ~ dgamma(1E-3, 1E-3)#
+	tauW[3] ~ dgamma(1E-3, 1E-3)#
+	sigmaW <- 1/sqrt(tauW)#
+	# for(i in 1:3){#
+	# 	sigmaW[i] ~ dunif(0,100)#
+	# 	sigmaW2[i] <- (sigmaW[i])^2#
+	# }#
+	# tauW[1] <- 1/sigmaW2[1]#
+	# tauW[2] <- 1/((3.4^2*(0.1) + (tau-1)^2*(0.16) + 6.25) + sigmaW2[2])#
+	# tauW[3] <- 1/((mean(wX[1:N])^2)*0.016 + (mean(zXt[1:N,3])^2)*0.016 + sigmaW2[3])#
+	# Second Observation precision, tauV (consumer model)#
+	tauV.2[1] ~ dgamma(1E-3, 1E-3)#
+	tauV.2[2] ~ dgamma(1E-3, 1E-3)#
+	tauV.2[3] ~ dgamma(1E-3, 1E-3)#
+	sigmaV.2 <- 1/sqrt(tauV.2)#
+#
+	# Second Process precision, tauW (consumer model)#
+	tauW.2[1] ~ dgamma(1E-3, 1E-3)#
+	tauW.2[2] ~ dgamma(1E-3, 1E-3)#
+	tauW.2[3] ~ dgamma(1E-3, 1E-3)#
+	sigmaW.2 <- 1/sqrt(tauW.2)#
+	# for(i in 1:3){#
+	# 	sigmaW.2[i] ~ dunif(0,100)#
+	# 	sigmaW2.2[i] <- (sigmaW.2[i])^2#
+	# }#
+	# tauW.2[1] <- 1/sigmaW2.2[1]#
+	# tauW.2[2] <- 1/((3.4^2*(0.1) + (tau-1)^2*(0.16) + 6.25) + sigmaW2.2[2])#
+	# tauW.2[3] <- 1/((mean(wX[1:N])^2)*0.016 + (mean(zXt[1:N,3])^2)*0.016 + sigmaW2.2[3])#
+	# 2#
+	# =============================#
+	# = Model for POM composition =#
+	# =============================#
+	for(i in 1:N){ # loop through each of the observations (time steps)#
+		# 2a#
+		# rX.euk[i,1] ~ dnorm(co2[i] + eps.co2, 1/9)#
+		rX.euk[i,1] <- co2[i] + eps.co2#
+		rX.euk[i,2] ~ dnorm(0, 0.1)#
+		# rX.euk[i,3] ~ dnorm(-162.6+wX[i], 1/25)#
+		rX.euk[i,3] <- wX[i] + eps.2h2o#
+		# 2b#
+		pX.hat[i,1] <- pPhi[i,1]*rX.euk[i,1] + pPhi[i,2]*rX.ter[1]#
+		pX.hat[i,2] <- pPhi[i,1]*rX.euk[i,2] + pPhi[i,2]*rX.ter[2]#
+		pX.hat[i,3] <- pPhi[i,1]*rX.euk[i,3] + pPhi[i,2]*rX.ter[3]#
+		pX.obs[i,1] ~ dnorm(pX.hat[i,1], tau.p[1]) # pom 13C#
+		pX.obs[i,2] ~ dnorm(pX.hat[i,2], tau.p[2]) # pom 15N#
+		pX.obs[i,3] ~ dnorm(pX.hat[i,3], tau.p[3]) # pom 2H#
+	}#
+	# 3#
+	# ==============================#
+	# = Model for Zoop composition =#
+	# ==============================#
+	# Estimate newly-ingested zoop diet#
+	# zPhi0 <- 1/(pPhi%*%Pref) # 1/(availability*preference) summed across the resources#
+	for(i in 1:N){#
+		zPhi0[i] <- 1/(pPhi[i,1]*Pref[1] + pPhi[i,2]*Pref[2])#
+		zPhi[i,1] <- (pPhi[i,1]*Pref[1])*zPhi0[i] # algal use#
+		zPhi[i,2] <- (pPhi[i,2]*Pref[2])*zPhi0[i] # terrestrial use#
+	}#
+	# for(i in 1:2){#
+	# 	zPhi[1:N,i] <- (pPhi[,i]*Pref[i])*zPhi0 # availability*preference / sum(avail*pref)#
+	# }#
+#
+	# First column of zPhi is Euk, second column is Terr#
+	zXt[1,1:3] <- zPhi[1,1] * rX.euk[1,1:3] + zPhi[1,2] * rX.ter[1:3]#
+	for(i in 2:N){#
+		zXt[i,1:3] <- zPhi[i,1] * rX.euk[i,1:3] + zPhi[i,2] * rX.ter[1:3]#
+	}#
+	# calculate zooplankton compoistion, for first time step#
+	# Fr[1, 1] <- zXt[1,1] + 0#
+	# Fr[1, 2] <- zXt[1,2] + dNH + dNC * (tau-1)#
+	# Fr[1, 3] <- zXt[1,3]*(1-wTot) + wTot*wX[1]#
+	# zXeq[1,1:3] <- Fr[1,1:3]#
+	# zXtrue[1,1:3] <- zXeq[1,1:3]#
+	# calculate zooplankton composition for later times, when isotopic eqilibration needs to be considered#
+	# for(i in 2:N){#
+	for(i in 1:N){#
+		Fr[i, 1] <- zXt[i,1] + 0 # C from EquiIso#
+		Fr[i, 2] <- zXt[i,2] + dNH + dNC * (tau-1) # N from EquiIso#
+		Fr[i, 3] <- zXt[i,3]*(1-wTot) + wTot*wX[i] # H from EquiIso#
+	}#
+	# First time step, assume equilibrated#
+	zXeq[1,1:3] <- Fr[1,1:3]#
+	for(j in 1:3){#
+		zXtrue[1,j] ~ dnorm(zXeq[1,j], tauW[j])#
+		zX[1,j] ~ dnorm(zXtrue[1,j], tauV[j])#
+	}#
+	# Likelihood#
+	# Flow is True ==> Observed ===> Estimate. #
+	# In other words, observed values are True values that have (obs) noise added, #
+	# and Estimates are Observed values that have (process) noise added#
+	# This is a dynamical linear model that incorporates both process and observation error#
+	for(j in 1:3){#
+		for(i in 2:N){#
+			zX[i,j] ~ dnorm(zXtrue[i,j], tauV[j])#
+			zXeq[i,j] <- Fr[i,j] + (zXtrue[i-1,j]-Fr[i,j])*exp(-K*delta.t) # Sets zXeq to the output from EquiIso#
+			zXtrue[i,j] ~ dnorm(zXeq[i,j], tauW[j])				#
+		}#
+	}#
+	# ================================================#
+	# = Model for Zoop Composition, independent days =#
+	# ================================================#
+	# First column of zPhi is Euk, second column is Terr#
+	for(i in 1:N){#
+		zXt2[i,1:3] <- zPhi2[i,1] * rX.euk[i,1:3] + zPhi2[i,2] * rX.ter[1:3]#
+	}#
+	# calculate zooplankton composition for later times, when isotopic eqilibration needs to be considered#
+	for(i in 1:N){#
+		Fr2[i, 1] <- zXt2[i,1] + 0 # C from EquiIso#
+		Fr2[i, 2] <- zXt2[i,2] + dNH + dNC * (tau-1) # N from EquiIso#
+		Fr2[i, 3] <- zXt2[i,3]*(1-wTot) + wTot*wX[i] # H from EquiIso		#
+	}#
+	# Likelihood#
+	for(j in 1:3){#
+		for(i in 1:N){#
+			zX2[i,j] ~ dnorm(zXtrue2[i,j], tauV.2[j])#
+			zXtrue2[i,j] ~ dnorm(Fr2[i,j], tauW.2[j])				#
+		}#
+	}#
+}#
+# ===========================#
+# = Given POM Jags function =#
+# ===========================#
+# This function does not estimate the composition of POM#
+#Parameters#
+# 1) K: scalar, proportional rate of biomass turnover#
+# 2) Pref: matrix, relative preferences for each resource#
+#Constants#
+# 1) tau: consumer trophic level#
+# 2) dN: influence of trophic links on consumer 15N#
+	# a) dN = delHerb + delCarn * (tau-1) = 2.5 + 3.4*(tau-1)#
+# 3) wTot: omega total, influence of water on consumer 2H#
+ 	# a) wTot: 1 - (1-omega)^tau = 1 - (1-0.2)^tau#
+#
+#Data#
+# 1) pX: matrix (n x 3), POM isotope values #Don't need (right now)#
+# 2) zX: matrix (n x 3), Zoop isotope values#
+# 3) rX: matrix (n x 3), resource isotope values#
+# 4) wX: vector, water isotope values#
+# 5) rC: matrix (n x 3), resource concentration (cyano, euk, terr)#
+# 6) Time?#
+# Model Pseudocode#
+# 1) Compare estimates of each isotope at each time to the observations (zX[i,j] ~ zXeq[i,j])#
+# 2) Estimate each isotope at each time step#
+	# a) Estimate new equilibrium zoop signature (zXeq) from current diet (zXt) and past signature (zX0 or zXeq[i-1,j])#
+	# b) Estimate newly-ingested zoop diet (zXt) from zPhi and pX#
+	# c) Estimate zPhi from Pref and pPhi, where pPhi is calculated from rC, so maybe pPhi should replace rC in data input...#
+# 3) Define prior nodes#
+# EquiIso <- function(dX0, dXt, k, t){#
+# 	dXt[2] <- dXt[2]+delHerb#
+# 	dXt[3] <- dXt[3]*(1-omegaTot) + omegaTot*delWater#
+# 	dXt + (dX0-dXt)*exp(-k*t)#
+# }#
+#
+j2Mod <- function(){#
+	# Composition of POM#
+	pPhi <- rC/sum(rC) # This can be elaborated upon by using isotopes to determine composition of POM#
+#
+	# Estimate newly-ingested zoop diet#
+	zPhi0 <- 1/(pPhi%*%Pref) # 1/(availability*preference) summed across the resources#
+	for(i in 1:3){#
+		zPhi[1:N,i] <- (pPhi[,i]*Pref[i])*zPhi0 # pom phi (availability) scaled up by preference, divided by availability*preference summed across the resources#
+	}#
+	zXt <- zPhi %*% rX # the zoop Phi's and the isotope values for the resources. Need different method for getting zXt if rX changes over time#
+	# calculate zooplankton compoistion, for first time step#
+	Fr[1, 1] <- zXt[1,1] + 0#
+	Fr[1, 2] <- zXt[1,2] + dNH + dNC * (tau-1)#
+	Fr[1, 3] <- zXt[1,3]*(1-wTot) + wTot*wX[1]#
+	zXeq[1,1:3] <- Fr[1,1:3]#
+	zXtrue[1,1:3] <- zXeq[1,1:3]#
+	# calculate zooplankton composition for later times, when isotopic eqilibration needs to be considered#
+	for(i in 2:N){#
+		Fr[i, 1] <- zXt[i,1] + 0 # C from EquiIso#
+		Fr[i, 2] <- zXt[i,2] + dNH + dNC * (tau-1) # N from EquiIso#
+		Fr[i, 3] <- zXt[i,3]*(1-wTot) + wTot*wX[i] # H from EquiIso#
+	}#
+	# Likelihood#
+	# Flow is True ==> Observed ===> Estimate. #
+	# In other words, observed values are True values that have (obs) noise added, and Estimates are Observed values that have (process) noise added#
+	# So this is actually a dynamical linear model that incorporates both process and observation error#
+	for(j in 1:3){#
+		for(i in 2:N){#
+			zX[i,j] ~ dnorm(zXtrue[i,j], tauV[j])#
+			zXeq[i,j] <- Fr[i,j] + (zXtrue[i-1,j]-Fr[i,j])*exp(-K) # Sets zXeq to the output from EquiIso#
+			zXtrue[i,j] ~ dnorm(zXeq[i,j], tauW[j])				#
+		}#
+	}#
+	# Prior distribution for the Preferences.#
+	# Dirichlet did not produce as good of results. #
+	# In part b/c inverting small estimates of 1/Pref (dirichlet gives between 0 and 1) resulted in huge values for Pref popping on sometimes in MCMC#
+	# Dirichlet prior was basically uniform too (all elements of alpha were the same, and when all ==1, it's flat)#
+	# The main problem with Uniform is that it is unlikely to sample Preferences for C and E that are lower than Pref for T, which I set to 1.#
+	for(i in 1:2){#
+		Pref[i] ~ dunif(0, 50)#
+	}#
+	Pref[3] <- 1#
+	# Prior distribution for K, the daily % biomass turnover#
+	# The parameters I used for the beta distribution are not arbitrary (see below).#
+	K ~ dbeta(3.647, 20.664) # mean of 0.15, variance of ~0.005#
+#
+	# Observation precision, tauV#
+	tauV[1] ~ dgamma(1E-3, 1E-3)#
+	tauV[2] ~ dgamma(1E-3, 1E-3)#
+	tauV[3] ~ dgamma(1E-3, 1E-3)#
+	sigmaV <- 1/sqrt(tauV)#
+#
+	# Process precision, tauW#
+	for(i in 1:3){#
+		sigmaW[i] ~ dunif(0,100)#
+		sigmaW2[i] <- (sigmaW[i])^2#
+	}#
+	# Tally up known sources of error (propagated from uncertain constants)#
+	# A lot of terms dropped out b/c only 1 sample on each date, so cannot estimate source/ consumer variance over time#
+	# Fine with me, easier this way ;) Should consider in futre.#
+	tauW[1] <- 1/sigmaW2[1]#
+	tauW[2] <- 1/((3.4^2*(0.1) + (tau-1)^2*(0.16) + 6.25) + sigmaW2[2])#
+	tauW[3] <- 1/((mean(wX[1:N])^2)*0.016 + (mean(zXt[1:N,3])^2)*0.016 + sigmaW2[3])#
+#
+	# Constants#
+	dNH ~ dnorm(2.5, 1/6.25)#
+	dNC ~ dnorm(3.4, 1/0.16)#
+	tau ~ dnorm(tau_hat, 1/1E-1)#
+	omega ~ dnorm(0.20, 1/0.016)#
+	# wTot <- 1 - pow((1-omega),tau)#
+	# For some reason I get an error when I use tau here. I can use tau if omega is a constant, though. #
+	# Must be a technicality w/ how I'm combining stochastic nodes#
+	wTot <- 1 - (1-omega)^tau_hat#
+}
+rm(list=ls())
+graphics.off()
+library("R2jags")#
+library("R2WinBUGS")#
+library("vioplot")#
+#
+source("/Users/Battrd/Documents/School&Work/WiscResearch/CyanoIso/cyanoIso_functions.R")#
+df.bug <- read.table(file="/Users/Battrd/Documents/School&Work/WiscResearch/CyanoIso/Data/cyanoIso_df.bug.txt", sep="\t", header=TRUE)#
+load("/Users/Battrd/Documents/School&Work/WiscResearch/CyanoIso/Data/pom.out.RData")#
+z.mass <- read.table(file="/Users/Battrd/Documents/School&Work/WiscResearch/CyanoIso/Data/cyanoIso_z.mass.txt", sep="\t", header=TRUE)#
+#
+merge(df.bug, z.mass, all.x=TRUE)#
+# ================#
+# = Choose model =#
+# ================#
+mod.choose <- c("consMod.basic", "consMod.expGrowth", "consMod.logisGrowth" )[3]#
+rm.4mod <- list("consMod.basic"=c("alpha","beta","K","Pref","delta.t","ddirch.weight"), "consMod.expGrowth"=c("t.mass.interp", "t.mass.prec"))#
+# =============================#
+# = Set up final data storage =#
+cons.out <- list()#
+#
+# ====================#
+# = Define constants =#
+# ====================#
+# Terrestrial signatures from: http://www.esapubs.org/archive/ecol/E092/090/appendix-C.htm#
+terMu <- c(-29.2, -4.6, -129.5)#
+terSd <- c(1.5, 0.6, 15.2)#
+#
+# Size of time step (7 = 1 week)#
+delta.t <- 7#
+#
+# Define K, biomass turnover rate of zooplankton, in terms of beta distribution#
+k.mean <- 0.1#
+alpha <- 0.75#
+beta <- (alpha-k.mean*alpha)/k.mean # find the beta that corresponds to the desired mean and alpha values for a beta distribution#
+# beta.mean <- alpha/(alpha+beta) # should equal k.mean#
+beta.var <- (alpha*beta)/((alpha+beta)^2*(alpha+beta+1)) # the variance of the beta distribution#
+# plot(seq(0,1,length.out=50), dbeta(seq(0,1,length.out=50), alpha, beta), type="l") # plot the pdf#
+#
+counter <- 1#
+for(l in 1:3){#
+	# ===========================#
+	# = Lake-specific constants =#
+	# ===========================#
+	ilake <- c("Peter", "Paul", "Tuesday")[l]#
+	t.dat <- df.bug[df.bug[,"lake"]==ilake,] # temporary data#
+	tV <- t.dat[,"type"] # vector of types, convenient for subsetting#
+	iC <- c("c13","n15","h2")#
+	t.pX.obs <- t.dat[tV=="pom",iC] # pom signatures#
+	t.wX <- t.dat[tV=="water","h2"] # water signature#
+	# ======================#
+	# = Lake-specific data =#
+	# ======================#
+	# Supply bugs with a vector that contains observed values where possible, otherwise the interpolated elements#
+	# If the value was actually observed, give it high precision,#
+	# but if the value was interpolated, give it precision of 1/sd(observed.data)^2#
+#
+	# Handle missingness#
+	t.wX.interp <- approx(1:length(t.wX), y=t.wX, xout=1:length(t.wX), rule=2)$y#
+	t.wX.prec <- rep(1E6, length(t.wX))#
+	t.wX.prec[is.na(t.wX)] <- 1 #1/sd(t.wX, na.rm=TRUE)^2#
+	# ============================================#
+	# = POM Posteriors to pass to consumer model =#
+	# ============================================#
+	# mean and precision of eukaryotic algae signatures#
+	t.rX.euk.mu <- as.matrix(pom.out[[ilake]]$rX.euk[,c("c13_euk_mu", "n15_euk_mu", "h2_euk_mu")])#
+	t.rX.euk.prec <- as.matrix(1/(pom.out[[ilake]]$rX.euk[,c("c13_euk_sd", "n15_euk_sd", "h2_euk_sd")])^2)#
+	# mean and precision of pPhi#
+	t.pPhi.mu <- as.matrix(pom.out[[ilake]]$phi[,c("phi_euk_mu","phi_terr_mu")])#
+	t.pPhi.prec <- as.matrix(1/(pom.out[[ilake]]$phi[,c("phi_euk_sd","phi_terr_sd")]^2))#
+	# ====================#
+	# = Specify consumer =#
+	# ====================#
+	for(coi in 1:2){#
+		co <- c("zoop","chaob")[coi]#
+		if((co=="zoop"&ilake=="Tuesday") | (mod.choose=="consMod.logisGrowth"&co=="chaob")){next}#
+		t.zX <- t.dat[tV==co,iC] # consumer signatures#
+		t.tau_hat <- c("zoop"=1,"chaob"=2)[co] # trophic position#
+		t.ohat <- c("zoop"=0.2, "chaob"=0.14)[co]#
+		t.ohat.var <- c("zoop"=0.0016, "chaob"=0.0036)[co]#
+		t.N <- nrow(t.zX) # n obs#
+		# Check to make sure this works if co==chaob (should merge to empty set, but interpolations might not work)#
+		t.mass.dat <- merge(t.dat[tV==co,], z.mass[z.mass[,"type",]==co,], all.x=TRUE)[,c("mul","sdl")]		#
+		if(mod.choose=="consMod.logisGrowth" && all(colSums(apply(t.mass.dat, 2, function(x)!is.na(x)))>1)){#
+			t.mass.interp <- approx(1:t.N, y=t.mass.dat[,"mul"], xout=1:t.N, rule=2)$y#
+			t.mass.prec <- 1/(approx(1:t.N, y=t.mass.dat[,"sdl"], xout=1:t.N, rule=2)$y)^2#
+		}else{#
+			if(mod.choose=="consMod.logisGrowth") {warning(paste("Logistic growth model chosen, but necessary biomass data are unavailable –", ilake, co); next}#
+			t.mass.interp <- NA#
+			t.mass.prec <- NA#
+		}#
+		# ==========================#
+		# = Data to Consumer Model =#
+		# ==========================#
+		data.cons <- list(#
+			zX=t.zX, # observations of zooplankton (or chaob) isotopes over time#
+			terMu = terMu, # mean C, N, H isotope values for terrestrial material#
+			terSd = terSd, # standard deviations of C, N, H isotope values for terrestrial material#
+			wX=t.wX, # water 2H over time#
+			N=t.N, # number of time steps#
+			tau_hat=t.tau_hat, # estimated trophic position of consumer (1 for herbivore)#
+			wX.interp=t.wX.interp, # estimates of missing water values generated by linear interpolation#
+			wX.prec=t.wX.prec,#
+			rX.euk.mu = t.rX.euk.mu,#
+			rX.euk.prec = t.rX.euk.prec,#
+			pPhi.mu = t.pPhi.mu,#
+			pPhi.prec = t.pPhi.prec,#
+#
+			ohat=t.ohat,#
+			ohat.var=t.ohat.var,#
+#
+			alpha=alpha,#
+			beta=beta,#
+#
+			delta.t=delta.t,#
+			mass.interp=t.mass.interp,#
+			mass.prec=t.mass.prec#
+		)#
+		data.cons <- data.cons[names(data.cons)[!names(data.cons)%in%rm.4mod[[mod.choose]]]]#
+#
+		# ===========#
+		# = Jag POM =#
+		# ===========#
+		cons.params <- c("zPhi","Pref", "K", "ddirch.weight")#
+		cons.params <- cons.params[!cons.params%in%rm.4mod[[mod.choose]]] # remove parameters not needed for this model#
+		write.model(get(mod.choose), mod.choose)#
+		jag.cons <- jags(data=data.cons, inits=NULL, parameters.to.save=cons.params, model.file=mod.choose, n.chains=5, n.iter=1E4, n.burnin=5E2)#
+		# do.call((R2jags::traceplot), args=list(jags2.m , mfrow=c(3,1), varname=params))#
+#
+		# ===================#
+		# = Organize output =#
+		# ===================#
+		simMat.cons <- jag.cons$BUGSoutput$sims.matrix#
+#
+		oGrps <- gsub("\\[[0-9]*,?[0-9]*\\]", "", colnames(simMat.cons))#
+		u.oGrps <- unique(oGrps)#
+#
+		oLst.cons <- list()#
+#
+		for(i in 1:length(u.oGrps)){#
+			t.Grp <- u.oGrps[i]#
+			t.Names <- colnames(simMat.cons)[oGrps==t.Grp]#
+#
+			dimL0 <- grepl("\\[[0-9]*,?[0-9]*\\]", t.Names)  # logical: are dimensions defined for this group (i.e., vector, matrix)#
+			if(any(dimL0)!=all(dimL0)){print("Name-matching screw-up; dimensions differ w/in group"); next}#
+			dimL <- all(dimL0)#
+#
+			nDim <- unique(grepl(",+", t.Names) + dimL)#
+#
+			if(nDim==2){#
+				d3dat <- simMat.cons[,t.Names]#
+				size.dim3 <- length(d3dat) / (nrow(simMat.cons)*t.N)#
+				oLst.cons[[i]] <- array(d3dat, dim=c(nrow(simMat.cons), t.N, size.dim3))#
+				names(oLst.cons)[i] <- t.Grp#
+			}else{#
+				ddat <- simMat.cons[,t.Names]#
+				oLst.cons[[i]] <- ddat#
+				names(oLst.cons)[i] <- t.Grp#
+			}#
+		}#
+#
+		# ===============================#
+		# = Store results for this lake =#
+		# ===============================#
+		t.week <- unique(t.dat[,"week"])#
+		t.posix <- as.POSIXct(paste(t.week, 2, 2013, sep="-"), format="%W-%w-%Y")#
+		t.doy <- as.integer(format.Date(t.posix, format="%j"))#
+		# n.week <- length(t.doy)#
+		# doy.plot <- c(t.doy[1]-3, t.doy, t.doy[n.week]+3)#
+#
+		t.meds.phi <- apply(oLst.cons$zPhi[,,1], 2, median)#
+		t.mus.phi <- apply(oLst.cons$zPhi[,,1], 2, mean)#
+		t.sds.phi <- apply(oLst.cons$zPhi[,,1], 2, sd)#
+		if("Pref"%in%rm.4mod[[mod.choose]]){ # if Pref wasn't a parameter, NA, else extract#
+			tP <- NA#
+		}else{#
+			tP <- oLst.cons$Pref[,1]#
+		}#
+		if("K"%in%rm.4mod[[mod.choose]]){ # same but for K#
+			tK <- NA#
+		}else{#
+			tK <- oLst.cons$K#
+		}#
+		if("ddirch.weight"%in%rm.4mod[[mod.choose]]){ # same but for the weight used in the preference dirichlet#
+			tDW <- NA#
+		}else{#
+			tDW <- oLst.cons$ddirch.weight#
+		}#
+		tframe.phi <- data.frame("Lake"=ilake, "DoY"=t.doy, "Type"=co, "phi_med"=t.meds.phi, "phi_mu"=t.mus.phi, "phi_sd"=t.sds.phi)#
+		tframe.pref <- data.frame("Lake"=ilake, "pref_med"=median(tP), "pref_mu"=mean(tP), "pref_sd"=sd(tP))#
+		tframe.k <- data.frame("Lake"=ilake, "K_med"=median(tK), "K_mu"=mean(tK), "K_sd"=sd(tK))#
+		tframe.DW <- data.frame("Lake"=ilake, "DW_med"=median(tDW), "DW_mu"=mean(tDW), "DW_sd"=sd(tDW))#
+		cons.out[[counter]] <- list(phi=tframe.phi, K=tframe.k, Pref=tframe.pref, Dirich.weight=tframe.DW, DIC=jag.cons$BUGSoutput$DIC)#
+		names(cons.out)[counter] <- paste(ilake, co, sep="_")#
+		attr(cons.out[[counter]], "posteriors") <- oLst.cons#
+		attr(cons.out[[counter]], "jags.model") <- jag.cons#
+		class(cons.out[[counter]]) <- "listof"#
+		counter <- counter + 1#
+	}#
+}
+library("R2jags")#
+library("R2WinBUGS")#
+library("vioplot")#
+#
+source("/Users/Battrd/Documents/School&Work/WiscResearch/CyanoIso/cyanoIso_functions.R")#
+df.bug <- read.table(file="/Users/Battrd/Documents/School&Work/WiscResearch/CyanoIso/Data/cyanoIso_df.bug.txt", sep="\t", header=TRUE)#
+load("/Users/Battrd/Documents/School&Work/WiscResearch/CyanoIso/Data/pom.out.RData")#
+z.mass <- read.table(file="/Users/Battrd/Documents/School&Work/WiscResearch/CyanoIso/Data/cyanoIso_z.mass.txt", sep="\t", header=TRUE)#
+#
+merge(df.bug, z.mass, all.x=TRUE)#
+# ================#
+# = Choose model =#
+# ================#
+mod.choose <- c("consMod.basic", "consMod.expGrowth", "consMod.logisGrowth" )[3]#
+rm.4mod <- list("consMod.basic"=c("alpha","beta","K","Pref","delta.t","ddirch.weight"), "consMod.expGrowth"=c("t.mass.interp", "t.mass.prec"))#
+# =============================#
+# = Set up final data storage =#
+cons.out <- list()#
+#
+# ====================#
+# = Define constants =#
+# ====================#
+# Terrestrial signatures from: http://www.esapubs.org/archive/ecol/E092/090/appendix-C.htm#
+terMu <- c(-29.2, -4.6, -129.5)#
+terSd <- c(1.5, 0.6, 15.2)#
+#
+# Size of time step (7 = 1 week)#
+delta.t <- 7#
+#
+# Define K, biomass turnover rate of zooplankton, in terms of beta distribution#
+k.mean <- 0.1#
+alpha <- 0.75#
+beta <- (alpha-k.mean*alpha)/k.mean # find the beta that corresponds to the desired mean and alpha values for a beta distribution#
+# beta.mean <- alpha/(alpha+beta) # should equal k.mean#
+beta.var <- (alpha*beta)/((alpha+beta)^2*(alpha+beta+1)) # the variance of the beta distribution#
+# plot(seq(0,1,length.out=50), dbeta(seq(0,1,length.out=50), alpha, beta), type="l") # plot the pdf#
+#
+counter <- 1#
+for(l in 1:3){#
+	# ===========================#
+	# = Lake-specific constants =#
+	# ===========================#
+	ilake <- c("Peter", "Paul", "Tuesday")[l]#
+	t.dat <- df.bug[df.bug[,"lake"]==ilake,] # temporary data#
+	tV <- t.dat[,"type"] # vector of types, convenient for subsetting#
+	iC <- c("c13","n15","h2")#
+	t.pX.obs <- t.dat[tV=="pom",iC] # pom signatures#
+	t.wX <- t.dat[tV=="water","h2"] # water signature#
+	# ======================#
+	# = Lake-specific data =#
+	# ======================#
+	# Supply bugs with a vector that contains observed values where possible, otherwise the interpolated elements#
+	# If the value was actually observed, give it high precision,#
+	# but if the value was interpolated, give it precision of 1/sd(observed.data)^2#
+#
+	# Handle missingness#
+	t.wX.interp <- approx(1:length(t.wX), y=t.wX, xout=1:length(t.wX), rule=2)$y#
+	t.wX.prec <- rep(1E6, length(t.wX))#
+	t.wX.prec[is.na(t.wX)] <- 1 #1/sd(t.wX, na.rm=TRUE)^2#
+	# ============================================#
+	# = POM Posteriors to pass to consumer model =#
+	# ============================================#
+	# mean and precision of eukaryotic algae signatures#
+	t.rX.euk.mu <- as.matrix(pom.out[[ilake]]$rX.euk[,c("c13_euk_mu", "n15_euk_mu", "h2_euk_mu")])#
+	t.rX.euk.prec <- as.matrix(1/(pom.out[[ilake]]$rX.euk[,c("c13_euk_sd", "n15_euk_sd", "h2_euk_sd")])^2)#
+	# mean and precision of pPhi#
+	t.pPhi.mu <- as.matrix(pom.out[[ilake]]$phi[,c("phi_euk_mu","phi_terr_mu")])#
+	t.pPhi.prec <- as.matrix(1/(pom.out[[ilake]]$phi[,c("phi_euk_sd","phi_terr_sd")]^2))#
+	# ====================#
+	# = Specify consumer =#
+	# ====================#
+	for(coi in 1:2){#
+		co <- c("zoop","chaob")[coi]#
+		if((co=="zoop"&ilake=="Tuesday") | (mod.choose=="consMod.logisGrowth"&co=="chaob")){next}#
+		t.zX <- t.dat[tV==co,iC] # consumer signatures#
+		t.tau_hat <- c("zoop"=1,"chaob"=2)[co] # trophic position#
+		t.ohat <- c("zoop"=0.2, "chaob"=0.14)[co]#
+		t.ohat.var <- c("zoop"=0.0016, "chaob"=0.0036)[co]#
+		t.N <- nrow(t.zX) # n obs#
+		# Check to make sure this works if co==chaob (should merge to empty set, but interpolations might not work)#
+		t.mass.dat <- merge(t.dat[tV==co,], z.mass[z.mass[,"type",]==co,], all.x=TRUE)[,c("mul","sdl")]		#
+		if(mod.choose=="consMod.logisGrowth" && all(colSums(apply(t.mass.dat, 2, function(x)!is.na(x)))>1)){#
+			t.mass.interp <- approx(1:t.N, y=t.mass.dat[,"mul"], xout=1:t.N, rule=2)$y#
+			t.mass.prec <- 1/(approx(1:t.N, y=t.mass.dat[,"sdl"], xout=1:t.N, rule=2)$y)^2#
+		}else{#
+			if(mod.choose=="consMod.logisGrowth"){#
+				warning(paste("Logistic growth model chosen, but necessary biomass data are unavailable –", ilake, co))#
+				next#
+			}#
+			t.mass.interp <- NA#
+			t.mass.prec <- NA#
+		}#
+		# ==========================#
+		# = Data to Consumer Model =#
+		# ==========================#
+		data.cons <- list(#
+			zX=t.zX, # observations of zooplankton (or chaob) isotopes over time#
+			terMu = terMu, # mean C, N, H isotope values for terrestrial material#
+			terSd = terSd, # standard deviations of C, N, H isotope values for terrestrial material#
+			wX=t.wX, # water 2H over time#
+			N=t.N, # number of time steps#
+			tau_hat=t.tau_hat, # estimated trophic position of consumer (1 for herbivore)#
+			wX.interp=t.wX.interp, # estimates of missing water values generated by linear interpolation#
+			wX.prec=t.wX.prec,#
+			rX.euk.mu = t.rX.euk.mu,#
+			rX.euk.prec = t.rX.euk.prec,#
+			pPhi.mu = t.pPhi.mu,#
+			pPhi.prec = t.pPhi.prec,#
+#
+			ohat=t.ohat,#
+			ohat.var=t.ohat.var,#
+#
+			alpha=alpha,#
+			beta=beta,#
+#
+			delta.t=delta.t,#
+			mass.interp=t.mass.interp,#
+			mass.prec=t.mass.prec#
+		)#
+		data.cons <- data.cons[names(data.cons)[!names(data.cons)%in%rm.4mod[[mod.choose]]]]#
+#
+		# ===========#
+		# = Jag POM =#
+		# ===========#
+		cons.params <- c("zPhi","Pref", "K", "ddirch.weight")#
+		cons.params <- cons.params[!cons.params%in%rm.4mod[[mod.choose]]] # remove parameters not needed for this model#
+		write.model(get(mod.choose), mod.choose)#
+		jag.cons <- jags(data=data.cons, inits=NULL, parameters.to.save=cons.params, model.file=mod.choose, n.chains=5, n.iter=1E4, n.burnin=5E2)#
+		# do.call((R2jags::traceplot), args=list(jags2.m , mfrow=c(3,1), varname=params))#
+#
+		# ===================#
+		# = Organize output =#
+		# ===================#
+		simMat.cons <- jag.cons$BUGSoutput$sims.matrix#
+#
+		oGrps <- gsub("\\[[0-9]*,?[0-9]*\\]", "", colnames(simMat.cons))#
+		u.oGrps <- unique(oGrps)#
+#
+		oLst.cons <- list()#
+#
+		for(i in 1:length(u.oGrps)){#
+			t.Grp <- u.oGrps[i]#
+			t.Names <- colnames(simMat.cons)[oGrps==t.Grp]#
+#
+			dimL0 <- grepl("\\[[0-9]*,?[0-9]*\\]", t.Names)  # logical: are dimensions defined for this group (i.e., vector, matrix)#
+			if(any(dimL0)!=all(dimL0)){print("Name-matching screw-up; dimensions differ w/in group"); next}#
+			dimL <- all(dimL0)#
+#
+			nDim <- unique(grepl(",+", t.Names) + dimL)#
+#
+			if(nDim==2){#
+				d3dat <- simMat.cons[,t.Names]#
+				size.dim3 <- length(d3dat) / (nrow(simMat.cons)*t.N)#
+				oLst.cons[[i]] <- array(d3dat, dim=c(nrow(simMat.cons), t.N, size.dim3))#
+				names(oLst.cons)[i] <- t.Grp#
+			}else{#
+				ddat <- simMat.cons[,t.Names]#
+				oLst.cons[[i]] <- ddat#
+				names(oLst.cons)[i] <- t.Grp#
+			}#
+		}#
+#
+		# ===============================#
+		# = Store results for this lake =#
+		# ===============================#
+		t.week <- unique(t.dat[,"week"])#
+		t.posix <- as.POSIXct(paste(t.week, 2, 2013, sep="-"), format="%W-%w-%Y")#
+		t.doy <- as.integer(format.Date(t.posix, format="%j"))#
+		# n.week <- length(t.doy)#
+		# doy.plot <- c(t.doy[1]-3, t.doy, t.doy[n.week]+3)#
+#
+		t.meds.phi <- apply(oLst.cons$zPhi[,,1], 2, median)#
+		t.mus.phi <- apply(oLst.cons$zPhi[,,1], 2, mean)#
+		t.sds.phi <- apply(oLst.cons$zPhi[,,1], 2, sd)#
+		if("Pref"%in%rm.4mod[[mod.choose]]){ # if Pref wasn't a parameter, NA, else extract#
+			tP <- NA#
+		}else{#
+			tP <- oLst.cons$Pref[,1]#
+		}#
+		if("K"%in%rm.4mod[[mod.choose]]){ # same but for K#
+			tK <- NA#
+		}else{#
+			tK <- oLst.cons$K#
+		}#
+		if("ddirch.weight"%in%rm.4mod[[mod.choose]]){ # same but for the weight used in the preference dirichlet#
+			tDW <- NA#
+		}else{#
+			tDW <- oLst.cons$ddirch.weight#
+		}#
+		tframe.phi <- data.frame("Lake"=ilake, "DoY"=t.doy, "Type"=co, "phi_med"=t.meds.phi, "phi_mu"=t.mus.phi, "phi_sd"=t.sds.phi)#
+		tframe.pref <- data.frame("Lake"=ilake, "pref_med"=median(tP), "pref_mu"=mean(tP), "pref_sd"=sd(tP))#
+		tframe.k <- data.frame("Lake"=ilake, "K_med"=median(tK), "K_mu"=mean(tK), "K_sd"=sd(tK))#
+		tframe.DW <- data.frame("Lake"=ilake, "DW_med"=median(tDW), "DW_mu"=mean(tDW), "DW_sd"=sd(tDW))#
+		cons.out[[counter]] <- list(phi=tframe.phi, K=tframe.k, Pref=tframe.pref, Dirich.weight=tframe.DW, DIC=jag.cons$BUGSoutput$DIC)#
+		names(cons.out)[counter] <- paste(ilake, co, sep="_")#
+		attr(cons.out[[counter]], "posteriors") <- oLst.cons#
+		attr(cons.out[[counter]], "jags.model") <- jag.cons#
+		class(cons.out[[counter]]) <- "listof"#
+		counter <- counter + 1#
+	}#
+}#
+cons.file.name <- paste("/Users/Battrd/Documents/School&Work/WiscResearch/CyanoIso/Data/", mod.choose, "_cons.out.RData", sep="")#
+save(cons.out, file=cons.file.name)#
+# traceplot(attributes(cons.out[["Paul_chaob"]])$jags.model)
+z.mass
+t.mass.prec
+t.mass.interp
+t.mass.dat
+z.mass
+daph <- read.csv("/Users/Battrd/Documents/School&Work/WiscResearch/CyanoIso/Data/2013_Daphnia_Length_IndMass.csv")#
+#
+dev.new(width=3.5, height=6)#
+par(mfrow=c(2,1), mar=c(2.5,2.5,1.5,0.5), mgp=c(1.0, 0.25, 0), tcl=-0.25, ps=10, cex=1, family="Times")#
+over.tq3 <- data.frame("lake"=NULL, "type"=NULL, "week"=NULL, "doy"=NULL, "zBio"=NULL)#
+for(l in 1:2){#
+	t.daph <- daph[daph[,"Lake"]==c("Paul","Peter")[l],]#
+	t.doys <- t.daph[,c("DoY")]#
+	u.t.doys <- unique(t.doys)#
+	tylim <- range(t.daph[,"Ind_Biomass_ug"])*c(1, 1.1)#
+	plot(t.daph[,"DoY"], t.daph[,"Ind_Biomass_ug"], type="n", xlab="Day of year", ylab=bquote(Biomass~(mu*g)), ylim=tylim, main=c("Paul","Peter")[l])#
+	for(i in 1:length(u.t.doys)){#
+		tc <- u.t.doys[i]#
+		ti <- t.doys==tc#
+		tdat <- t.daph[ti,]#
+		# tden <- density(tdat[,"Ind_Biomass_ug"])#
+		# tsmry <- summary(tden$x)#
+		# tq3 <- tsmry["3rd Qu."]#
+		tmax <- tylim[2] #tsmry["Max."]#
+		tvi <- vioplot(tdat[,"Ind_Biomass_ug"], at=tc, col="gray", add=TRUE, drawRect=FALSE, wex=5)#
+		tq3 <- round(tvi$q3, 1)#
+		t.w <- as.numeric(format.Date(as.POSIXct(paste(tc, "2013", sep="-"), format="%j-%Y"), format="%W"))#
+		t.w.doy <- as.numeric(format.Date(as.POSIXct(paste(t.w, 1, "2013", sep="-"), format="%W-%w-%Y"), format="%j"))#
+		t.over.tq3 <- tdat[tdat[,"Ind_Biomass_ug"]>=tq3,"Ind_Biomass_ug"]#
+		t.df <- data.frame("lake"=c("Paul","Peter")[l], type="zoop", "week"=t.w, "doy"=t.w.doy, "zBio"=t.over.tq3) # take the logarithm, then the mean/ sd#
+		over.tq3 <- rbind(over.tq3, t.df)#
+		text(x=tc, y=tmax, tq3, pos=1, cex=0.65, srt=45, offset=c(0.1,1))#
+		points(tc, tq3, pch=20, cex=0.85)#
+	}#
+#
+}
+tvi
+?vioplot
+?sm.density
+daph
+over.tq3
+z.mass <- ddply(over.tq3, c("lake","type","week","doy"), function(x){t.b <- log(x[,"zBio"]); data.frame("mul"=mean(t.b), "sdl"=sd(t.b), "Bmax"=max(x[,"zBio"]))})
+library(plyr)
+z.mass <- ddply(over.tq3, c("lake","type","week","doy"), function(x){t.b <- log(x[,"zBio"]); data.frame("mul"=mean(t.b), "sdl"=sd(t.b), "Bmax"=max(x[,"zBio"]))})
+z.mass
+z.mass <- ddply(over.tq3, c("lake","type","week","doy"), function(x){t.b <- log(x[,"zBio"]); data.frame("mul"=mean(t.b), "sdl"=sd(t.b), "Bmax"=max(x[,"zBio"]))})
+write.table(z.mass, file="/Users/Battrd/Documents/School&Work/WiscResearch/CyanoIso/Data/cyanoIso_z.mass.txt", sep="\t", row.names=FALSE)
+z.mass <- read.table(file="/Users/Battrd/Documents/School&Work/WiscResearch/CyanoIso/Data/cyanoIso_z.mass.txt", sep="\t", header=TRUE)
+z.mass
+rm.4mod <- list("consMod.basic"=c("alpha","beta","K","Pref","delta.t","ddirch.weight"), "consMod.expGrowth"=c("B_max","t.mass.interp", "t.mass.prec"))
+rm(list=ls())
+graphics.off()
+library("R2jags")#
+library("R2WinBUGS")#
+library("vioplot")#
+#
+source("/Users/Battrd/Documents/School&Work/WiscResearch/CyanoIso/cyanoIso_functions.R")#
+df.bug <- read.table(file="/Users/Battrd/Documents/School&Work/WiscResearch/CyanoIso/Data/cyanoIso_df.bug.txt", sep="\t", header=TRUE)#
+load("/Users/Battrd/Documents/School&Work/WiscResearch/CyanoIso/Data/pom.out.RData")#
+z.mass <- read.table(file="/Users/Battrd/Documents/School&Work/WiscResearch/CyanoIso/Data/cyanoIso_z.mass.txt", sep="\t", header=TRUE)#
+# ================#
+# = Choose model =#
+# ================#
+mod.choose <- c("consMod.basic", "consMod.expGrowth", "consMod.logisGrowth" )[3]#
+rm.4mod <- list("consMod.basic"=c("alpha","beta","K","Pref","delta.t","ddirch.weight"), "consMod.expGrowth"=c("B_max","t.mass.interp", "t.mass.prec"))#
+# =============================#
+# = Set up final data storage =#
+cons.out <- list()#
+#
+# ====================#
+# = Define constants =#
+# ====================#
+# Terrestrial signatures from: http://www.esapubs.org/archive/ecol/E092/090/appendix-C.htm#
+terMu <- c(-29.2, -4.6, -129.5)#
+terSd <- c(1.5, 0.6, 15.2)#
+#
+# Size of time step (7 = 1 week)#
+delta.t <- 7#
+#
+# Define K, biomass turnover rate of zooplankton, in terms of beta distribution#
+k.mean <- 0.1#
+alpha <- 0.75#
+beta <- (alpha-k.mean*alpha)/k.mean # find the beta that corresponds to the desired mean and alpha values for a beta distribution#
+# beta.mean <- alpha/(alpha+beta) # should equal k.mean#
+beta.var <- (alpha*beta)/((alpha+beta)^2*(alpha+beta+1)) # the variance of the beta distribution#
+# plot(seq(0,1,length.out=50), dbeta(seq(0,1,length.out=50), alpha, beta), type="l") # plot the pdf#
+#
+counter <- 1#
+for(l in 1:3){#
+	# ===========================#
+	# = Lake-specific constants =#
+	# ===========================#
+	ilake <- c("Peter", "Paul", "Tuesday")[l]#
+	t.dat <- df.bug[df.bug[,"lake"]==ilake,] # temporary data#
+	tV <- t.dat[,"type"] # vector of types, convenient for subsetting#
+	iC <- c("c13","n15","h2")#
+	t.pX.obs <- t.dat[tV=="pom",iC] # pom signatures#
+	t.wX <- t.dat[tV=="water","h2"] # water signature#
+	# ======================#
+	# = Lake-specific data =#
+	# ======================#
+	# Supply bugs with a vector that contains observed values where possible, otherwise the interpolated elements#
+	# If the value was actually observed, give it high precision,#
+	# but if the value was interpolated, give it precision of 1/sd(observed.data)^2#
+#
+	# Handle missingness#
+	t.wX.interp <- approx(1:length(t.wX), y=t.wX, xout=1:length(t.wX), rule=2)$y#
+	t.wX.prec <- rep(1E6, length(t.wX))#
+	t.wX.prec[is.na(t.wX)] <- 1 #1/sd(t.wX, na.rm=TRUE)^2#
+	# ============================================#
+	# = POM Posteriors to pass to consumer model =#
+	# ============================================#
+	# mean and precision of eukaryotic algae signatures#
+	t.rX.euk.mu <- as.matrix(pom.out[[ilake]]$rX.euk[,c("c13_euk_mu", "n15_euk_mu", "h2_euk_mu")])#
+	t.rX.euk.prec <- as.matrix(1/(pom.out[[ilake]]$rX.euk[,c("c13_euk_sd", "n15_euk_sd", "h2_euk_sd")])^2)#
+	# mean and precision of pPhi#
+	t.pPhi.mu <- as.matrix(pom.out[[ilake]]$phi[,c("phi_euk_mu","phi_terr_mu")])#
+	t.pPhi.prec <- as.matrix(1/(pom.out[[ilake]]$phi[,c("phi_euk_sd","phi_terr_sd")]^2))#
+	# ====================#
+	# = Specify consumer =#
+	# ====================#
+	for(coi in 1:2){#
+		co <- c("zoop","chaob")[coi]#
+		if((co=="zoop"&ilake=="Tuesday") | (mod.choose=="consMod.logisGrowth"&co=="chaob")){next}#
+		t.zX <- t.dat[tV==co,iC] # consumer signatures#
+		t.tau_hat <- c("zoop"=1,"chaob"=2)[co] # trophic position#
+		t.ohat <- c("zoop"=0.2, "chaob"=0.14)[co]#
+		t.ohat.var <- c("zoop"=0.0016, "chaob"=0.0036)[co]#
+		t.N <- nrow(t.zX) # n obs#
+		# Check to make sure this works if co==chaob (should merge to empty set, but interpolations might not work)#
+		t.mass.dat <- merge(t.dat[tV==co,], z.mass[z.mass[,"type",]==co,], all.x=TRUE)[,c("mul","sdl","Bmax")]		#
+		if(mod.choose=="consMod.logisGrowth" && all(colSums(apply(t.mass.dat, 2, function(x)!is.na(x)))>1)){#
+			t.mass.interp <- approx(1:t.N, y=t.mass.dat[,"mul"], xout=1:t.N, rule=2)$y#
+			t.mass.prec <- 1/(approx(1:t.N, y=t.mass.dat[,"sdl"], xout=1:t.N, rule=2)$y)^2#
+			t.bmax <- max(t.mass.dat[,"Bmax"], na.rm=TRUE)#
+		}else{#
+			if(mod.choose=="consMod.logisGrowth"){#
+				warning(paste("Logistic growth model chosen, but necessary biomass data are unavailable –", ilake, co))#
+				next#
+			}#
+			t.mass.interp <- NA#
+			t.mass.prec <- NA#
+			t.bmax <- NA#
+		}#
+		# ==========================#
+		# = Data to Consumer Model =#
+		# ==========================#
+		data.cons <- list(#
+			zX=t.zX, # observations of zooplankton (or chaob) isotopes over time#
+			terMu = terMu, # mean C, N, H isotope values for terrestrial material#
+			terSd = terSd, # standard deviations of C, N, H isotope values for terrestrial material#
+			wX=t.wX, # water 2H over time#
+			N=t.N, # number of time steps#
+			tau_hat=t.tau_hat, # estimated trophic position of consumer (1 for herbivore)#
+			wX.interp=t.wX.interp, # estimates of missing water values generated by linear interpolation#
+			wX.prec=t.wX.prec,#
+			rX.euk.mu = t.rX.euk.mu,#
+			rX.euk.prec = t.rX.euk.prec,#
+			pPhi.mu = t.pPhi.mu,#
+			pPhi.prec = t.pPhi.prec,#
+#
+			ohat=t.ohat,#
+			ohat.var=t.ohat.var,#
+#
+			alpha=alpha,#
+			beta=beta,#
+#
+			delta.t=delta.t,#
+			B_max=t.bmax,#
+			mass.interp=t.mass.interp,#
+			mass.prec=t.mass.prec#
+		)#
+		data.cons <- data.cons[names(data.cons)[!names(data.cons)%in%rm.4mod[[mod.choose]]]]#
+#
+		# ===========#
+		# = Jag POM =#
+		# ===========#
+		cons.params <- c("zPhi","Pref", "K", "ddirch.weight")#
+		cons.params <- cons.params[!cons.params%in%rm.4mod[[mod.choose]]] # remove parameters not needed for this model#
+		write.model(get(mod.choose), mod.choose)#
+		jag.cons <- jags(data=data.cons, inits=NULL, parameters.to.save=cons.params, model.file=mod.choose, n.chains=5, n.iter=1E4, n.burnin=5E2)#
+		# do.call((R2jags::traceplot), args=list(jags2.m , mfrow=c(3,1), varname=params))#
+#
+		# ===================#
+		# = Organize output =#
+		# ===================#
+		simMat.cons <- jag.cons$BUGSoutput$sims.matrix#
+#
+		oGrps <- gsub("\\[[0-9]*,?[0-9]*\\]", "", colnames(simMat.cons))#
+		u.oGrps <- unique(oGrps)#
+#
+		oLst.cons <- list()#
+#
+		for(i in 1:length(u.oGrps)){#
+			t.Grp <- u.oGrps[i]#
+			t.Names <- colnames(simMat.cons)[oGrps==t.Grp]#
+#
+			dimL0 <- grepl("\\[[0-9]*,?[0-9]*\\]", t.Names)  # logical: are dimensions defined for this group (i.e., vector, matrix)#
+			if(any(dimL0)!=all(dimL0)){print("Name-matching screw-up; dimensions differ w/in group"); next}#
+			dimL <- all(dimL0)#
+#
+			nDim <- unique(grepl(",+", t.Names) + dimL)#
+#
+			if(nDim==2){#
+				d3dat <- simMat.cons[,t.Names]#
+				size.dim3 <- length(d3dat) / (nrow(simMat.cons)*t.N)#
+				oLst.cons[[i]] <- array(d3dat, dim=c(nrow(simMat.cons), t.N, size.dim3))#
+				names(oLst.cons)[i] <- t.Grp#
+			}else{#
+				ddat <- simMat.cons[,t.Names]#
+				oLst.cons[[i]] <- ddat#
+				names(oLst.cons)[i] <- t.Grp#
+			}#
+		}#
+#
+		# ===============================#
+		# = Store results for this lake =#
+		# ===============================#
+		t.week <- unique(t.dat[,"week"])#
+		t.posix <- as.POSIXct(paste(t.week, 2, 2013, sep="-"), format="%W-%w-%Y")#
+		t.doy <- as.integer(format.Date(t.posix, format="%j"))#
+		# n.week <- length(t.doy)#
+		# doy.plot <- c(t.doy[1]-3, t.doy, t.doy[n.week]+3)#
+#
+		t.meds.phi <- apply(oLst.cons$zPhi[,,1], 2, median)#
+		t.mus.phi <- apply(oLst.cons$zPhi[,,1], 2, mean)#
+		t.sds.phi <- apply(oLst.cons$zPhi[,,1], 2, sd)#
+		if("Pref"%in%rm.4mod[[mod.choose]]){ # if Pref wasn't a parameter, NA, else extract#
+			tP <- NA#
+		}else{#
+			tP <- oLst.cons$Pref[,1]#
+		}#
+		if("K"%in%rm.4mod[[mod.choose]]){ # same but for K#
+			tK <- NA#
+		}else{#
+			tK <- oLst.cons$K#
+		}#
+		if("ddirch.weight"%in%rm.4mod[[mod.choose]]){ # same but for the weight used in the preference dirichlet#
+			tDW <- NA#
+		}else{#
+			tDW <- oLst.cons$ddirch.weight#
+		}#
+		tframe.phi <- data.frame("Lake"=ilake, "DoY"=t.doy, "Type"=co, "phi_med"=t.meds.phi, "phi_mu"=t.mus.phi, "phi_sd"=t.sds.phi)#
+		tframe.pref <- data.frame("Lake"=ilake, "pref_med"=median(tP), "pref_mu"=mean(tP), "pref_sd"=sd(tP))#
+		tframe.k <- data.frame("Lake"=ilake, "K_med"=median(tK), "K_mu"=mean(tK), "K_sd"=sd(tK))#
+		tframe.DW <- data.frame("Lake"=ilake, "DW_med"=median(tDW), "DW_mu"=mean(tDW), "DW_sd"=sd(tDW))#
+		cons.out[[counter]] <- list(phi=tframe.phi, K=tframe.k, Pref=tframe.pref, Dirich.weight=tframe.DW, DIC=jag.cons$BUGSoutput$DIC)#
+		names(cons.out)[counter] <- paste(ilake, co, sep="_")#
+		attr(cons.out[[counter]], "posteriors") <- oLst.cons#
+		attr(cons.out[[counter]], "jags.model") <- jag.cons#
+		class(cons.out[[counter]]) <- "listof"#
+		counter <- counter + 1#
+	}#
+}#
+cons.file.name <- paste("/Users/Battrd/Documents/School&Work/WiscResearch/CyanoIso/Data/", mod.choose, "_cons.out.RData", sep="")#
+save(cons.out, file=cons.file.name)#
+# traceplot(attributes(cons.out[["Paul_chaob"]])$jags.model)
+cons.out
+traceplot(attributes(cons.out[["Paul_chaob"]])$jags.model)
+traceplot(attributes(cons.out[["Paul_zoop"]])$jags.model)
+traceplot(attributes(cons.out[["Peter_zoop"]])$jags.model)
+library("fields")
+# ==========================#
+# = Consumer phi over time =#
+# ==========================#
+dev.new(height=4.5, width=7)#
+par(mfrow=c(2,3), mar=c(2,2,1.5,0.5), oma=c(0, 0, 1.1, 0), ps=10, cex=1, mgp=c(1.0, 0.3, 0), tcl=-0.25, family="Times")#
+#
+ulakes <- c("Peter", "Paul", "Tuesday")#
+consCombs <- c(paste(ulakes, "chaob", sep="_"), paste(ulakes[-3], "zoop", sep="_"))#
+for(l in 1:length(consCombs)){#
+	tname <- consCombs[l]#
+	t.doy <- cons.out[[tname]]$phi$DoY#
+	n.week <- length(t.doy)#
+	doy.plot <- c(t.doy[1]-3, t.doy, t.doy[n.week]+3)#
+	plot(doy.plot, seq(0,1,length.out=length(doy.plot)), type="n", xlab="Day of year", ylab=bquote(phi1[euk]), main=gsub("_", " ", tname))#
+	for(i in 1:14){#
+		vioplot(attr(cons.out[[tname]], "posteriors")$zPhi[,i,1], col="gray", drawRect=FALSE, at=t.doy[i], add=TRUE, wex=5)#
+	}#
+	lines(t.doy, cons.out[[tname]]$phi$phi_med, type="o")#
+}#
+mtext(mod.choose, side=3, line=0, outer=TRUE, font=3)
+consCombs <- c(paste(ulakes[-3], "zoop", sep="_"))
+consCombs
+ulakes <- c("Peter", "Paul")
+consCombs <- c(paste(ulakes[-3], "zoop", sep="_"))
+consCombs
+dev.new(height=5, width=3.5)#
+par(mfrow=c(2,1), mar=c(2,2,1.5,0.5), oma=c(0, 0, 1.1, 0), ps=10, cex=1, mgp=c(1.0, 0.3, 0), tcl=-0.25, family="Times")#
+#
+ulakes <- c("Peter", "Paul")#
+consCombs <- c(paste(ulakes[-3], "zoop", sep="_"))#
+for(l in 1:length(consCombs)){#
+	tname <- consCombs[l]#
+	t.doy <- cons.out[[tname]]$phi$DoY#
+	n.week <- length(t.doy)#
+	doy.plot <- c(t.doy[1]-3, t.doy, t.doy[n.week]+3)#
+	plot(doy.plot, seq(0,1,length.out=length(doy.plot)), type="n", xlab="Day of year", ylab=bquote(phi1[euk]), main=gsub("_", " ", tname))#
+	for(i in 1:14){#
+		vioplot(attr(cons.out[[tname]], "posteriors")$zPhi[,i,1], col="gray", drawRect=FALSE, at=t.doy[i], add=TRUE, wex=5)#
+	}#
+	lines(t.doy, cons.out[[tname]]$phi$phi_med, type="o")#
+}#
+mtext(mod.choose, side=3, line=0, outer=TRUE, font=3)
+mod.choose
+consMod
+if(mod.choose=="consMod.logisGrowth"){#
+	dev.new(height=5, width=3.5)#
+	par(mfrow=c(2,1), mar=c(2,2,1.5,0.5), oma=c(0, 0, 1.1, 0), ps=10, cex=1, mgp=c(1.0, 0.3, 0), tcl=-0.25, family="Times")#
+#
+	ulakes <- c("Peter", "Paul")#
+	consCombs <- c(paste(ulakes[-3], "zoop", sep="_"))#
+}else{#
+	dev.new(height=4.5, width=7)#
+	par(mfrow=c(2,3), mar=c(2,2,1.5,0.5), oma=c(0, 0, 1.1, 0), ps=10, cex=1, mgp=c(1.0, 0.3, 0), tcl=-0.25, family="Times")#
+#
+	ulakes <- c("Peter", "Paul", "Tuesday")#
+	consCombs <- c(paste(ulakes, "chaob", sep="_"), paste(ulakes[-3], "zoop", sep="_"))#
+}#
+for(l in 1:length(consCombs)){#
+	tname <- consCombs[l]#
+	t.doy <- cons.out[[tname]]$phi$DoY#
+	n.week <- length(t.doy)#
+	doy.plot <- c(t.doy[1]-3, t.doy, t.doy[n.week]+3)#
+	plot(doy.plot, seq(0,1,length.out=length(doy.plot)), type="n", xlab="Day of year", ylab=bquote(phi1[euk]), main=gsub("_", " ", tname))#
+	for(i in 1:14){#
+		vioplot(attr(cons.out[[tname]], "posteriors")$zPhi[,i,1], col="gray", drawRect=FALSE, at=t.doy[i], add=TRUE, wex=5)#
+	}#
+	lines(t.doy, cons.out[[tname]]$phi$phi_med, type="o")#
+}#
+mtext(mod.choose, side=3, line=0, outer=TRUE, font=3)
+t.mass.interp
+cons.out
+tk <- cons.out[["Paul_zoop"]]$K$K_mu
+tk
+z.mass
+tBM <- z.mass[z.mass[,"Lake"]=="Paul","Bmax"]
+tBT <- exp(z.mass[z.mass[,"Lake"]=="Paul","mul"])
+tBM <- z.mass[z.mass[,"lake"]=="Paul","Bmax"]
+tBT <- exp(z.mass[z.mass[,"lake"]=="Paul","mul"])
+tBM
+tBT
+tBM <- max(z.mass[z.mass[,"lake"]=="Paul","Bmax"])
+tBT <- exp(z.mass[z.mass[,"lake"]=="Paul","mul"])
+tB0 <- (tBM*tBT*exp(tk*-7))/(tBM+tBT*(exp(tk*-7)-1))
+tB0
+tk
+tnew <- (tBT-tB0)/tBT
+tnew
+tk <- cons.out[["Peter_zoop"]]$K$K_mu#
+tBM <- max(z.mass[z.mass[,"lake"]=="Peter","Bmax"])#
+tBT <- exp(z.mass[z.mass[,"lake"]=="Peter","mul"])#
+tB0 <- (tBM*tBT*exp(tk*-7))/(tBM+tBT*(exp(tk*-7)-1))#
+tnew <- (tBT-tB0)/tBT
+tnew
+tBT
+tB0
+tnew <- (tBT-tB0)/tBT
+tnew
+library(ggplot2)
+?geom_density
+stat_density(rnorm(100))
+stat_density(aes=rnorm(100))
+which.max(stat_density(aes=rnorm(100)))
+str(stat_density(aes=rnorm(100)))
+stat_density
+StatDensity$new
+ggplot2::StatDensity$new
+ggplot2:::StatDensity$new
+ggplot2:::StatDensity
+str(stat_density(data=rnorm(100)))
+get("calculate", ggplot2:::StatDensity)
+?transform
+data <- data.frame("frame"=c(rep("A",9), rep("B", 13), rep("C", 7)), "val"=c(1,rep(2,4),4,5,6,rep(1,6),2,rep(3,7),1,rep(4,6)))
+data
+data <- data.frame("frame"=c(rep("A",9), rep("B", 13), rep("C", 7)), "val"=c(1,rep(2,4),4,5,6,rep(1,6),2,rep(3,7),1,rep(4,6)))
+dev.new()
+attach(data)#
+library(ggplot2)#
+library(grid)#
+#
+library(plyr)#
+#
+densMode <- function(x){#
+	td <- density(x)#
+	maxDens <- which.max(td$y)#
+	list(x=td$x[maxDens], y=td$y[maxDens])#
+}#
+xdat <- ddply(data,"frame", transform, val_mean = signif(densMode(val)$x,3), med.x = signif(densMode(val)$x,3), med.y=signif(densMode(val)$y,3))#
+hp <-ggplot(data=data, aes(x=val))+#
+geom_density() +#
+geom_vline(aes(xintercept=val_mean),xdat, color="red",linetype="dashed",size=1) +#
+theme_bw()#
+#
+hp<-hp + facet_wrap (~ frame, ncol=2, scales="free_y") +#
+geom_text(data = xdat, aes(x=med.x,y=med.y,label=val_mean))#
+#
+print(hp)
+hp
+data <- data.frame(#
+	"frame"=c(rep("A",9), rep("B", 13), rep("C", 7)), #
+	"val"=c(1, rep(2,4), 4, 5, 6, rep(1,6), 2, rep(3,7), 1, rep(4,6))#
+	)
+data
+setwd("/Users/Battrd/Documents/School&Work/WiscResearch/Isotopes_2012Analysis/WardSensorData2012")
+UNDERC_Weather <- read.csv("UNDERC_Weather_2012.csv")
+Peter_PAR_Wind <- read.csv("/Users/Battrd/Documents/School&Work/WiscResearch/Isotopes_2012Analysis/Data/Peter_PAR_Wind_2012.csv")
+Therms <- data.frame("Year"=2012, read.table("/Users/Battrd/Documents/School&Work/WiscResearch/Isotopes_2012Analysis/Data/CompiledWardTherms2012_v2.txt", header=TRUE))
+setwd("/Users/Battrd/Documents/School&Work/WiscResearch/Isotopes_2012Analysis/Data/")
+Key2012 <- read.csv("WardSondes2012_FileKey.csv")
+tDat <- read.table(paste("/Users/Battrd/Documents/School&Work/WiscResearch/Isotopes_2012Analysis/Data/WardSondes2012/", tName, sep=""), sep=",", header=TRUE, skip=2, colClasses=ReadClassCDF)
+for(i in 1:nrow(ShalKey2012)){#
+	tName <- ShalKey2012[i,"Name"]#
+	tFormat <- ShalKey2012[i,"Format"]#
+	if(tFormat=="CDF"){#
+		if(tName=="B14APR12.CDF"){#
+			ReadClassCDF <- c("character", "character", rep("numeric", 8))#
+			tDat <- read.table(paste("/Users/Battrd/Documents/School&Work/WiscResearch/Isotopes_2012Analysis/Data/WardSondes2012/", tName, sep=""), sep=",", header=TRUE, skip=2, colClasses=ReadClassCDF)#
+			names(tDat) <- c("Date", "Time", "Temp", "SpCond", "pH", "BGA_conc", "BGA_RFU", "DOsat", "Chl_conc", "Chl_RFU")#
+			tDoY <- as.numeric(format.Date(as.POSIXct(as.character(tDat[,1]), format="%m/%d/%y"), format="%j")) + as.numeric(difftime(time1=as.POSIXct(paste(tDat[,1], tDat[,2]), format="%m/%d/%y %H:%M:%S"), time2=as.POSIXct(paste(tDat[,1], "00:00:00"), format="%m/%d/%y %H:%M:%S"), units="days"))#
+		}#
+		if(all(tName!="B14APR12.CDF" & ShalKey2012[,"Depth"]=="B")){#
+			ReadClassCDF <- c("character", "character", rep("numeric", 9))#
+			tDat <- read.table(paste("/Users/Battrd/Documents/School&Work/WiscResearch/Isotopes_2012Analysis/Data/WardSondes2012/", tName, sep=""), sep=",", header=TRUE, skip=2, colClasses=ReadClassCDF)#
+			names(tDat) <- c("Date", "Time", "Temp", "SpCond", "pH", "BGA_conc", "BGA_RFU", "DOsat", "Chl_conc", "Chl_RFU", "Battery")#
+			tDoY <- as.numeric(format.Date(as.POSIXct(as.character(tDat[,1]), format="%m/%d/%y"), format="%j")) + as.numeric(difftime(time1=as.POSIXct(paste(tDat[,1], tDat[,2]), format="%m/%d/%y %H:%M:%S"), time2=as.POSIXct(paste(tDat[,1], "00:00:00"), format="%m/%d/%y %H:%M:%S"), units="days"))#
+		}#
+		# ReadClassCDF <- c("character", "character", rep("numeric", 9))#
+		# tDat <- read.table(paste("/Users/Battrd/Documents/School&Work/WiscResearch/Data/WardSondes2012/", tName, sep=""), sep=",", header=TRUE, skip=2, colClasses=ReadClassCDF)#
+		# names(tDat) <- c("Date", "Time", "Temp", "SpCond", "pH", "BGA_conc", "BGA_RFU", "DOsat", "Chl_conc", "Chl_RFU", "DOconc")#
+		# tDoY <- as.numeric(format.Date(as.POSIXct(as.character(tDat[,1]), format="%m/%d/%y"), format="%j")) + as.numeric(difftime(time1=as.POSIXct(paste(tDat[,1], tDat[,2]), format="%m/%d/%y %H:%M:%S"), time2=as.POSIXct(paste(tDat[,1], "00:00:00"), format="%m/%d/%y %H:%M:%S"), units="days"))#
+	}#
+	if(tFormat=="txt"){#
+		ReadClassTxt <- c(NA, NA, rep("numeric", 10))#
+		tDat <- read.table(paste("/Users/Battrd/Documents/School&Work/WiscResearch/Isotopes_2012Analysis/Data/WardSondes2012/", tName, sep=""), sep=",", header=FALSE, skip=4, colClasses=ReadClassTxt)#[-c(1,2,3,4),]#
+		names(tDat) <- c("Date", "Time", "Temp", "SpCond", "pH", "BGA_conc", "BGA_RFU", "DOsat", "DOconc", "Chl_conc", "Chl_RFU", "Battery")#
+		# tDay <- as.numeric(format.Date(as.POSIXct(tDat[,1], format="%Y/%m/%d"), format="%j"))#
+		# tFrac <- as.numeric(difftime(time1=as.POSIXct(paste(tDat[,1], tDat[,2]), format="%Y/%m/%d %H:%M:%S"), time2=as.POSIXct(paste(tDat[,1], "00:00:00"), format="%Y/%m/%d %H:%M:%S"), units="days"))#
+		tDoY <- as.numeric(format.Date(as.POSIXct(tDat[,1], format="%Y/%m/%d"), format="%j")) + as.numeric(difftime(time1=as.POSIXct(paste(tDat[,1], tDat[,2]), format="%Y/%m/%d %H:%M:%S"), time2=as.POSIXct(paste(tDat[,1], "00:00:00"), format="%Y/%m/%d %H:%M:%S"), units="days"))#
+		tDat <- tDat[,-9]#
+	}#
+	tDat <- tDat[,c("Date", "Time", "Temp", "SpCond", "pH", "DOsat", "Chl_conc")]#
+	if(i == 1){#
+		DataSonde <- data.frame("Year"=2012, "DoY"=tDoY, tDat[,-c(1:2)])#
+	}#
+	if(i !=1){#
+		DataSonde <- rbind(DataSonde, data.frame("Year"=2012, "DoY"=tDoY, tDat[,-c(1:2)]))#
+	}#
+	print(i)#
+	print(dim(tDat))#
+	print(dim(DataSonde))#
+}
+setwd("/Users/Battrd/Documents/School&Work/WiscResearch/Isotopes_2012Analysis/Data/")#
+Key2012 <- read.csv("WardSondes2012_FileKey.csv")#
+ShalKey2012 <- subset(Key2012, Depth=="B")#
+for(i in 1:nrow(ShalKey2012)){#
+	tName <- ShalKey2012[i,"Name"]#
+	tFormat <- ShalKey2012[i,"Format"]#
+	if(tFormat=="CDF"){#
+		if(tName=="B14APR12.CDF"){#
+			ReadClassCDF <- c("character", "character", rep("numeric", 8))#
+			tDat <- read.table(paste("/Users/Battrd/Documents/School&Work/WiscResearch/Isotopes_2012Analysis/Data/WardSondes2012/", tName, sep=""), sep=",", header=TRUE, skip=2, colClasses=ReadClassCDF)#
+			names(tDat) <- c("Date", "Time", "Temp", "SpCond", "pH", "BGA_conc", "BGA_RFU", "DOsat", "Chl_conc", "Chl_RFU")#
+			tDoY <- as.numeric(format.Date(as.POSIXct(as.character(tDat[,1]), format="%m/%d/%y"), format="%j")) + as.numeric(difftime(time1=as.POSIXct(paste(tDat[,1], tDat[,2]), format="%m/%d/%y %H:%M:%S"), time2=as.POSIXct(paste(tDat[,1], "00:00:00"), format="%m/%d/%y %H:%M:%S"), units="days"))#
+		}#
+		if(all(tName!="B14APR12.CDF" & ShalKey2012[,"Depth"]=="B")){#
+			ReadClassCDF <- c("character", "character", rep("numeric", 9))#
+			tDat <- read.table(paste("/Users/Battrd/Documents/School&Work/WiscResearch/Isotopes_2012Analysis/Data/WardSondes2012/", tName, sep=""), sep=",", header=TRUE, skip=2, colClasses=ReadClassCDF)#
+			names(tDat) <- c("Date", "Time", "Temp", "SpCond", "pH", "BGA_conc", "BGA_RFU", "DOsat", "Chl_conc", "Chl_RFU", "Battery")#
+			tDoY <- as.numeric(format.Date(as.POSIXct(as.character(tDat[,1]), format="%m/%d/%y"), format="%j")) + as.numeric(difftime(time1=as.POSIXct(paste(tDat[,1], tDat[,2]), format="%m/%d/%y %H:%M:%S"), time2=as.POSIXct(paste(tDat[,1], "00:00:00"), format="%m/%d/%y %H:%M:%S"), units="days"))#
+		}#
+		# ReadClassCDF <- c("character", "character", rep("numeric", 9))#
+		# tDat <- read.table(paste("/Users/Battrd/Documents/School&Work/WiscResearch/Data/WardSondes2012/", tName, sep=""), sep=",", header=TRUE, skip=2, colClasses=ReadClassCDF)#
+		# names(tDat) <- c("Date", "Time", "Temp", "SpCond", "pH", "BGA_conc", "BGA_RFU", "DOsat", "Chl_conc", "Chl_RFU", "DOconc")#
+		# tDoY <- as.numeric(format.Date(as.POSIXct(as.character(tDat[,1]), format="%m/%d/%y"), format="%j")) + as.numeric(difftime(time1=as.POSIXct(paste(tDat[,1], tDat[,2]), format="%m/%d/%y %H:%M:%S"), time2=as.POSIXct(paste(tDat[,1], "00:00:00"), format="%m/%d/%y %H:%M:%S"), units="days"))#
+	}#
+	if(tFormat=="txt"){#
+		ReadClassTxt <- c(NA, NA, rep("numeric", 10))#
+		tDat <- read.table(paste("/Users/Battrd/Documents/School&Work/WiscResearch/Isotopes_2012Analysis/Data/WardSondes2012/", tName, sep=""), sep=",", header=FALSE, skip=4, colClasses=ReadClassTxt)#[-c(1,2,3,4),]#
+		names(tDat) <- c("Date", "Time", "Temp", "SpCond", "pH", "BGA_conc", "BGA_RFU", "DOsat", "DOconc", "Chl_conc", "Chl_RFU", "Battery")#
+		# tDay <- as.numeric(format.Date(as.POSIXct(tDat[,1], format="%Y/%m/%d"), format="%j"))#
+		# tFrac <- as.numeric(difftime(time1=as.POSIXct(paste(tDat[,1], tDat[,2]), format="%Y/%m/%d %H:%M:%S"), time2=as.POSIXct(paste(tDat[,1], "00:00:00"), format="%Y/%m/%d %H:%M:%S"), units="days"))#
+		tDoY <- as.numeric(format.Date(as.POSIXct(tDat[,1], format="%Y/%m/%d"), format="%j")) + as.numeric(difftime(time1=as.POSIXct(paste(tDat[,1], tDat[,2]), format="%Y/%m/%d %H:%M:%S"), time2=as.POSIXct(paste(tDat[,1], "00:00:00"), format="%Y/%m/%d %H:%M:%S"), units="days"))#
+		tDat <- tDat[,-9]#
+	}#
+	tDat <- tDat[,c("Date", "Time", "Temp", "SpCond", "pH", "DOsat", "Chl_conc")]#
+	if(i == 1){#
+		DataSonde <- data.frame("Year"=2012, "DoY"=tDoY, tDat[,-c(1:2)])#
+	}#
+	if(i !=1){#
+		DataSonde <- rbind(DataSonde, data.frame("Year"=2012, "DoY"=tDoY, tDat[,-c(1:2)]))#
+	}#
+	print(i)#
+	print(dim(tDat))#
+	print(dim(DataSonde))#
+}
+load("/Users/Battrd/Documents/School&Work/WiscResearch/Isotopes_2012Analysis/Data/Ward2010_Epi_Metabolism_Data.RData")
+dev.new(width=24, height=24)
+dev.new(width=24, height=24)
+df <- structure(list(Gene = c("gene1", "gene1", "gene1", "gene2", "gene2", #
+"gene2", "gene3", "gene3"), SampleName = c("sample1", "sample2", #
+"sample3", "sample2", "sample3", "sample4", "sample1", "sample5"#
+)), .Names = c("Gene", "SampleName"), row.names = c(NA, -8L), class = "data.frame")
+df
+table(df)
+?crossprod
+crossprod(table(df))
+tcrossprod(table(df))
+t(df)
+t(table(df))
+(table(df))
+gethelp.url = 'http://forums.autodesk.com/t5/Vault-General/bd-p/101'#
+gethelp.df =tryCatch(htmlTreeParse(gethelp.url, useInternalNodes = T), error = function() next)
+gethelp.url = 'http://forums.autodesk.com/t5/Vault-General/bd-p/101'#
+gethelp.df =tryCatch(htmlTreeParse(gethelp.url, useInternalNodes = T), error = function(cond) next)
+gethelp.url = 'http://forums.autodesk.com/t5/Vault-General/bd-p/101'#
+gethelp.df =tryCatch(htmlTreeParse(gethelp.url, useInternalNodes = T), error = function(cond) NA)
+gethelp.url = 'http://forums.autodesk.com/t5/Vault-General/bd-p/101'#
+gethelp.df =tryCatch(htmlTreeParse(gethelp.url, useInternalNodes = T), error = function() NA)
+rm(list=ls())
+source("/Users/Battrd/Documents/School&Work/WiscResearch/Isotopes_2012Analysis/MyBookkeepingMetabolism_v1.R")
+rm(list=ls())#
+graphics.off()#
+library("zoo")#
+library("plyr")#
+source("/Users/Battrd/Documents/School&Work/WiscResearch/Isotopes_2012Analysis/MyBookkeepingMetabolism_v1.R")#
+setwd("/Users/Battrd/Documents/School&Work/WiscResearch/Isotopes_2012Analysis/")#
+source("Alme.R")#
+source("ByeShort.R")#
+source("Chunks.R")#
+source("Light.R")
+windowsFonts(Times=windowsFont("TT Times New Roman"))#
+#
+setwd("/Users/Battrd/Documents/School&Work/WiscResearch/Isotopes_2012Analysis/Data/WardSensorData2012/")#
+UNDERC_Weather <- read.csv("UNDERC_Weather_2012.csv")#
+names(UNDERC_Weather) <- c("Year", "DoY", "Time", "Wind", "PAR")#
+UNDERC_Weather[,"Time"] <- UNDERC_Weather[,"Time"]-100#
+UNDERC_Weather[,"Frac"] <- UNDERC_Weather[,"Time"]/2400#
+HourChar <- as.character(ifelse(UNDERC_Weather[,"Time"]/100==24, "0",UNDERC_Weather[,"Time"]/100))#
+WhichHourSingleDigit <- which(nchar(HourChar)==1)#
+HourChar[WhichHourSingleDigit] <- paste("0",HourChar[WhichHourSingleDigit],sep="")#
+UNDERC_Weather[,"Time"] <- paste(HourChar, "00", sep=":")#
+UNDERC_Weather[,"DoY"] <- UNDERC_Weather[,"DoY"] + UNDERC_Weather[,"Frac"]#
+UNDERC_Interp_xout <- seq(min(UNDERC_Weather[,"DoY"]), max(UNDERC_Weather[,"DoY"]), by=(1/288))#
+UNDERC_PAR_WIND <- data.frame("Year"=2012, "DoY"=UNDERC_Interp_xout, "PAR0"=approx(UNDERC_Weather[,"DoY"], UNDERC_Weather[,"PAR"], xout=UNDERC_Interp_xout)$y, "Wind"=approx(UNDERC_Weather[,"DoY"], UNDERC_Weather[,"Wind"], xout=UNDERC_Interp_xout)$y)
+Peter_PAR_Wind <- read.csv("/Users/Battrd/Documents/School&Work/WiscResearch/Isotopes_2012Analysis/Data/Peter_PAR_Wind_2012.csv")#
+Peter_PAR_Wind[,"DoY"] <- as.numeric(format.Date(as.POSIXct(Peter_PAR_Wind[,1], format="%Y-%m-%d"), format="%j")) + as.numeric(difftime(time1=as.POSIXct(paste(Peter_PAR_Wind[,1], Peter_PAR_Wind[,2]), format="%Y-%m-%d %H:%M"), time2=as.POSIXct(paste(Peter_PAR_Wind[,1], "00:00:00"), format="%Y-%m-%d %H:%M:%S"), units="days"))#
+Peter_PAR_Wind[,"Year"] <- 2012#
+Peter_PAR_Wind <- Peter_PAR_Wind[,c("Year", "DoY", "PAR", "WindSpeed")]#
+names(Peter_PAR_Wind) <- c("Year", "DoY", "PAR", "Wind")
+CombinePeterUNDERC <- Alme(X=Peter_PAR_Wind, Y=UNDERC_PAR_WIND, CheckMissDups=TRUE)#
+PAR_Conv <- summary(lm(I(PAR0+0.01)~I(PAR-1.19) -1, data=CombinePeterUNDERC))$coef[1]#
+UNDERC_PAR_WIND[,"PAR0"] <- UNDERC_PAR_WIND[,"PAR0"]/PAR_Conv#
+names(UNDERC_PAR_WIND) <- c("Year", "DoY", "PAR", "Wind")#
+Peter_PAR_Wind <- ByeShort(Peter_PAR_Wind)#
+UNDERC_PAR_WIND <- ByeShort(UNDERC_PAR_WIND)#
+UNDERC_2add <- which(UNDERC_PAR_WIND[,"DoY"] < min(Peter_PAR_Wind[,"DoY"]))#
+PAR_Wind <- rbind(UNDERC_PAR_WIND[UNDERC_2add,], Peter_PAR_Wind)
+##****WORKING ON READING IN ZMIX*******#
+Therms <- data.frame("Year"=2012, read.table("/Users/Battrd/Documents/School&Work/WiscResearch/Isotopes_2012Analysis/Data/CompiledWardTherms2012_v2.txt", header=TRUE))#
+ThermDepths <- c(0, 0.25, 0.5, 0.75, 1, 1.25, 1.5, 1.75, 2, 2.5, 3)
+tempDiff <- temp[-length(temp)] - temp[-1]#
+        depthDiff <- depth[-1] - depth[-length(depth)]#
+        ratio <- tempDiff / depthDiff#
+		zhat <- depth[which(ratio >= 2)][1]#
+		# Zhat2 <- min(which(zhat>0))#
+		# Z <- Zhat2#
+		Z <- ifelse(!(zhat>0), NA, zhat)#
+       return(Z)#
+}#
+Zmixs <- apply(Therms[,-c(1,2)], MARGIN=1, FUN=zmix, depth=ThermDepths)#
+Therms <- data.frame(Therms, "Zmix"=Zmixs)#
+# dim(Therms[which(is.element(Therms[,"DoY"], PAR_Wind[,"DoY"])),])#
+# length(which(PAR_Wind[,"DoY"] > 105 & PAR_Wind[,"DoY"] < 226))#
+PAR_Wind_Therms <- Alme(X=PAR_Wind, Y=Therms, Freq_High_Low="Low", AllX=TRUE)#
+# plot(1:length(PAR_Wind_Therms[,"Zmix"]), PAR_Wind_Therms[,"Zmix"])#
+plot(1:length(PAR_Wind_Therms[,"z0.00"]), PAR_Wind_Therms[,"z0.00"])#
+# abline(v=which(abs(diff(PAR_Wind_Therms[,5]))>1.5), col="blue", lwd=2)#
+# min(which(!is.na(PAR_Wind_Therms[,"z0.00"])))#
+# abline(v=c(17051, 19384), col="red")#
+# abline(v=c(12495, 12519), col="green")#
+# PAR_Wind_Therms[c(17051:19384, 12495:12519), 5:16] <- NA#
+abline(v=c(17004, 19330), col="red")#
+abline(v=c(12464, 12488), col="green")#
+PAR_Wind_Therms[c(17004:19330, 12454:12538), 5:16] <- NA#
+plot(1:length(PAR_Wind_Therms[,"z0.00"]), PAR_Wind_Therms[,"z0.00"])#
+abline(v=c(17004, 19330), col="red")#
+abline(v=c(12454, 12538), col="green")#
+# abline(h=c(27, 33), col="red")#
+#
+badtherms <- which(PAR_Wind_Therms[,5:15] < 5 | PAR_Wind_Therms[,5:15] > 36, arr.ind=TRUE)#
+PAR_Wind_Therms[,5:15][PAR_Wind_Therms[,5:15] < 5 | PAR_Wind_Therms[,5:15] > 36]#
+#
+# Therms2 <- PAR_Wind_Therms[,5:15]#
+# which(PAR_Wind_Therms[,"DoY"]#
+# image.plot(x=PAR_Wind_Therms[,"DoY"], y=ThermDepths, z=as.matrix(Therms2), zlim=c(0,40), ylim=c(3,0))#
+#
+# badtherms <- which(Therms2 < 5 | Therms2 > 36, arr.ind=TRUE)#
+# Therms2[badtherms] <- 500#
+#
+ZmixDays <- c(105, 110, 117, 124, 131, 138, 145, 152, 159, 166, 173, 180, 187, 194, 201, 208, 215, 222, 229, 236, 241) + c(0, rep(0.4,19), 0)#
+ZmixDepths <- c(1.0,2.0,2.0,0.5,0.5, 1.0, 1.0, 1.5, 0.25, 1.0, 1.0, 0.5, 0.5, 1, 1, 1, 1, 1.5, 1.5, 1, 0.25)#
+#
+PAR_Wind_Therms[, "Zmix"] <- approx(c(PAR_Wind_Therms[, "DoY"], ZmixDays), c(PAR_Wind_Therms[, "Zmix"], ZmixDepths), PAR_Wind_Therms[, "DoY"])$y#
+# plot(PAR_Wind_Therms[, "DoY"], PAR_Wind_Therms[, "Zmix"], type="l")
+head(PAR_Wind_Therms)
+Therms <- data.frame(Therms, "Zmix"=Zmixs)
+Zmixs <- apply(Therms[,-c(1,2)], MARGIN=1, FUN=zmix, depth=ThermDepths)
+zmix
+zmix <- function(temp, depth){#
+        tempDiff <- temp[-length(temp)] - temp[-1]#
+        depthDiff <- depth[-1] - depth[-length(depth)]#
+        ratio <- tempDiff / depthDiff#
+		zhat <- depth[which(ratio >= 2)][1]#
+		# Zhat2 <- min(which(zhat>0))#
+		# Z <- Zhat2#
+		Z <- ifelse(!(zhat>0), NA, zhat)#
+       return(Z)#
+}
+Therms <- data.frame("Year"=2012, read.table("/Users/Battrd/Documents/School&Work/WiscResearch/Isotopes_2012Analysis/Data/CompiledWardTherms2012_v2.txt", header=TRUE))
+ThermDepths <- c(0, 0.25, 0.5, 0.75, 1, 1.25, 1.5, 1.75, 2, 2.5, 3)
+zmix <- function(temp, depth){#
+        tempDiff <- temp[-length(temp)] - temp[-1]#
+        depthDiff <- depth[-1] - depth[-length(depth)]#
+        ratio <- tempDiff / depthDiff#
+		zhat <- depth[which(ratio >= 2)][1]#
+		# Zhat2 <- min(which(zhat>0))#
+		# Z <- Zhat2#
+		Z <- ifelse(!(zhat>0), NA, zhat)#
+       return(Z)#
+}#
+Zmixs <- apply(Therms[,-c(1,2)], MARGIN=1, FUN=zmix, depth=ThermDepths)
+Therms <- data.frame(Therms, "Zmix"=Zmixs)
+PAR_Wind_Therms <- Alme(X=PAR_Wind, Y=Therms, Freq_High_Low="Low", AllX=TRUE)
+plot(1:length(PAR_Wind_Therms[,"z0.00"]), PAR_Wind_Therms[,"z0.00"])
+PAR_Wind_Therms <- Alme(X=PAR_Wind, Y=Therms, Freq_High_Low="Low", AllX=TRUE)#
+# plot(1:length(PAR_Wind_Therms[,"z0.00"]), PAR_Wind_Therms[,"z0.00"])#
+# abline(v=c(17004, 19330), col="red")#
+# abline(v=c(12464, 12488), col="green")#
+PAR_Wind_Therms[c(17004:19330, 12454:12538), 5:16] <- NA#
+# plot(1:length(PAR_Wind_Therms[,"z0.00"]), PAR_Wind_Therms[,"z0.00"])#
+# abline(v=c(17004, 19330), col="red")#
+# abline(v=c(12454, 12538), col="green")#
+#
+badtherms <- which(PAR_Wind_Therms[,5:15] < 5 | PAR_Wind_Therms[,5:15] > 36, arr.ind=TRUE)#
+PAR_Wind_Therms[,5:15][PAR_Wind_Therms[,5:15] < 5 | PAR_Wind_Therms[,5:15] > 36]
+ZmixDays <- c(105, 110, 117, 124, 131, 138, 145, 152, 159, 166, 173, 180, 187, 194, 201, 208, 215, 222, 229, 236, 241) + c(0, rep(0.4,19), 0)#
+ZmixDepths <- c(1.0,2.0,2.0,0.5,0.5, 1.0, 1.0, 1.5, 0.25, 1.0, 1.0, 0.5, 0.5, 1, 1, 1, 1, 1.5, 1.5, 1, 0.25)
+PAR_Wind_Therms[, "Zmix"] <- approx(c(PAR_Wind_Therms[, "DoY"], ZmixDays), c(PAR_Wind_Therms[, "Zmix"], ZmixDepths), PAR_Wind_Therms[, "DoY"])$y
+rm(list=ls())
+graphics.off()
+rm(list=ls())#
+graphics.off()#
+library("zoo")#
+library("plyr")#
+source("/Users/Battrd/Documents/School&Work/WiscResearch/Isotopes_2012Analysis/MyBookkeepingMetabolism_v1.R")#
+setwd("/Users/Battrd/Documents/School&Work/WiscResearch/Isotopes_2012Analysis/")#
+source("Alme.R")#
+source("ByeShort.R")#
+source("Chunks.R")#
+source("Light.R")#
+# source("Metabolism_LM_v3.1.R")#
+#
+windowsFonts(Times=windowsFont("TT Times New Roman"))#
+#
+setwd("/Users/Battrd/Documents/School&Work/WiscResearch/Isotopes_2012Analysis/Data/WardSensorData2012/")#
+UNDERC_Weather <- read.csv("UNDERC_Weather_2012.csv")#
+names(UNDERC_Weather) <- c("Year", "DoY", "Time", "Wind", "PAR")#
+UNDERC_Weather[,"Time"] <- UNDERC_Weather[,"Time"]-100#
+UNDERC_Weather[,"Frac"] <- UNDERC_Weather[,"Time"]/2400#
+HourChar <- as.character(ifelse(UNDERC_Weather[,"Time"]/100==24, "0",UNDERC_Weather[,"Time"]/100))#
+WhichHourSingleDigit <- which(nchar(HourChar)==1)#
+HourChar[WhichHourSingleDigit] <- paste("0",HourChar[WhichHourSingleDigit],sep="")#
+UNDERC_Weather[,"Time"] <- paste(HourChar, "00", sep=":")#
+UNDERC_Weather[,"DoY"] <- UNDERC_Weather[,"DoY"] + UNDERC_Weather[,"Frac"]#
+UNDERC_Interp_xout <- seq(min(UNDERC_Weather[,"DoY"]), max(UNDERC_Weather[,"DoY"]), by=(1/288))#
+UNDERC_PAR_WIND <- data.frame("Year"=2012, "DoY"=UNDERC_Interp_xout, "PAR0"=approx(UNDERC_Weather[,"DoY"], UNDERC_Weather[,"PAR"], xout=UNDERC_Interp_xout)$y, "Wind"=approx(UNDERC_Weather[,"DoY"], UNDERC_Weather[,"Wind"], xout=UNDERC_Interp_xout)$y)#
+#
+Peter_PAR_Wind <- read.csv("/Users/Battrd/Documents/School&Work/WiscResearch/Isotopes_2012Analysis/Data/Peter_PAR_Wind_2012.csv")#
+Peter_PAR_Wind[,"DoY"] <- as.numeric(format.Date(as.POSIXct(Peter_PAR_Wind[,1], format="%Y-%m-%d"), format="%j")) + as.numeric(difftime(time1=as.POSIXct(paste(Peter_PAR_Wind[,1], Peter_PAR_Wind[,2]), format="%Y-%m-%d %H:%M"), time2=as.POSIXct(paste(Peter_PAR_Wind[,1], "00:00:00"), format="%Y-%m-%d %H:%M:%S"), units="days"))#
+Peter_PAR_Wind[,"Year"] <- 2012#
+Peter_PAR_Wind <- Peter_PAR_Wind[,c("Year", "DoY", "PAR", "WindSpeed")]#
+names(Peter_PAR_Wind) <- c("Year", "DoY", "PAR", "Wind")#
+#
+CombinePeterUNDERC <- Alme(X=Peter_PAR_Wind, Y=UNDERC_PAR_WIND, CheckMissDups=TRUE)#
+PAR_Conv <- summary(lm(I(PAR0+0.01)~I(PAR-1.19) -1, data=CombinePeterUNDERC))$coef[1]#
+UNDERC_PAR_WIND[,"PAR0"] <- UNDERC_PAR_WIND[,"PAR0"]/PAR_Conv#
+names(UNDERC_PAR_WIND) <- c("Year", "DoY", "PAR", "Wind")#
+Peter_PAR_Wind <- ByeShort(Peter_PAR_Wind)#
+UNDERC_PAR_WIND <- ByeShort(UNDERC_PAR_WIND)#
+UNDERC_2add <- which(UNDERC_PAR_WIND[,"DoY"] < min(Peter_PAR_Wind[,"DoY"]))#
+PAR_Wind <- rbind(UNDERC_PAR_WIND[UNDERC_2add,], Peter_PAR_Wind)#
+##****WORKING ON READING IN ZMIX*******#
+Therms <- data.frame("Year"=2012, read.table("/Users/Battrd/Documents/School&Work/WiscResearch/Isotopes_2012Analysis/Data/CompiledWardTherms2012_v2.txt", header=TRUE))#
+ThermDepths <- c(0, 0.25, 0.5, 0.75, 1, 1.25, 1.5, 1.75, 2, 2.5, 3)#
+#
+zmix <- function(temp, depth){#
+        tempDiff <- temp[-length(temp)] - temp[-1]#
+        depthDiff <- depth[-1] - depth[-length(depth)]#
+        ratio <- tempDiff / depthDiff#
+		zhat <- depth[which(ratio >= 2)][1]#
+		# Zhat2 <- min(which(zhat>0))#
+		# Z <- Zhat2#
+		Z <- ifelse(!(zhat>0), NA, zhat)#
+       return(Z)#
+}#
+Zmixs <- apply(Therms[,-c(1,2)], MARGIN=1, FUN=zmix, depth=ThermDepths)#
+Therms <- data.frame(Therms, "Zmix"=Zmixs)#
+#
+PAR_Wind_Therms <- Alme(X=PAR_Wind, Y=Therms, Freq_High_Low="Low", AllX=TRUE)#
+# plot(1:length(PAR_Wind_Therms[,"z0.00"]), PAR_Wind_Therms[,"z0.00"])#
+# abline(v=c(17004, 19330), col="red")#
+# abline(v=c(12464, 12488), col="green")#
+PAR_Wind_Therms[c(17004:19330, 12454:12538), 5:16] <- NA#
+# plot(1:length(PAR_Wind_Therms[,"z0.00"]), PAR_Wind_Therms[,"z0.00"])#
+# abline(v=c(17004, 19330), col="red")#
+# abline(v=c(12454, 12538), col="green")#
+#
+badtherms <- which(PAR_Wind_Therms[,5:15] < 5 | PAR_Wind_Therms[,5:15] > 36, arr.ind=TRUE)#
+# PAR_Wind_Therms[,5:15][PAR_Wind_Therms[,5:15] < 5 | PAR_Wind_Therms[,5:15] > 36]
+ZmixDays <- c(105, 110, 117, 124, 131, 138, 145, 152, 159, 166, 173, 180, 187, 194, 201, 208, 215, 222, 229, 236, 241) + c(0, rep(0.4,19), 0)#
+ZmixDepths <- c(1.0,2.0,2.0,0.5,0.5, 1.0, 1.0, 1.5, 0.25, 1.0, 1.0, 0.5, 0.5, 1, 1, 1, 1, 1.5, 1.5, 1, 0.25)#
+#
+PAR_Wind_Therms[, "Zmix"] <- approx(c(PAR_Wind_Therms[, "DoY"], ZmixDays), c(PAR_Wind_Therms[, "Zmix"], ZmixDepths), PAR_Wind_Therms[, "DoY"])$y#
+# plot(PAR_Wind_Therms[, "DoY"], PAR_Wind_Therms[, "Zmix"], type="l")#
+#
+setwd("/Users/Battrd/Documents/School&Work/WiscResearch/Isotopes_2012Analysis/Data/")#
+Key2012 <- read.csv("WardSondes2012_FileKey.csv")#
+ShalKey2012 <- subset(Key2012, Depth=="B")
+for(i in 1:nrow(ShalKey2012)){#
+	tName <- ShalKey2012[i,"Name"]#
+	tFormat <- ShalKey2012[i,"Format"]#
+	if(tFormat=="CDF"){#
+		if(tName=="B14APR12.CDF"){#
+			ReadClassCDF <- c("character", "character", rep("numeric", 8))#
+			tDat <- read.table(paste("/Users/Battrd/Documents/School&Work/WiscResearch/Isotopes_2012Analysis/Data/WardSondes2012/", tName, sep=""), sep=",", header=TRUE, skip=2, colClasses=ReadClassCDF)#
+			names(tDat) <- c("Date", "Time", "Temp", "SpCond", "pH", "BGA_conc", "BGA_RFU", "DOsat", "Chl_conc", "Chl_RFU")#
+			tDoY <- as.numeric(format.Date(as.POSIXct(as.character(tDat[,1]), format="%m/%d/%y"), format="%j")) + as.numeric(difftime(time1=as.POSIXct(paste(tDat[,1], tDat[,2]), format="%m/%d/%y %H:%M:%S"), time2=as.POSIXct(paste(tDat[,1], "00:00:00"), format="%m/%d/%y %H:%M:%S"), units="days"))#
+		}#
+		if(all(tName!="B14APR12.CDF" & ShalKey2012[,"Depth"]=="B")){#
+			ReadClassCDF <- c("character", "character", rep("numeric", 9))#
+			tDat <- read.table(paste("/Users/Battrd/Documents/School&Work/WiscResearch/Isotopes_2012Analysis/Data/WardSondes2012/", tName, sep=""), sep=",", header=TRUE, skip=2, colClasses=ReadClassCDF)#
+			names(tDat) <- c("Date", "Time", "Temp", "SpCond", "pH", "BGA_conc", "BGA_RFU", "DOsat", "Chl_conc", "Chl_RFU", "Battery")#
+			tDoY <- as.numeric(format.Date(as.POSIXct(as.character(tDat[,1]), format="%m/%d/%y"), format="%j")) + as.numeric(difftime(time1=as.POSIXct(paste(tDat[,1], tDat[,2]), format="%m/%d/%y %H:%M:%S"), time2=as.POSIXct(paste(tDat[,1], "00:00:00"), format="%m/%d/%y %H:%M:%S"), units="days"))#
+		}#
+		# ReadClassCDF <- c("character", "character", rep("numeric", 9))#
+		# tDat <- read.table(paste("/Users/Battrd/Documents/School&Work/WiscResearch/Data/WardSondes2012/", tName, sep=""), sep=",", header=TRUE, skip=2, colClasses=ReadClassCDF)#
+		# names(tDat) <- c("Date", "Time", "Temp", "SpCond", "pH", "BGA_conc", "BGA_RFU", "DOsat", "Chl_conc", "Chl_RFU", "DOconc")#
+		# tDoY <- as.numeric(format.Date(as.POSIXct(as.character(tDat[,1]), format="%m/%d/%y"), format="%j")) + as.numeric(difftime(time1=as.POSIXct(paste(tDat[,1], tDat[,2]), format="%m/%d/%y %H:%M:%S"), time2=as.POSIXct(paste(tDat[,1], "00:00:00"), format="%m/%d/%y %H:%M:%S"), units="days"))#
+	}#
+	if(tFormat=="txt"){#
+		ReadClassTxt <- c(NA, NA, rep("numeric", 10))#
+		tDat <- read.table(paste("/Users/Battrd/Documents/School&Work/WiscResearch/Isotopes_2012Analysis/Data/WardSondes2012/", tName, sep=""), sep=",", header=FALSE, skip=4, colClasses=ReadClassTxt)#[-c(1,2,3,4),]#
+		names(tDat) <- c("Date", "Time", "Temp", "SpCond", "pH", "BGA_conc", "BGA_RFU", "DOsat", "DOconc", "Chl_conc", "Chl_RFU", "Battery")#
+		# tDay <- as.numeric(format.Date(as.POSIXct(tDat[,1], format="%Y/%m/%d"), format="%j"))#
+		# tFrac <- as.numeric(difftime(time1=as.POSIXct(paste(tDat[,1], tDat[,2]), format="%Y/%m/%d %H:%M:%S"), time2=as.POSIXct(paste(tDat[,1], "00:00:00"), format="%Y/%m/%d %H:%M:%S"), units="days"))#
+		tDoY <- as.numeric(format.Date(as.POSIXct(tDat[,1], format="%Y/%m/%d"), format="%j")) + as.numeric(difftime(time1=as.POSIXct(paste(tDat[,1], tDat[,2]), format="%Y/%m/%d %H:%M:%S"), time2=as.POSIXct(paste(tDat[,1], "00:00:00"), format="%Y/%m/%d %H:%M:%S"), units="days"))#
+		tDat <- tDat[,-9]#
+	}#
+	tDat <- tDat[,c("Date", "Time", "Temp", "SpCond", "pH", "DOsat", "Chl_conc")]#
+	if(i == 1){#
+		DataSonde <- data.frame("Year"=2012, "DoY"=tDoY, tDat[,-c(1:2)])#
+	}#
+	if(i !=1){#
+		DataSonde <- rbind(DataSonde, data.frame("Year"=2012, "DoY"=tDoY, tDat[,-c(1:2)]))#
+	}#
+	print(i)#
+	print(dim(tDat))#
+	print(dim(DataSonde))#
+}
+sDataSonde <- ByeShort(DataSonde)#
+#missed 10 days from the batteries dying, and would miss 1 day for each deployment (calibration/first deployment/last day of season when it was removed= 5+1+1). 1 of the missing days was the same for the battery dying/ calibration (i pulled out a dead sonde). That's 16 missing days. First day of measurement was 105, last was 139, so that is a total of 135 days the sonde could have been in the lake (139 - 105 + 1).  My final data set has 119 days.  119 + 16 = 135.  OK, I didn't lose any days of data due to stupid/sloppy programming.#
+DataAll0 <- Alme(X=sDataSonde, Y=PAR_Wind_Therms)#
+DataAll <- cbind(DataAll0, "DepID"=Chunks(DataAll0[,"DoY"]))
+# #
+# #
+Data <- DataAll[,c("Year", "DoY", "DOsat", "Temp", "PAR", "Zmix", "Wind")]#
+# Est_LM <- Metabolism_LM(Data)#
+# Metabolism_LM(Data[1:5000,])#
+# jData <- Data[1:5000,]#
+# save(jData, file="jData.RData")#
+# write.csv(jData, file="jData.csv", row.names=FALSE)#
+# #
+# jData2 <- read.csv("jData.csv")#
+# Metabolism_LM(jData2)
+head(Data)
+tail(Data)
+Deps <- DataAll[,"DepID"]#
+for(i in 1:length(unique(Deps))){#
+	if(length(which(Deps==i))<288*3){next}#
+	print(i)#
+	INDEX <- which(Deps==i)#
+	Data01 <- Data[INDEX,]#
+	Sonde <- data.frame("Year"=Data01[,"Year"], "DoY"=trunc(Data01[,"DoY"]), "Fract"=(Data01[,"DoY"]-trunc(Data01[,"DoY"])), "Temp"=Data01[,"Temp"], "DOsat"=Data01[,"DOsat"], DepID=rep(i, length(Data01[,"DOsat"])))#
+	if(i==1){#
+		Est_BK <- Metabolism(Sonde, zmix=Data01[,"Zmix"], Wind=Data01[,"Wind"], DispGraph=FALSE)#
+	}#
+	if(i!=1){#
+		Est_BK <- rbind(Est_BK, Metabolism(Sonde, zmix=Data01[,"Zmix"], Wind=Data01[,"Wind"], DispGraph=FALSE))#
+	}	#
+}
+Bad_LM <- union(which(Est_LM[,"GPP_raw"]<0), which(Est_LM[,"R_raw"]>0))#
+Est_Good_LM <- Est_LM[-Bad_LM,]#
+names(Est_Good_LM) <- c("Year", "DoY", "GPP_LM", "R_LM", "NEP_LM", "sumPAR", "meanTemp", "TotalF", "R2_LM")
+Est_LM <- Metabolism_LM(Data)
+Bad_BK <- union(which(Est_BK[,"GPP"]<0), which(Est_BK[,"R"]>0))#
+Est_Good_BK <- Est_BK[-Bad_BK,]#
+dimnames(Est_Good_BK) <- list(NULL, c("DoY", "R_BK", "GPP_BK", "NEP_BK"))
+Est_Good_LM
+source("Metabolism_LM_v3.1.R")
+setwd("/Users/Battrd/Documents/School&Work/WiscResearch/Isotopes_2012Analysis/")
+source("Metabolism_LM_v3.1.R")
+source("Metabolism_LM_v3.0.R")
+Bad_BK <- union(which(Est_BK[,"GPP"]<0), which(Est_BK[,"R"]>0))#
+Est_Good_BK <- Est_BK[-Bad_BK,]#
+dimnames(Est_Good_BK) <- list(NULL, c("DoY", "R_BK", "GPP_BK", "NEP_BK"))
+Estimates_Good <- Est_Good_BK[,c("Year", "DoY", "GPP_BK","R_BK","NEP_BK")]
+head(Est_Good_BK)
+Estimates_Good <- Est_Good_BK[,c("DoY", "GPP_BK","R_BK","NEP_BK")]
+Estimates_Good[,"Year"] <- 2012
+class(Estimates_Good)
+Estimates_Good <- cbind(Year=2012, Est_Good_BK[,c("DoY", "GPP_BK","R_BK","NEP_BK")])
+Estimates_Good
+Deps <- DataAll[,"DepID"]#
+for(i in 1:length(unique(Deps))){#
+	if(length(which(Deps==i))<288*3){next}#
+	print(i)#
+	INDEX <- which(Deps==i)#
+	Data01 <- Data[INDEX,]#
+	Sonde <- data.frame("Year"=Data01[,"Year"], "DoY"=trunc(Data01[,"DoY"]), "Fract"=(Data01[,"DoY"]-trunc(Data01[,"DoY"])), "Temp"=Data01[,"Temp"], "DOsat"=Data01[,"DOsat"], DepID=rep(i, length(Data01[,"DOsat"])))#
+	if(i==1){#
+		Est_BK <- Metabolism(Sonde, zmix=Data01[,"Zmix"], Wind=Data01[,"Wind"], DispGraph=FALSE)#
+	}#
+	if(i!=1){#
+		Est_BK <- rbind(Est_BK, Metabolism(Sonde, zmix=Data01[,"Zmix"], Wind=Data01[,"Wind"], DispGraph=FALSE))#
+	}	#
+}
+Est_BK
+Metabolism(Sonde, zmix=Data01[,"Zmix"], Wind=Data01[,"Wind"], DispGraph=FALSE)
+source("/Users/Battrd/Documents/School&Work/WiscResearch/Isotopes_2012Analysis/MyBookkeepingMetabolism_v2.R")
+source("/Users/Battrd/Documents/School&Work/WiscResearch/Isotopes_2012Analysis/MyBookkeepingMetabolism.R")
+Deps <- DataAll[,"DepID"]#
+for(i in 1:length(unique(Deps))){#
+	if(length(which(Deps==i))<288*3){next}#
+	print(i)#
+	INDEX <- which(Deps==i)#
+	Data01 <- Data[INDEX,]#
+	Sonde <- data.frame("Year"=Data01[,"Year"], "DoY"=trunc(Data01[,"DoY"]), "Fract"=(Data01[,"DoY"]-trunc(Data01[,"DoY"])), "Temp"=Data01[,"Temp"], "DOsat"=Data01[,"DOsat"], DepID=rep(i, length(Data01[,"DOsat"])))#
+	if(i==1){#
+		Est_BK <- Metabolism(Sonde, zmix=Data01[,"Zmix"], Wind=Data01[,"Wind"], DispGraph=FALSE)#
+	}#
+	if(i!=1){#
+		Est_BK <- rbind(Est_BK, Metabolism(Sonde, zmix=Data01[,"Zmix"], Wind=Data01[,"Wind"], DispGraph=FALSE))#
+	}	#
+}
+Est_BK
+warnings()
+source("/Users/Battrd/Documents/School&Work/WiscResearch/Isotopes_2012Analysis/MyBookkeepingMetabolism_v1.R")
+Deps <- DataAll[,"DepID"]#
+for(i in 1:length(unique(Deps))){#
+	if(length(which(Deps==i))<288*3){next}#
+	print(i)#
+	INDEX <- which(Deps==i)#
+	Data01 <- Data[INDEX,]#
+	Sonde <- data.frame("Year"=Data01[,"Year"], "DoY"=trunc(Data01[,"DoY"]), "Fract"=(Data01[,"DoY"]-trunc(Data01[,"DoY"])), "Temp"=Data01[,"Temp"], "DOsat"=Data01[,"DOsat"], DepID=rep(i, length(Data01[,"DOsat"])))#
+	if(i==1){#
+		Est_BK <- Metabolism(Sonde, zmix=Data01[,"Zmix"], Wind=Data01[,"Wind"], DispGraph=FALSE)#
+	}#
+	if(i!=1){#
+		Est_BK <- rbind(Est_BK, Metabolism(Sonde, zmix=Data01[,"Zmix"], Wind=Data01[,"Wind"], DispGraph=FALSE))#
+	}	#
+}
+Est_BK
+source("/Users/Battrd/Documents/School&Work/WiscResearch/Isotopes_2012Analysis/MyBookkeepingMetabolism_v2.R")
+Deps <- DataAll[,"DepID"]#
+for(i in 1:length(unique(Deps))){#
+	if(length(which(Deps==i))<288*3){next}#
+	print(i)#
+	INDEX <- which(Deps==i)#
+	Data01 <- Data[INDEX,]#
+	Sonde <- data.frame("Year"=Data01[,"Year"], "DoY"=trunc(Data01[,"DoY"]), "Fract"=(Data01[,"DoY"]-trunc(Data01[,"DoY"])), "Temp"=Data01[,"Temp"], "DOsat"=Data01[,"DOsat"], DepID=rep(i, length(Data01[,"DOsat"])))#
+	if(i==1){#
+		Est_BK <- Metabolism(Sonde, zmix=Data01[,"Zmix"], Wind=Data01[,"Wind"], DispGraph=FALSE)#
+	}#
+	if(i!=1){#
+		Est_BK <- rbind(Est_BK, Metabolism(Sonde, zmix=Data01[,"Zmix"], Wind=Data01[,"Wind"], DispGraph=FALSE))#
+	}	#
+}
+Metabolism(Sonde, zmix=Data01[,"Zmix"], Wind=Data01[,"Wind"], DispGraph=FALSE)
+Sonde
+Data01[,"Zmix"]
+Data01[,"Wind"]
+source("/Users/Battrd/Documents/School&Work/WiscResearch/Isotopes_2012Analysis/Metabolism_BK_v0.R")
+Deps <- DataAll[,"DepID"]#
+for(i in 1:length(unique(Deps))){#
+	if(length(which(Deps==i))<288*3){next}#
+	print(i)#
+	INDEX <- which(Deps==i)#
+	Data01 <- Data[INDEX,]#
+	Sonde <- data.frame("Year"=Data01[,"Year"], "DoY"=trunc(Data01[,"DoY"]), "Fract"=(Data01[,"DoY"]-trunc(Data01[,"DoY"])), "Temp"=Data01[,"Temp"], "DOsat"=Data01[,"DOsat"], DepID=rep(i, length(Data01[,"DOsat"])))#
+	if(i==1){#
+		Est_BK <- Metabolism(Sonde, zmix=Data01[,"Zmix"], Wind=Data01[,"Wind"], DispGraph=FALSE)#
+	}#
+	if(i!=1){#
+		Est_BK <- rbind(Est_BK, Metabolism(Sonde, zmix=Data01[,"Zmix"], Wind=Data01[,"Wind"], DispGraph=FALSE))#
+	}	#
+}
+Est_BK
+Bad_BK <- union(which(Est_BK[,"GPP"]<0), which(Est_BK[,"R"]>0))#
+Est_Good_BK <- Est_BK[-Bad_BK,]#
+dimnames(Est_Good_BK) <- list(NULL, c("DoY", "R_BK", "GPP_BK", "NEP_BK"))#
+# Estimates_Good <- merge(Est_Good_BK, Est_Good_LM, by="DoY", all=TRUE)[,c("Year", "DoY", "GPP_BK","R_BK","NEP_BK", "GPP_LM", "R_LM", "NEP_LM")]#
+Estimates_Good <- cbind(Year=2012, Est_Good_BK[,c("DoY", "GPP_BK","R_BK","NEP_BK")])#
+# Estimates_Good[,"Year"] <- 2012
+Estimates_Good_NoNA <- Estimates_Good[complete.cases(Estimates_Good),]
+# ==========================================#
+# = Plot the "good" BK estimates from 2012 =#
+# ==========================================#
+dev.new(height=4, width=4)#
+par(mar=c(4,3,0,0), oma=c(0,0,0,0), family="Times", las=1)#
+Metab_Ylim <- c(min(Est_Good_BK[,"R_BK"]), max(Est_Good_BK[,"GPP_BK"]))#
+plot(Est_Good_BK[,"DoY"], Est_Good_BK[,"NEP_BK"], type="o", lty="dashed", col="black", pch=23, bg=gray(0.5), ylim=Metab_Ylim, bty="l", xlab="", ylab="", cex=0.75, cex.axis=0.75)#
+lines(Est_Good_BK[,"DoY"], Est_Good_BK[,"GPP_BK"], type="o", lty="solid", col="black", pch=24, bg=gray(0), cex=0.75)#
+lines(Est_Good_BK[,"DoY"], Est_Good_BK[,"R_BK"], type="o", lty="dotted", col="black", pch=25, bg=gray(1), cex=0.75)#
+legend(x=120, y=150, legend=c(paste("GPP", round(mean(Est_Good_BK[,"GPP_BK"]),0), sep=" = "), paste("NEP", round(mean(Est_Good_BK[,"NEP_BK"]),0), sep=" = "), paste("R", round(mean(Est_Good_BK[,"R_BK"]),0), sep=" = ")), lty=c("solid", "dashed", "dotted"), pch=c(24,23,25), pt.bg=c(gray(0), gray(0.5), gray(1)), bty="n", cex=0.75) #, title=expression(underline(Summer~Means))#
+mtext(side=2, line=2, text=expression(mu*mol~O[2]~L^-1~day^-1), las=0, cex=0.75)#
+mtext(side=1, line=1.9, text="Day of Year", cex=0.75)#
+mtext(side=1, line=2.6, text=paste(as.Date(min(Est_Good_BK[,"DoY"]), origin=paste(2012,"-01-01",sep="")), as.Date(max(Est_Good_BK[,"DoY"]), origin=paste(2012,"-01-01",sep="")), sep=" to "), font=3, cex=0.75)
+# ==============================================#
+# = Time to look into the 2010 metabolism data =#
+# ==============================================#
+#See setwd("/Users/Battrd/Documents/School&Work/WiscResearch/KalmanFilter") for original (KFMetabolismSingle_v3.R)#
+#See setwd("/Users/Battrd/Documents/School&Work/GradSchool/DissertationProposal/") for what I used in my dissertation proposal (pretty much the same as the original)#
+load("/Users/Battrd/Documents/School&Work/WiscResearch/Isotopes_2012Analysis/Data/Ward2010_Epi_Metabolism_Data.RData")#
+Est_BK_2010 <- EpiMetab#
+Bad_BK_2010 <- union(which(Est_BK_2010[,"GPP"]<0), which(Est_BK_2010[,"R"]>0))#
+Est_Good_BK_2010 <- Est_BK_2010[-Bad_BK_2010,]#
+dimnames(Est_Good_BK_2010) <- list(NULL, c("DoY", "R_BK", "GPP_BK", "NEP_BK"))#
+Est_Good_BK_2010 <- cbind("Year"=2010, Est_Good_BK_2010)#
+colMeans(Est_Good_BK_2010)
+# ==========================================#
+# = Plot the "good" BK estimates from 2010 =#
+# ==========================================#
+dev.new(height=4, width=4)#
+par(mar=c(4,3,0,0), oma=c(0,0,0,0), family="Times", las=1)#
+Metab_Ylim <- c(min(Est_Good_BK_2010[,"R_BK"]), max(Est_Good_BK_2010[,"GPP_BK"]))#
+plot(Est_Good_BK_2010[,"DoY"], Est_Good_BK_2010[,"NEP_BK"], type="o", lty="dashed", col="black", pch=23, bg=gray(0.5), ylim=Metab_Ylim, bty="l", xlab="", ylab="", cex=0.75, cex.axis=0.75)#
+lines(Est_Good_BK_2010[,"DoY"], Est_Good_BK_2010[,"GPP_BK"], type="o", lty="solid", col="black", pch=24, bg=gray(0), cex=0.75)#
+lines(Est_Good_BK_2010[,"DoY"], Est_Good_BK_2010[,"R_BK"], type="o", lty="dotted", col="black", pch=25, bg=gray(1), cex=0.75)#
+legend(x=194, y=89, legend=c(paste("GPP", round(mean(Est_Good_BK_2010[,"GPP_BK"]),0), sep=" = "), paste("NEP", round(mean(Est_Good_BK_2010[,"NEP_BK"]),0), sep=" = "), paste("R", round(mean(Est_Good_BK_2010[,"R_BK"]),0), sep=" = ")), lty=c("solid", "dashed", "dotted"), pch=c(24,23,25), pt.bg=c(gray(0), gray(0.5), gray(1)), bty="n", cex=0.75) #, title=expression(underline(Summer~Means))#
+mtext(side=2, line=2, text=expression(mu*mol~O[2]~L^-1~day^-1), las=0, cex=0.75)#
+mtext(side=1, line=1.9, text="Day of Year", cex=0.75)#
+mtext(side=1, line=2.6, text=paste(as.Date(min(Est_Good_BK_2010[,"DoY"]), origin=paste(2010,"-01-01",sep="")), as.Date(max(Est_Good_BK_2010[,"DoY"]), origin=paste(2010,"-01-01",sep="")), sep=" to "), font=3, cex=0.75)
+Ward_Year <- c(rep(2010, (nrow(Est_Good_BK_2010)+nrow(Est_Good_LM_2010))), rep(2012, (nrow(Est_Good_BK)+nrow(Est_Good_LM))))#
+Ward_DoY <- c(Est_Good_BK_2010[,"DoY"], Est_Good_LM_2010[,"DoY"], Est_Good_BK[,"DoY"], Est_Good_LM[,"DoY"])#
+Ward_Week <- as.numeric(format.Date(as.POSIXct(paste(Ward_Year, Ward_DoY, sep="-"), format="%Y-%j"), format="%m"))-4 #This corresponds the the "isotope sampling week"; in 2010, the first week of sampling May, 2nd in June, 3 in July, 4th in August.  In 2012, the first sampling week was in June, but I have been using the convention of "sampling week = month # -4".  So August is the 8th month.  A sample in August corresponds to the 8-4 = 4th sampling week.  Totally weird, I know.  In the figures this will all be turned into the month.#
+Ward_Method <- c(rep("BK", nrow(Est_Good_BK_2010)), rep("LM", nrow(Est_Good_LM_2010)), rep("BK", nrow(Est_Good_BK)), rep("LM", nrow(Est_Good_LM)))#
+Ward_GPP <- c(Est_Good_BK_2010[,"GPP_BK"], Est_Good_LM_2010[,"GPP_LM"], Est_Good_BK[,"GPP_BK"], Est_Good_LM[,"GPP_LM"])#
+Ward_R <- c(Est_Good_BK_2010[,"R_BK"], Est_Good_LM_2010[,"R_LM"], Est_Good_BK[,"R_BK"], Est_Good_LM[,"R_LM"])#
+Ward_NEP <- c(Est_Good_BK_2010[,"NEP_BK"], Est_Good_LM_2010[,"NEP_LM"], Est_Good_BK[,"NEP_BK"], Est_Good_LM[,"NEP_LM"])#
+WardMetabolism <- data.frame("Year"=Ward_Year, "DoY"=Ward_DoY, "Week"=Ward_Week, "Method"=Ward_Method, "GPP"=Ward_GPP, "R"=Ward_R, "NEP"=Ward_NEP)#
+# setwd("/Users/Battrd/Documents/School&Work/WiscResearch/Isotopes_2012Analysis")
+Photic0 <- read.csv("/Users/Battrd/Documents/School&Work/WiscResearch/Isotopes_2012Analysis/Data/Ward_Photic_2010&2012.csv")#
+Photic_DoY <- as.numeric(format.Date(Photic0[,"Date"], "%j"))#
+Photic_Week <- as.numeric(format.Date(as.POSIXct(paste(Photic0[,"Year"], Photic_DoY, sep="-"), format="%Y-%j"), format="%m"))-4#
+Photic <- data.frame("Year"=Photic0[,"Year"], "Week"=Photic_Week, Photic0[,c(2,3,4,5)])#
+# save(Photic, file="Photic_WardMetab2012_v1.RData")
+DOM0 <- read.csv("/Users/Battrd/Documents/School&Work/WiscResearch/Isotopes_2012Analysis/Data/Ward_DOM_2010&2012.csv")#
+DOM_DoY <- as.numeric(format.Date(DOM0[,"Date"], "%j"))#
+DOM_Week <- as.numeric(format.Date(as.POSIXct(paste(DOM0[,"Year"], DOM_DoY, sep="-"), format="%Y-%j"), format="%m"))-4#
+DOM <- data.frame("Year"=DOM0[,"Year"], "Week"=DOM_Week, DOM0[,c(2,4,5)])#
+# save(DOM, file="DOM_WardMetab2012_v1.RData")
+Metabolism_Plots <- expand.grid(c("GPP", "R", "NEP"), c("BK", "LM"))#
+dev.new(width=9, height=6)#
+par(mfrow=c(2,3), mar=c(2,3.5,1,1), ps=10, cex=1, oma=c(0,1,2,0))#
+#
+for(i in 1:nrow(Metabolism_Plots)){#
+	MetabD <- subset(WardMetabolism, Method==as.character(Metabolism_Plots[i,2]))#
+	MetabMonths <- c("Apr","May","Jun","Jul","Aug")[1+expand.grid(sort(unique(MetabD[,"Week"])), sort(unique(MetabD[,"Year"])))[,1]]#
+	RepYearCol <- length(MetabMonths)/2#
+	Response <- MetabD[,as.character(Metabolism_Plots[i,1])]#
+	Pred_Week <- as.numeric(MetabD[,"Week"])#
+	Pred_Year <- as.factor(MetabD[,"Year"])#
+	# dev.new()#
+	boxplot(Response~Pred_Week*Pred_Year, data=MetabD, col=c(rep("#FA807225",RepYearCol), rep("#3A5FCD25",RepYearCol)), border=c(rep("red",RepYearCol), rep("blue",RepYearCol)), names=MetabMonths)#
+	# abline(v=8.5)#
+	# text(c(2, 10.5), -240, c("Epilimnion", "Metalimnion"), font=4, cex=1.25)#
+	# mtext(as.character(Metabolism_Plots[i,]), side=2, line=2.5)#
+	if(i==1){mtext("BK", side=2, line=2.5)}#
+	if(i==1){mtext("GPP", side=3, line=1)}#
+	if(i==2){mtext("R", side=3, line=1)}#
+	if(i==3){mtext("NEP", side=3, line=1)}#
+	if(i==4){mtext("LM", side=2, line=2.5)}#
+	if(i==2){legend("bottomleft", c("Reference (2010)", "Aquashade (2012)"), text.col=c("red", "blue"), bty="n")}#
+}
+setwd("/Users/Battrd/Documents/School&Work/WiscResearch/Isotopes_2012Analysis/Data/")
+DataRaw <- read.csv("WardIsotopes_2010&2012_17Jan2013.csv", header=TRUE)
+setwd("/Users/Battrd/Documents/School&Work/WiscResearch/Isotopes_2012Analysis/Data/IsotopeData2012")
+summary(lm(GPP~as.factor(Year)*Method + Method*relevel(as.factor(Week),5) +relevel(as.factor(Week),5)*as.factor(Year), data=WardMetabolism))
+DataRaw <- read.csv("WardIsotopes_2010&2012_17Jan2013.csv", header=TRUE)
+BUGSfile_pt1 <- "/Users/Battrd/Documents/School&Work/WiscResearch/Isotopes_2012Analysis/mix_Cons_Mixture_Ward2010_v2_pt1.bug"

@@ -1,0 +1,75 @@
+{\rtf1\ansi\ansicpg1252\cocoartf949\cocoasubrtf540
+{\fonttbl\f0\fnil\fcharset0 Monaco;}
+{\colortbl;\red255\green255\blue255;\red0\green0\blue0;}
+\margl1440\margr1440\vieww14380\viewh8700\viewkind0
+\pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\ql\qnatural\pardirnatural
+
+\f0\fs20 \cf2 #Ryan Batt\
+#Version 2: May 28, 2011\
+#Version 2 is compatible with a variable number of sources (_v1 was set to 4)\
+#Version 2 was also written to be shorter and possibly slightly faster than _v1\
+#Portions based on code by CTS\
+\
+\
+\
+model\{\
+#Begin consumer calculations\
+for (i in 1:nSrcs)\{\
+  DietF.transform[i] ~ dunif(-3,5)\
+  \}\
+\
+#CLR math (untransform source proportions)\
+for (i in 1:nSrcs)\{\
+  expDietFTrans[i] <- exp(DietF.transform[i])\
+  \}\
+DietF.tot <- sum(expDietFTrans[])\
+\
+for (Src in 1:(nSrcs-1))\{\
+	DietF[Src] <- exp(DietF.transform[Src])/DietF.tot\
+	\}\
+DietF[nSrcs] <- 1 - sum(DietF[1:(nSrcs-1)])\
+\
+for (i in 1:3)\{\
+  residSd_Cons[i] ~ dunif(0,100)\
+  residVar_Cons[i] <- residSd_Cons[i]*residSd_Cons[i]\
+  \}\
+\
+\
+#Calculate consumer means and variances\
+#Calculate the signature of the consumer based on the signature of it's diet items and the relative proportion that those items are consumed\
+for(i in 1:nSrcs)\{\
+	Cons_dX_Term[1,i] <- DietF[i]*Srcs_dX[1,i] #13C\
+	Cons_dX_Term[2,i] <- DietF[i]*Srcs_dX[2,i] #15N\
+	Cons_dX_Term[3,i] <- DietF[i]*Srcs_dX[3,i] #2H\
+	\}\
+Cons_dX[1] <- sum(Cons_dX_Term[1,]) #13C signature of consumer\
+Cons_dX[2] <- sum(Cons_dX_Term[2,]) + Cons_Nrich #15N signature of consumer\
+Cons_dX[3] <- sum(Cons_dX_Term[3,])*(1-Omega) + Omega*Water_dD_Mu #2H signature of consumer\
+\
+#Calculate the variance of the consumer's signatures\
+for(i in 1:nSrcs)\{\
+	Cons_dC_Var_Term[i] <- pow(DietF[i],2)*Srcs_dX_Var[1,i] #13C variance contributed by each source\
+	Cons_dN_Var_Term[i] <- pow(DietF[i],2)*Srcs_dX_Var[2,i] #15N variance contributed by each source\
+	SourceVariance[i] <- pow(DietF[i],2)* Srcs_dx[3,i] #dD variance contributed by each source; dD variance is more complicated than the others\
+	#SourceMean[i] <- DietF[i]*Srcs_dx[3,i]# Same as  sum(Cons_dX_Term[3,])\
+	\}\
+Cons_dC_Var <- sum(Cons_dC_Var_Term) + residVar_Cons[1]\
+Cons_dN_Var <- sum(Cons_dN_Var_Term) + Cons_Nrich_Var + residVar_Cons[2]\
+Cons_dD_Var <- pow(Omega,2)*Water_dD_Var + pow(Water_dD_Mu,2)*Omega_Var + pow((1-Omega),2)*sum(SourceVariance) + pow(sum(Cons_dX_Term[3,]),2)*Omega_Var + residVar_Cons[3]\
+# f = A*B; var(f)/f^2 = var(A)/A^2 + var(B)/B^2 <assuming cov(AB)==0>\
+# var(f) = var(A)*B^2 + var(B)*A^2\
+#Omega^2*WaterVariance + WaterMean^2*OmegaVariance +(1-Omega)^2*SourceVariance + SourceMean^2*OmegaVariance --- this is how the dHVar is propagated; BATT\
+\
+\
+Cons_dX_Prec[1] <- (1/Cons_dC_Var)\
+Cons_dX_Prec[2] <- (1/Cons_dN_Var)\
+Cons_dX_Prec[3] <- (1/Cons_dD_Var)\
+\
+\
+for (i in 1:nCons)\{\
+	for (iso in 1:3)\{\
+		Cons_dX_Obs[i,iso] ~ dnorm(Cons_dX[iso], Cons_dX_Prec[iso])\
+		\}\
+	\}\
+	\
+\}#End Model	}
