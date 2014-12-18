@@ -78,7 +78,7 @@ with(PhoticD[which(PhoticD[,"Year"]==2012),], lines(DoY, Depth, type="o", ylim=c
 mtext("Day of year", side=1, line=1.25)
 mtext("Depth (m)", side=2, line=1.15)
 text(x=167, y=2.35, "Photic Depth 2012", col="blue", cex=1)
-text(x=167, y=3.75, "Photic Depth 2010", col="red", cex=1)
+text(x=167, y=3.65, "Photic Depth 2010", col="red", cex=1)
 
 par(new=TRUE)
 plot(AquaDoY, EstAquashadeConc, xlim=c(105,240), ylim=c(0,2), type="o", col="black", xaxt="n", yaxt="n", xlab="", ylab="", lwd=3, pch=19)
