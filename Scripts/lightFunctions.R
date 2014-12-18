@@ -13,7 +13,9 @@ irrInt <- function(I0, z1, z2, kd){
 	# z1 = shallow depth
 	# z2 = deep depth
 	# kd = light attenuation cofficient (slope of lm(light%~log(z)) when z ranges between z1 and z2)
-	(-exp(-kd*z2)*I0)/kd - (-exp(-kd*z1)*I0)/kd # returns the summation of PAR between z1 and z2
+	# kd should be log(light%)/z, right?
+	# (-exp(-kd*z2)*I0)/kd - (-exp(-kd*z1)*I0)/kd # returns the summation of PAR between z1 and z2
+	((-I0/kd)*(exp(-kd*z2)-exp(-kd*z1)))/(z2-z1)
 }
 
 # =========================================================
