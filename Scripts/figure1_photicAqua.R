@@ -1,7 +1,7 @@
 #Code copied (except some adjustments to the graph aesthetics) from Isotopes2012PreliminarAnalysis_v2.R
 
 
-SaveType <- c(".pdf", ".png", ".eps")[2]
+SaveType <- c(".pdf", ".png", ".eps", ".tiff")[4]
 Save <- TRUE
 
 Photic0 <- read.csv("/Users/Battrd/Documents/School&Work/WiscResearch/Data/Ward_Photic_2010&2012.csv")
@@ -67,6 +67,7 @@ if(Save){
 	if(SaveType==".pdf"){pdf(file="/Users/battrd/Documents/School&Work/WiscResearch/Isotopes_2012Analysis/Figures/fig1_PhoticAquaProfiles.pdf", height=4.040248, width=2.9)}
 	if(SaveType==".png"){png(file="/Users/battrd/Documents/School&Work/WiscResearch/Isotopes_2012Analysis/Figures/fig1_PhoticAquaProfiles.png", units="in", res=200, height=4.040248, width=2.9, type="quartz")}
 	if(SaveType==".eps"){setEPS();postscript("/Users/battrd/Documents/School&Work/WiscResearch/Isotopes_2012Analysis/Figures/fig1_PhoticAquaProfiles.eps", width=2.9, height=4.040248)}
+	if(SaveType==".tiff"){tiff("/Users/battrd/Documents/School&Work/WiscResearch/Isotopes_2012Analysis/Figures/fig1_PhoticAquaProfiles.tiff", width=2.9, height=4.040248, units="in", res=300, compression="lzw", type="quartz")}
 }else{
 	dev.new(width=3.23, height=4.5)
 }

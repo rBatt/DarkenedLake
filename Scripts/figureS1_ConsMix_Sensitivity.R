@@ -6,17 +6,18 @@ library(plyr)
 NeatConsNames <- c("Calanoid"="S. oregonensis", "Mesocyclops"="Mesocyclops", "Chaoborus"="Chaoborus spp.", "Helisoma trivolvis"="H. trivolvis", "FHM"="P. promelas", "DAC"="Phoxinus spp.", "BHD1"="A. melas", "BHD2"="A. melas", "CMM"= "U. limi", "PKS"="L. gibbosus", "YWP"="P. flavescens")
 
 Save <- TRUE
-SaveType <- ".png"
+SaveType <- c(".png", ".tiff")[2]
 
 # ========================
 # = Sensitivity Box Plot =
 # ========================
 if(Save){
-	if(SaveType==".pdf"){pdf(file="/Users/Battrd/Documents/School&Work/WiscResearch/Isotopes_2012Analysis/Figures/Supplement/Sensitivity_boxplot.pdf", height=6.5, width=6.81)}
-	if(SaveType==".png"){png(file="/Users/Battrd/Documents/School&Work/WiscResearch/Isotopes_2012Analysis/Figures/Supplement/Sensitivity_boxplot.png", units="in", res=300, height=6.204112, width=6.1)}
+	if(SaveType==".pdf"){pdf(file="/Users/Battrd/Documents/School&Work/WiscResearch/Isotopes_2012Analysis/Figures/Supplement/figS1_Sensitivity_boxplot.pdf", height=6.204112, width=6.1)}
+	if(SaveType==".png"){png(file="/Users/Battrd/Documents/School&Work/WiscResearch/Isotopes_2012Analysis/Figures/Supplement/figS1_Sensitivity_boxplot.png", units="in", res=300, height=6.204112, width=6.1)}
 	if(SaveType==".eps"){setEPS();postscript(file=paste(paste("Sensitivity", Version, sep=""), ".eps", sep=""), height=7, width=6.81)}
+	if(SaveType==".tiff"){tiff("/Users/Battrd/Documents/School&Work/WiscResearch/Isotopes_2012Analysis/Figures/Supplement/figS1_Sensitivity_boxplot.tiff", width=6.1, height=6.204112, units="in", res=300, compression="lzw", type="quartz")}
 }else{
-	dev.new(height=7, width=6.811)
+	dev.new(height=6.204112, width=6.1)
 }
 layout(matrix(c(1,2,3,4,4,6,5,5,7), ncol=3, byrow=TRUE), widths=c(2.4/7, 2/7, 2.6/7, 2/7, 2/7, 3/7, 2/7, 2/7, 3/7))
 # par(mar=c(2.5,0.5,1,0.5), oma=c(0,2,0,0)), cex=1)
@@ -71,7 +72,7 @@ for(i in 1:length(Cons)){
 	Pos <- c("topleft"=4, "topright"=2)
 	text(x=X[LegPos], y=0.95, labels=NeatConsNames[Cons[i]], pos=Pos[LegPos], font=3)
 	if(i==length(Cons)){
-		mtext("Proportion of Diet", side=2, line=-1, outer=TRUE, cex=1)
+		mtext("Proportion of Composition", side=2, line=-1, outer=TRUE, cex=1)
 	}
 }
 if(Save){dev.off()}

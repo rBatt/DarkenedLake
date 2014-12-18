@@ -7,7 +7,7 @@ load("/Users/Battrd/Documents/School&Work/WiscResearch/Isotopes_2012Analysis/Res
 load("/Users/Battrd/Documents/School&Work/WiscResearch/Isotopes_2012Analysis/Data/routine.smry.RData")
 
 Save <- TRUE
-SaveType <- ".png"
+SaveType <- c(".png", ".tiff")[2]
 
 # =============================================
 # = 4-panel, areal chlorophyll, pCO2, DO, NEP =
@@ -18,6 +18,7 @@ if(Save){
 	if(SaveType==".png"){png(file="/Users/battrd/Documents/School&Work/WiscResearch/Isotopes_2012Analysis/Figures/fig2_LimnoMetabZoops_PaulWard_2010&2012.png", units="in", res=200, height=4.953811, width=3.9, type="quartz")}
 	if(SaveType==".tiff"){tiff(file="/Users/battrd/Documents/School&Work/WiscResearch/Isotopes_2012Analysis/Figures/fig2_LimnoMetabZoops_PaulWard_2010&2012.tiff", units="in", res=200, height=4.953811, width=3.9, type="quartz", compression="lzw")}
 	if(SaveType==".eps"){setEPS();postscript(file="/Users/battrd/Documents/School&Work/WiscResearch/Isotopes_2012Analysis/Figures/fig2_LimnoMetabZoops_PaulWard_2010&2012.eps", height=4.953811, width=3.9)}
+	if(SaveType==".tiff"){tiff("/Users/battrd/Documents/School&Work/WiscResearch/Isotopes_2012Analysis/Figures/fig2_LimnoMetabZoops_PaulWard_2010&2012.tiff", width=2.9, height=4.040248, units="in", res=300, compression="lzw", type="quartz")}
 }else{
 	dev.new(height=4.953811, width=3.9)
 }
@@ -54,7 +55,7 @@ axis(side=1, at=c(1,4), labels=FALSE)
 mtext(quote(NEP~(mmol~O[2]~m^-3~d^-1)), side=2, line=1)
 
 # Zoop biomass
-par(mar=c(1,2.25,0,0), cex=1, ps=8, family="serif", mgp=c(3,0.3,0), tcl=-0.25)
+par(mar=c(1,2,0,0.25), cex=1, ps=8, family="serif", mgp=c(3,0.3,0), tcl=-0.25)
 boxplot(Mass~Year+Lake, data=sumzData, at=c(0.5,1.5, 3.5, 4.5), col=c(NA,NA), border=c("red", "blue"), show.names=FALSE, outline=FALSE, lwd=1.25)
 axis(side=1, at=c(1,4), labels=c("Paul", "Ward"))
 mtext(quote(Zooplankton~(g/m^2)), side=2, line=1)

@@ -2,7 +2,7 @@
 
 load("/Users/battrd/Documents/School&Work/WiscResearch/Isotopes_2012Analysis/Results/Cons_Mixture_Ward2010&2012.RData")
 Save <- TRUE
-SaveType <- ".png"
+SaveType <- c(".png", ".tiff")[2]
 
 # ===============
 # = New _v0.4.7 =
@@ -11,17 +11,18 @@ cI10 <- ResourceUse[,"Consumer"]=="Chaoborus" & ResourceUse[,"Year"]==2010 #inde
 cI12 <- ResourceUse[,"Consumer"]=="Chaoborus" & ResourceUse[,"Year"]==2012 #index of 2012 chaob posterior
 fN <- rev(c("FHM", "DAC", "CMM", "BHD1")) #fish names
 # fC <- tim.colors(n=18, alpha=1)[4*c(0.75,2.5,3.25,4)]
-fC <- rep("black",4)
+fC <- rep("red",4) # changed as per reviewer 1 recommendation
 
 # dev.new(width=3.5, height=5)
 if(Save){
 	if(SaveType==".pdf"){pdf("/Users/battrd/Documents/School&Work/WiscResearch/Isotopes_2012Analysis/Figures/fig6_deltaFishChaob.pdf", width=2.9, height=4.040248)}
 	if(SaveType==".png"){png("/Users/battrd/Documents/School&Work/WiscResearch/Isotopes_2012Analysis/Figures/fig6_deltaFishChaob.png", width=2.9, height=4.040248, units="in", res=200, type="quartz")}
+	if(SaveType==".tiff"){tiff("/Users/battrd/Documents/School&Work/WiscResearch/Isotopes_2012Analysis/Figures/fig6_deltaFishChaob.tiff", width=2.9, height=4.040248, units="in", res=300, compression="lzw", type="quartz")}
 }else{
 	dev.new(width=2.9, height=4.040248)
 }
 
-par(mfrow=c(1,1), mar=c(2.5,2.3,0,0), oma=c(0,0,0.2,0.2), ps=8, las=1, tcl=-0.25, mgp=c(3,0.35,0), yaxp=c(0,20,10), family="Times", cex=1)
+par(mfrow=c(1,1), mar=c(2.25,2,0,0), oma=c(0,0,0.1,0.1), ps=8, las=1, tcl=-0.25, mgp=c(1.75,0.25,0), yaxp=c(0,20,10), family="Times", cex=1)
 r <- c("All.Phytoplankton", "All.Terrestrial")[1]
 pC10 <- ResourceUse[cI10,r] #phytoplankton for chaoborus in 2010
 pC12 <- ResourceUse[cI12,r] #phytoplankton for chaoborus in 2012
@@ -46,7 +47,7 @@ for(f in 1:length(fN)){
 
 	#graph 2010
 	if(f==1){
-		plot(dx10,dy10, col=fC[f],xlim=c(-1,0.5), ylim=c(0,20), pch=NA, yaxt="n")
+		plot(dx10,dy10, col=fC[f],xlim=c(-1,0.5), ylim=c(0,20), pch=NA, yaxt="n", xlab="", ylab="")
 		# axis(side=2, at=seq(0,20, 0.75), labels=FALSE, tcl=0.1)
 		tksAt <- c(0,1,2,3)
 		nt <- length(tksAt)
@@ -55,23 +56,31 @@ for(f in 1:length(fN)){
 		axis(side=2, at=ats, labels=labs, tcl=-0.25, mgp=c(3,0.5,0))
 		abline(h=0, col="darkgray", lty="dashed")
 		segments(x0=0, x1=0, y0=vertOff, y1=(h), lty="dashed", col="darkgray")
-		lines(dx10,dy10, col=fC[f], type="l")
+		# lines(dx10,dy10, col=fC[f], type="l")
+		lines(dx10,dy10, col=fC[f], type="l", lwd=2) # rev 1 color comment
 	}else{
-		lines(dx10,dy10, col=fC[f])
+		# lines(dx10,dy10, col=fC[f])
 		abline(h=vertOff, col="darkgray", lty="dashed")
 		segments(x0=0, x1=0, y0=vertOff, y1=(h), lty="dashed", col="darkgray")
+		lines(dx10,dy10, col=fC[f], lwd=2) # changed color per rev 1, plotting lines after segments
 	}
 
 	#2012 graph
-	lines(dx12,dy12, col=fC[f], lwd=3)
+	# lines(dx12,dy12, col=fC[f], lwd=3)
+	lines(dx12,dy12, lwd=2, col="blue") # changed as per Reviewer 1 recommendation
 
 	#means of distributions of differences, and arrows showing change between years
 	mu10 <- mean(pF10-pC10)
 	mu12 <- mean(pF12-pC12)
-	arrows(x0=mu10, y0=h, x1=mu12,y1=h, length=0.075, col=fC[f], lwd=2)
-	text(x=-1.1, y=h, labels=rev(c("P. promelas", "Phoxinus", "U. limi", "A. melas"))[f], font=3, col=fC[f], pos=4)
+	# arrows(x0=mu10, y0=h, x1=mu12,y1=h, length=0.075, col=fC[f], lwd=2)
+	arrows(x0=mu10, y0=h, x1=mu12,y1=h, length=0.075, col="black", lwd=2) # rev 1 color comment
+	# text(x=-1.1, y=h, labels=rev(c("P. promelas", "Phoxinus", "U. limi", "A. melas"))[f], font=3, col=fC[f], pos=4)
+	text(x=-1.1, y=h, labels=rev(c("P. promelas", "Phoxinus", "U. limi", "A. melas"))[f], font=3, col="black", pos=4)
+	if(f==3){
+		text(x=-1.1, y=h*0.993, labels=expression(phantom(Phoxinus)~~spp.), col="black", pos=4)
+	}
 }
-mtext(quote(Fish~phi1[Phyto]-Chaob.~phi1[Phyto]), side=1, line=1.5, outer=FALSE, cex=1)
-mtext("Posterior Density", side=2, line=1.35, cex=1, las=0)
-legend("topright", bty="n", legend=c("2010","2012"), lwd=c(1,2), inset=c(0,-0.025))
+mtext(quote(Fish~phi1[Phyto]-Chaob.~phi1[Phyto]), side=1, line=1.25, outer=FALSE, cex=1)
+mtext("Posterior Density", side=2, line=1.25, cex=1, las=0)
+legend("topright", bty="n", legend=c("2010","2012"), lwd=c(2,2), inset=c(0,-0.025), col=c("red","blue"))  # changed color as per rev 1
 if(Save){dev.off()}

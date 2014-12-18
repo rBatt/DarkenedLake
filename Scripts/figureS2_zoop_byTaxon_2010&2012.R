@@ -3,7 +3,7 @@
 load("/Users/Battrd/Documents/School&Work/WiscResearch/Isotopes_2012Analysis/Data/routine.smry.RData")
 
 Save <- TRUE
-SaveType <- ".png"
+SaveType <- c(".png", ".tiff")[2]
 
 # ===============================
 # = Taxon-specific zoop biomass =
@@ -12,9 +12,10 @@ nZ <- zData[,"Taxon"]=="Nauplii"
 zData2 <- zData
 zData2[nZ,"Mass"] <- zData2[nZ,"Mass"]/1
 if(Save){
-	if(SaveType==".pdf"){pdf(file="/Users/battrd/Documents/School&Work/WiscResearch/Isotopes_2012Analysis/Figures/Supplement/zoop_byTaxon_2010&2012.pdf", height=2.9, width=2.9)}
-	if(SaveType==".png"){png(file="/Users/battrd/Documents/School&Work/WiscResearch/Isotopes_2012Analysis/Figures/Supplement/zoop_byTaxon_2010&2012.png", units="in", res=200, height=2.9, width=2.9)}
-	if(SaveType==".eps"){setEPS();postscript(file="/Users/battrd/Documents/School&Work/WiscResearch/Isotopes_2012Analysis/Figures/Supplement/zoop_byTaxon_2010&2012.eps", height=2.9, width=2.9)}
+	if(SaveType==".pdf"){pdf(file="/Users/battrd/Documents/School&Work/WiscResearch/Isotopes_2012Analysis/Figures/Supplement/figS2_zoop_byTaxon_2010&2012.pdf", height=2.9, width=2.9)}
+	if(SaveType==".png"){png(file="/Users/battrd/Documents/School&Work/WiscResearch/Isotopes_2012Analysis/Figures/Supplement/figS2_zoop_byTaxon_2010&2012.png", units="in", res=200, height=2.9, width=2.9)}
+	if(SaveType==".eps"){setEPS();postscript(file="/Users/battrd/Documents/School&Work/WiscResearch/Isotopes_2012Analysis/Figures/Supplement/figS2_zoop_byTaxon_2010&2012.eps", height=2.9, width=2.9)}
+	if(SaveType==".tiff"){tiff("/Users/battrd/Documents/School&Work/WiscResearch/Isotopes_2012Analysis/Figures/Supplement/figS2_zoop_byTaxon_2010&2012.tiff", width=2.9, height=2.9, units="in", res=300, compression="lzw", type="quartz")}
 }else{
 	dev.new(height=2.9, width=2.9)
 }

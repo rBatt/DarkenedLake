@@ -8,8 +8,11 @@ source("/Users/battrd/Documents/School&Work/WiscResearch/Isotopes_2012Analysis/S
 load("/Users/battrd/Documents/School&Work/WiscResearch/Isotopes_2012Analysis/Results/Cons_Mixture_Ward2010&2012.RData")
 
 Save <- TRUE
-SaveType <- ".png"
+SaveType <- c(".png", ".tiff")[2]
 
+# NeatConsNames <- c("Calanoid"="S. oregonensis", "Mesocyclops"="Mesocyclops", "Chaoborus"="Chaoborus spp.", "Helisoma trivolvis"="H. trivolvis", "FHM"="P. promelas", "DAC"="Phoxinus spp.", "BHD1"="A. melas", "BHD2"="A. melas", "CMM"= "U. limi", "PKS"="L. gibbosus", "YWP"="P. flavescens")
+
+NeatConsNames <- c("Calanoid"="S. oregonensis", "Mesocyclops"="Mesocyclops", "Chaoborus"="Chaoborus", "Helisoma trivolvis"="H. trivolvis", "FHM"="P. promelas", "DAC"="Phoxinus", "BHD1"="A. melas", "BHD2"="A. melas", "CMM"= "U. limi", "PKS"="L. gibbosus", "YWP"="P. flavescens")
 
 
 chaob.png <- readPNG("/Users/Battrd/Documents/School&Work/WiscResearch/Isotopes_2012Analysis/critterPics/Chaob.png")
@@ -54,6 +57,7 @@ if(Save){
 	if(SaveType==".pdf"){pdf(file="/Users/battrd/Documents/School&Work/WiscResearch/Isotopes_2012Analysis/Figures/fig4_consMix_Violin.pdf", height=6.204112, width=6.1)}
 	if(SaveType==".png"){png(file="/Users/battrd/Documents/School&Work/WiscResearch/Isotopes_2012Analysis/Figures/fig4_consMix_Violin.png", units="in", res=300, height=6.204112, width=6.1, type="quartz")}
 	if(SaveType==".eps"){setEPS();postscript(file="/Users/battrd/Documents/School&Work/WiscResearch/Isotopes_2012Analysis/Figures/fig4_consMix_Violin.eps", height=6.204112, width=6.1)}
+	if(SaveType==".tiff"){tiff("/Users/battrd/Documents/School&Work/WiscResearch/Isotopes_2012Analysis/Figures/fig4_consMix_Violin.tiff", width=6.1, height=6.204112, units="in", res=300, compression="lzw", type="quartz")}
 }else{
 	dev.new(height=6.26927, width=6.1)
 }
@@ -75,16 +79,16 @@ for(i in 1:length(Cons)){
 	if(!is.element(i, c(5,7))){
 		if(Yaxt=="s"){
 			# par(mar=c(2,3,0.2,0),cex=1, ps=8, family="serif", mgp=c(3,0.3,0), tcl=-0.25, yaxt=Yaxt)
-			par(mar=c(2,2.5,0.2,0),cex=1, ps=8, family="serif", mgp=c(3,0.3,0), tcl=-0.25, yaxt=Yaxt)
+			par(mar=c(1.75,2.25,0.2,0),cex=1, ps=8, family="serif", mgp=c(2.5,0.3,0), tcl=-0.25, yaxt=Yaxt)
 		}else{
-			par(mar=c(2,1,0.2,0),cex=1, ps=8, family="serif", mgp=c(3,0.3,0), tcl=-0.25, yaxt=Yaxt)
+			par(mar=c(1.75,1,0.2,0),cex=1, ps=8, family="serif", mgp=c(2.5,0.3,0), tcl=-0.25, yaxt=Yaxt)
 		}
 	}else{
 		if(Yaxt=="s"){
 			# par(mar=c(1.75,3,0.2,0),cex=1, ps=8, family="serif", mgp=c(3,0.3,0), tcl=-0.25, yaxt=Yaxt)
-			par(mar=c(1.75,2.5,0.2,0),cex=1, ps=8, family="serif", mgp=c(3,0.3,0), tcl=-0.25, yaxt=Yaxt)
+			par(mar=c(1.75,2.25,0.2,0),cex=1, ps=8, family="serif", mgp=c(2.5,0.3,0), tcl=-0.25, yaxt=Yaxt)
 		}else{
-			par(mar=c(1.75,1,0.2,0),cex=1, ps=8, family="serif", mgp=c(3,0.3,0), tcl=-0.25, yaxt=Yaxt)
+			par(mar=c(1.75,1,0.2,0),cex=1, ps=8, family="serif", mgp=c(2.5,0.3,0), tcl=-0.25, yaxt=Yaxt)
 		}
 	}
 	NamesThisUse <- make.names(ConsChoices[[Cons[i]]][[GroupChoose]])
@@ -100,13 +104,27 @@ for(i in 1:length(Cons)){
 	
 	
 	ThisAt_Axis <- c(1.5,3.5,5.5,7.5)[1:length(ResourceNames)]
-# PlotViolin(formula=Proportion~Year+Source, data=ThisRU, ylim=c(0,1), names=NA, xaxt="n", col=c(NA, "lightgray"), args.boxplot=list(boxwex=0.05, border=c("black","black"), col=c("black", "black"), show.names=FALSE, outline=FALSE,lwd=1.25))
-PlotViolin(formula=Proportion~Year+Source, data=ThisRU, ylim=c(0,1.15), names=NA, xaxt="n", col=c(NA, NA), border=c("red2", "blue2"), lwd=1.15, args.boxplot=list(boxwex=0.125, border=c("red2","blue2"), col=c(NA, NA), show.names=FALSE, outline=FALSE,lwd=1.25))
-axis(side=1, at=ThisAt_Axis, labels=ResourceNames)
+	PlotViolin(
+		formula=Proportion~Year+Source, 
+		data=ThisRU, ylim=c(0,1.15), 
+		names=NA, 
+		xaxt="n", 
+		col=c(NA, NA), 
+		border=c("red2", "blue2"), 
+		lwd=1.15, 
+		args.boxplot=list(boxwex=0.125, border=c("red2","blue2"), col=c(NA, NA), show.names=FALSE, outline=FALSE,lwd=1.25)
+	)
+	axis(side=1, at=ThisAt_Axis, labels=ResourceNames)
 	if(Yaxt=="n"){axis(side=2, labels=FALSE)}
 	X <- c("topleft"=0.15, "topright"=ThisAt_Axis[length(ResourceNames)]+1, "htri"=5.0, "lfish1"=8.5, "lfish2"=7.25, "rfish"=5, "rfish2"=3.75)
 	Pos <- c("topleft"=4, "topright"=2, "top"=2, "htri"=2, "lfish1"=2, "lfish2"=2, "rfish"=2, "rfish2"=2)
 	text(x=X[LegPos], y=1.14, labels=NeatConsNames[Cons[i]], pos=Pos[LegPos], font=3)
+	if(i%in%c(2)){
+		text(x=X[LegPos], y=1.14*0.991, labels=bquote(phantom(.(NeatConsNames[Cons[i]]))~~spp.), col="black", pos=Pos[LegPos])
+	}
+	if(i%in%c(5)){
+		text(x=X[LegPos]-0.55, y=1.14*1, labels=bquote(phantom(.(NeatConsNames[Cons[i]]))~~spp.), col="black", pos=NULL)
+	}
 	switch(Cons[i],
 		"Calanoid" = addPNG(calan.png, xl=0.3, xr=3, yt=1.17),
 		"Chaoborus"=addPNG(chaob.png, xl=0.4, xr=3.15, yt=1.125),
@@ -117,7 +135,7 @@ axis(side=1, at=ThisAt_Axis, labels=ResourceNames)
 		"BHD1" = addPNG(BHD.png, xl=1.95, xr=5.00, yt=1.20)
 		)
 	if(i==length(Cons)){
-		mtext("Proportion of Diet", side=2, line=-1, outer=TRUE, cex=1)
+		mtext("Proportion of Composition", side=2, line=-1, outer=TRUE, cex=1)
 	}
 }
 if(Save){dev.off()}
