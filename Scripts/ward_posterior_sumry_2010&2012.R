@@ -10,7 +10,9 @@ for(i in 1:length(Cons)){
 	AllNamesThisuse <- c("Year", "Month", "Consumer", "Grouping", NamesThisUse)
 	myRU <- droplevels(subset(ResourceUse, Consumer==Cons[i] & Grouping==GroupChoose & Month=="Pooled"))[AllNamesThisuse] #try to subset only the sources that were part of the analysis for this consumer
 	myRU <- reshape(myRU, varying=list(c(NamesThisUse)), times=ConsChoices[[Cons[i]]][[GroupChoose]], ids=1:nrow(ThisRU0), timevar="Source", v.names="Proportion", direction="long")
-	print(ddply(myRU, c("Year", "Consumer", "Grouping", "Source"), function(x)data.frame("Proportion"=mean(x[,"Proportion"]))))
+	t.means <- ddply(myRU, c("Year", "Consumer", "Grouping", "Source"), function(x)data.frame("Proportion"=mean(x[,"Proportion"])))
+	if(i==1){all.means <- t.means}else{all.means <- rbind(all.means, t.means)}
+	print(t.means)
 }
 
 # ==============
