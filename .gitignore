@@ -7,3 +7,4 @@
 *.xlsx
 *.RData
 *.pdf
+.DS_Store
