@@ -1,10 +1,10 @@
 *.docx
 *.xlsx
-*.png
-*.tiff
-*.eps
+# *.png
+# *.tiff
+# *.eps
 *.csv
 *.xlsx
 *.RData
-*.pdf
+# *.pdf
 .DS_Store
