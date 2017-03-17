@@ -6,5 +6,7 @@
 *.csv
 *.xlsx
 *.RData
+!Results/Data+Phyto.RData
+!Batt2015Ecosphere_zoopData.RData
 # *.pdf
 .DS_Store
